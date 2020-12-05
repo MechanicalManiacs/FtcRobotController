@@ -1,8 +1,6 @@
 package org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.program.Competition;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.program.FishloAutonomousProgram;
 import org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.robot.Utility.PID;
@@ -47,7 +45,7 @@ public class AutoWobbleRight extends FishloAutonomousProgram {
             sleep(50);
             idle();
         }
-        telemetry.addData("Gyro", gyro.getCallibrationStatus());
+        telemetry.addData("Gyro", gyro.getCalibrationStatus());
         telemetry.update();
         while (!isStarted()) {
 

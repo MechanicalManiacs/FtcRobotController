@@ -2,10 +2,13 @@ package org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.robot;
 
 import org.firstinspires.ftc.teamcode.robot.Robot;
 import org.firstinspires.ftc.teamcode.robot.SubSystem;
+import org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.robot.Gyro;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 public class Drive extends SubSystem {
+
+    public Gyro gyro = new Gyro(robot);
 
     private DcMotor frontLeft, backLeft, frontRight, backRight;
 
@@ -35,6 +38,8 @@ public class Drive extends SubSystem {
         backLeft.setDirection(DcMotor.Direction.REVERSE);
 
         drive(0, 0);
+
+        gyro.initGyro();
     }
 
     boolean reverse = false;
@@ -56,6 +61,12 @@ public class Drive extends SubSystem {
             reverse = true;
         }
 
+        double gyroDegrees = gyro.getHeading();
+        double gyroRadians = gyroDegrees * Math.PI/180;
+        double temp = driveSpeed * Math.cos(gyroRadians) + strafeSpeed * Math.sin(gyroRadians);
+        strafeSpeed = -driveSpeed * Math.sin(gyroRadians) + strafeSpeed * Math.cos(gyroRadians);
+        driveSpeed = temp;
+
         drive(driveSpeed, driveSpeed);
         strafe(strafeSpeed);
         drive(turnSpeed, -turnSpeed);
@@ -63,7 +74,7 @@ public class Drive extends SubSystem {
 
         robot.telemetry.addData("Drive - Dat - Drive Speed", driveSpeed);
         robot.telemetry.addData("Drive - Dat - Turn Speed", turnSpeed);
-        robot.telemetry.addData("GamepadX", robot.gamepad1.left_stick_x);
+        robot.telemetry.addData("Drive - Dat - GamepadX", robot.gamepad1.left_stick_x);
         robot.telemetry.addData("Drive - Dat - Strafe Speed", strafeSpeed);
         robot.telemetry.addData("Drive - Set - frontLeft", frontLeft.getPower());
         robot.telemetry.addData("Drive - Set - backLeft", backLeft.getPower());
