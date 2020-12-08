@@ -111,8 +111,27 @@ public class AutoWobbleBoth extends FishloAutonomousProgram {
             drive.strafeToPosition(-35, 0.4);
             sleep(1500);
             //Drop the wobble goal
+            claw.armDown();
+            sleep(100);
             claw.open();
-            drive.moveToPosition(-15, 0.3);
+            sleep(50);
+            drive.moveToPosition(-80, 0.5);
+            sleep(100);
+            claw.armDown();
+            sleep(100);
+            claw.close();
+            sleep(50);
+            claw.armUp();
+            sleep(100);
+            drive.moveToPosition(80, 0.5);
+            sleep(100);
+            claw.armDown();
+            sleep(100);
+            claw.open();
+            sleep(50);
+            claw.armUp();
+            sleep(50);
+            drive.moveToPosition(-15, 0.4);
         }
         //Move wobble goal to target zone C
         else if (targetZone == 'C') {
