@@ -146,13 +146,49 @@ public class AutoWobbleBoth extends FishloAutonomousProgram {
             //Status update: The robot is driving to the line
             telemetry.addData("Main", "Driving - P: -35 in, S: 0.5");
             telemetry.update();
-            //Drives to position (35 inches backward at 0.5 power)
-            drive.moveToPosition(-50, 0.5);
+            drive.strafeToPosition(-5, 0.4);
+
+            claw.armDown();
+            sleep(100);
             claw.open();
             sleep(50);
-            //Status update: The robot is strafing away from the target zones and towards the line
+            claw.armUp();
+            sleep(100);
 
-            //Strafes to position (18 inches left at 0.4 power)
+            drive.strafeToPosition(-29, 0.4);
+            sleep(100);
+            drive.moveToPosition(-101, 0.5);
+            sleep(100);
+
+            claw.armDown();
+            sleep(100);
+            claw.close();
+            sleep(50);
+            claw.armUp();
+            sleep(100);
+
+            drive.moveToPosition(101, 0.5);
+            sleep(100);
+            drive.moveToPosition(29, 0.4);
+            sleep(100);
+
+            claw.armDown();
+            sleep(100);
+            claw.open();
+            sleep(50);
+            claw.armUp();
+            sleep(100);
+
+            drive.moveToPosition(-50, 0.5);
+            sleep(100);
+            shooter.startShooter();
+            sleep(50);
+            for (int i=0; i < 4; i++) {
+                shooter.shoot();
+                sleep(50);
+            }
+            shooter.stopShooter();
+
         }
         //Clears the screen of all telemetry updates
         telemetry.clear();
