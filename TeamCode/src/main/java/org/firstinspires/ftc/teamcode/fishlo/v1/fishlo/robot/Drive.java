@@ -2,10 +2,15 @@ package org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.robot;
 
 import org.firstinspires.ftc.teamcode.robot.Robot;
 import org.firstinspires.ftc.teamcode.robot.SubSystem;
+import org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.robot.Gyro;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class Drive extends SubSystem {
+
+    Gyro gyro = new Gyro(robot);
+    ElapsedTime teleop_timer = new ElapsedTime();
 
     private DcMotor frontLeft, backLeft, frontRight, backRight;
 
@@ -35,18 +40,21 @@ public class Drive extends SubSystem {
         backLeft.setDirection(DcMotor.Direction.REVERSE);
 
         drive(0, 0);
+
+        gyro.initGyro();
     }
 
     boolean reverse = false;
+    boolean FieldOriented = false;
 
     @Override
     public void handle() {
         double driveSpeed = -robot.gamepad1.left_stick_y;
         double turnSpeed = 0;
-        double strafeSpeed = robot.gamepad1.right_stick_x;
+        double strafeSpeed = robot.gamepad1.left_stick_x;
 
-        if (Math.abs(robot.gamepad1.left_stick_x) > 0.1) {
-            turnSpeed = robot.gamepad1.left_stick_x;
+        if (Math.abs(robot.gamepad1.right_stick_x) > 0.1) {
+            turnSpeed = robot.gamepad1.right_stick_x;
         }
 
         if(robot.gamepad1.a) {
@@ -56,14 +64,18 @@ public class Drive extends SubSystem {
             reverse = true;
         }
 
-        drive(driveSpeed, driveSpeed);
-        strafe(strafeSpeed);
-        drive(turnSpeed, -turnSpeed);
+        if (robot.gamepad1.start && !FieldOriented) {
+            runDrive("arcade", driveSpeed, strafeSpeed, turnSpeed);
+        }
+        if (robot.gamepad1.start && FieldOriented) {
+            gyro.resetHeading();
+            runDrive("field", driveSpeed, strafeSpeed, turnSpeed);
+        }
 
 
         robot.telemetry.addData("Drive - Dat - Drive Speed", driveSpeed);
         robot.telemetry.addData("Drive - Dat - Turn Speed", turnSpeed);
-        robot.telemetry.addData("GamepadX", robot.gamepad1.left_stick_x);
+        robot.telemetry.addData("Drive - Dat - GamepadX", robot.gamepad1.left_stick_x);
         robot.telemetry.addData("Drive - Dat - Strafe Speed", strafeSpeed);
         robot.telemetry.addData("Drive - Set - frontLeft", frontLeft.getPower());
         robot.telemetry.addData("Drive - Set - backLeft", backLeft.getPower());
@@ -72,6 +84,28 @@ public class Drive extends SubSystem {
         robot.telemetry.addData("Drive - Enc - Left", frontLeft.getCurrentPosition());
         robot.telemetry.addData("Drive - Enc - Right", frontRight.getCurrentPosition());
         robot.telemetry.update();
+    }
+
+    public void runDrive(String drive, double driveSpeed, double strafeSpeed, double turnSpeed) {
+        if (drive.equalsIgnoreCase("arcade")) {
+            drive(driveSpeed, driveSpeed);
+            strafe(strafeSpeed);
+            drive(turnSpeed, -turnSpeed);
+        }
+        else if (drive.equalsIgnoreCase("field")) {
+            double gyroDegrees = gyro.getHeading() + 90;
+            double gyroRadians = gyroDegrees * Math.PI/180;
+            double temp = driveSpeed * Math.cos(gyroRadians) + strafeSpeed * Math.sin(gyroRadians);
+            strafeSpeed = -driveSpeed * Math.sin(gyroRadians) + strafeSpeed * Math.cos(gyroRadians);
+            driveSpeed = temp;
+
+            drive(driveSpeed, driveSpeed);
+            strafe(strafeSpeed);
+            drive(turnSpeed, -turnSpeed);
+        }
+        else {
+            robot.telemetry.addData("Error", "Incorrect input");
+        }
     }
 
     private void left(double power) {

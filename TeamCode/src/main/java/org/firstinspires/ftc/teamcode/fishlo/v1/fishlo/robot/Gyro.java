@@ -54,7 +54,7 @@ public class Gyro extends SubSystem {
         return imu.isGyroCalibrated();
     }
 
-    public String getCallibrationStatus() {
+    public String getCalibrationStatus() {
         return imu.getCalibrationStatus().toString();
     }
 
