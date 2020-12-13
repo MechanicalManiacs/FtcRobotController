@@ -41,7 +41,7 @@ public class AutoWobbleBoth extends FishloAutonomousProgram {
             sleep(50);
             idle();
         }
-        telemetry.addData("Gyro", gyro.getCallibrationStatus());
+        telemetry.addData("Gyro", gyro.getCalibrationStatus());
         telemetry.update();
         while (!isStarted()) {
 

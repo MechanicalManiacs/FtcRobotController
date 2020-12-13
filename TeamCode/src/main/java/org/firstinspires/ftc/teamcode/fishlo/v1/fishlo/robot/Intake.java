@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.robot.SubSystem;
 public class Intake extends SubSystem {
 
     private DcMotor intake;
+    private DcMotor transfer;
     boolean intake_on = false;
     ElapsedTime intake_timer = new ElapsedTime();
 
@@ -36,15 +37,17 @@ public class Intake extends SubSystem {
     }
 
     public void startIntake() {
-        intake.setPower(1);
+        intake.setPower(-0.5);
+        transfer.setPower(0.5);
     }
 
     public void stopIntake() {
         intake.setPower(0);
+        transfer.setPower(0);
     }
 
     @Override
     public void stop() {
-        intake.setPower(0);
+        stopIntake();
     }
 }
