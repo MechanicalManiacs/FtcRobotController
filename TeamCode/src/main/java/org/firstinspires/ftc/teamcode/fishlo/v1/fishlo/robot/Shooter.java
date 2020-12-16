@@ -16,6 +16,7 @@ public class Shooter extends SubSystem {
     public static final double PUSHER_MAX = 0.91;
     public static final double SHOOTER_SPEED = 0.725;
     boolean shooter_started = false;
+    int shooterTimerIter;
 
     ElapsedTime timer = new ElapsedTime();
 
@@ -27,6 +28,7 @@ public class Shooter extends SubSystem {
     public void init() {
         shooter = robot.hardwareMap.dcMotor.get("shooter");
         pusher = robot.hardwareMap.servo.get("pusher");
+        shooterTimerIter = 0;
     }
 
     @Override
@@ -38,12 +40,16 @@ public class Shooter extends SubSystem {
             stopShooter();
         }
         if (robot.gamepad2.a && shooter_started) {
-            timer.reset();
+            if (shooterTimerIter == 0) {
+                timer.reset();
+            }
             if (timer.milliseconds() < 500) {
                 shoot();
             }
-            if (timer.milliseconds() >= 500) {
+            else {
                 resetPusher();
+                timer.reset();
+                shooterTimerIter++;
             }
         }
     }
