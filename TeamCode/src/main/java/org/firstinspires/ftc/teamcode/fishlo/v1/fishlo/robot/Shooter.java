@@ -14,9 +14,8 @@ public class Shooter extends SubSystem {
 
     public static final double PUSHER_HOME = 0.96;
     public static final double PUSHER_MAX = 0.91;
-    public static final double SHOOTER_SPEED = -0.725;
+    public static final double SHOOTER_SPEED = 0.725;
     boolean shooter_started = false;
-    ElapsedTime shooterTimer = new ElapsedTime();
 
     public Shooter(Robot robot) {
         super(robot);
@@ -38,10 +37,7 @@ public class Shooter extends SubSystem {
         }
         if (robot.gamepad2.a && shooter_started) {
             shoot();
-            shooterTimer.reset();
-            if (shooterTimer.seconds() > 0.5){
-                resetPusher();
-            }
+            resetPusher();
         }
     }
 
