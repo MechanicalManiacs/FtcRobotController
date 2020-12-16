@@ -23,6 +23,7 @@ public class Intake extends SubSystem {
     @Override
     public void init() {
         intake = robot.hardwareMap.dcMotor.get("intake");
+        transfer = robot.hardwareMap.dcMotor.get("transfer");
     }
 
     @Override
@@ -33,7 +34,7 @@ public class Intake extends SubSystem {
 
         int remainder = sum % 2;
 
-        if (remainder == 0) {
+        if (remainder == 1) {
             startIntake();
         }
         else {
