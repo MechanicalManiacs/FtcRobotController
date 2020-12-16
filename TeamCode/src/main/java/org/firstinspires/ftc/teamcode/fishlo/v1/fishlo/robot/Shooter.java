@@ -12,9 +12,9 @@ public class Shooter extends SubSystem {
     private Servo pusher;
     private DcMotor shooter;
 
-    public static final double PUSHER_HOME = 0;
-    public static final double PUSHER_MAX = 0.5;
-    public static final double SHOOTER_SPEED = 0.5;
+    public static final double PUSHER_HOME = 0.96;
+    public static final double PUSHER_MAX = 0.91;
+    public static final double SHOOTER_SPEED = -0.725;
     boolean shooter_started = false;
     ElapsedTime shooterTimer = new ElapsedTime();
 
@@ -25,6 +25,7 @@ public class Shooter extends SubSystem {
     @Override
     public void init() {
         shooter = robot.hardwareMap.dcMotor.get("shooter");
+        pusher = robot.hardwareMap.servo.get("pusher");
     }
 
     @Override

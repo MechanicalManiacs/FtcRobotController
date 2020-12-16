@@ -12,8 +12,9 @@ public class Claw extends SubSystem {
     private DcMotor arm;
 
     public static final double CLAW_HOME = 0;
-    public static final double CLAW_MAX = 0.7;
-    public static double claw_speed = 0.5;
+    public static final double CLAW_MAX = 0.8;
+    public static double arm_speed = 0.5;
+    public static final int ARM_LIMITER = -30;
 
 
     public Claw(Robot robot) {
@@ -24,15 +25,22 @@ public class Claw extends SubSystem {
     public void init() {
         claw = robot.hardwareMap.servo.get("claw");
         arm = robot.hardwareMap.dcMotor.get("arm");
+        armUp();
+        arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         close();
     }
 
     @Override
     public void handle() {
-        claw_speed = (robot.gamepad2.left_stick_x < 0) ? Math.pow(robot.gamepad2.left_stick_x, 2) : -Math.pow(robot.gamepad2.left_stick_x, 2);
+        arm_speed = robot.gamepad2.right_stick_x * 0.5;
         arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        arm.setPower(claw_speed);
+        if (arm.getCurrentPosition() < ARM_LIMITER) {
+            arm.setPower(0);
+        }
+        else {
+            arm.setPower(arm_speed);
+        }
         if (robot.gamepad2.x) {
             open();
         }
@@ -58,21 +66,25 @@ public class Claw extends SubSystem {
     ElapsedTime armTimer = new ElapsedTime();
 
     public void armDown() {
-        armTimer.reset();
-        while (armTimer.milliseconds() <= 500) {
-            arm.setPower(-1);
-        }
-        arm.setPower(0);
+        resetEncoder();
+        int move = -400;
+        arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        arm.setTargetPosition(arm.getCurrentPosition() + move);
+        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
     }
 
     public void armUp() {
-        armTimer.reset();
-        while (armTimer.milliseconds() <= 1000) {
-            arm.setPower(.3);
-        }
-        arm.setPower(0);
+        resetEncoder();
+        int move = 400;
+        arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        arm.setTargetPosition(arm.getCurrentPosition() + move);
+        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
+    public void resetEncoder() {
+        arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    }
 
 
 }

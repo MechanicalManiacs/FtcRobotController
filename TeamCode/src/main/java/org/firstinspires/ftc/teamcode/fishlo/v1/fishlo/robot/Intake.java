@@ -12,6 +12,7 @@ public class Intake extends SubSystem {
     private DcMotor transfer;
     boolean intake_on = false;
     ElapsedTime intake_timer = new ElapsedTime();
+    public static final double INTAKE_SPEED = -0.5;
 
     public Intake(Robot robot) {
         super(robot);
@@ -25,6 +26,7 @@ public class Intake extends SubSystem {
     @Override
     public void handle() {
         if (robot.gamepad2.y && !intake_on && intake_timer.seconds() > 3) {
+
             startIntake();
             intake_on = true;
             intake_timer.reset();
@@ -37,7 +39,7 @@ public class Intake extends SubSystem {
     }
 
     public void startIntake() {
-        intake.setPower(-0.5);
+        intake.setPower(INTAKE_SPEED);
         transfer.setPower(0.5);
     }
 

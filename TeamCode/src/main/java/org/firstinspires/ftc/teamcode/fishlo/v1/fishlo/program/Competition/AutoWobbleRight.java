@@ -33,7 +33,7 @@ public class AutoWobbleRight extends FishloAutonomousProgram {
         gyro.initGyro();
 
         //Reset claw and arm to starting position
-        claw.open();
+        claw.close();
         claw.armUp();
 //        claw.close();
         //Timer for vision

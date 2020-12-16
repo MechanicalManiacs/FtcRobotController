@@ -64,13 +64,16 @@ public class Drive extends SubSystem {
             reverse = true;
         }
 
-        if (robot.gamepad1.start && !FieldOriented) {
-            runDrive("arcade", driveSpeed, strafeSpeed, turnSpeed);
-        }
-        if (robot.gamepad1.start && FieldOriented) {
-            gyro.resetHeading();
-            runDrive("field", driveSpeed, strafeSpeed, turnSpeed);
-        }
+        drive(driveSpeed, driveSpeed);
+        strafe(strafeSpeed);
+        drive(turnSpeed, -turnSpeed);
+//        if (robot.gamepad1.dpad_up && !FieldOriented) {
+//            runDrive("arcade", driveSpeed, strafeSpeed, turnSpeed);
+//        }
+//        if (robot.gamepad1.dpad_down && FieldOriented) {
+//            gyro.resetHeading();
+//            runDrive("field", driveSpeed, strafeSpeed, turnSpeed);
+//        }
 
 
         robot.telemetry.addData("Drive - Dat - Drive Speed", driveSpeed);
