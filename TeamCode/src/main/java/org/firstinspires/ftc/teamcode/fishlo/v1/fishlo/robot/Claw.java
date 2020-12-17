@@ -25,15 +25,13 @@ public class Claw extends SubSystem {
     public void init() {
         claw = robot.hardwareMap.servo.get("claw");
         arm = robot.hardwareMap.dcMotor.get("arm");
-        armUp();
-        arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         close();
     }
 
     @Override
     public void handle() {
         arm_speed = robot.gamepad2.right_stick_x * 0.5;
-        arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         if (arm.getCurrentPosition() < ARM_LIMITER) {
             arm.setPower(0);
@@ -66,20 +64,21 @@ public class Claw extends SubSystem {
     ElapsedTime armTimer = new ElapsedTime();
 
     public void armDown() {
-        resetEncoder();
-        int move = -400;
-        arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        arm.setTargetPosition(arm.getCurrentPosition() + move);
-        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armTimer.reset();
+        while (armTimer.milliseconds() < 1000) {
+            arm.setPower(-0.5);
+        }
+        arm.setPower(0);
 
     }
 
     public void armUp() {
-        resetEncoder();
-        int move = 400;
-        arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        arm.setTargetPosition(arm.getCurrentPosition() + move);
-        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armTimer.reset();
+        while (armTimer.milliseconds() < 1000) {
+            arm.setPower(0.5);
+        }
+        arm.setPower(0);
+
     }
 
     public void resetEncoder() {

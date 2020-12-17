@@ -25,7 +25,6 @@ public class Gyro extends SubSystem {
 
     @Override
     public void init() {
-
     }
 
     @Override
@@ -59,11 +58,21 @@ public class Gyro extends SubSystem {
     }
 
     public double getHeading() {
-        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        heading = convert(angles.firstAngle - prevHeading);
-        robot.telemetry.addData("Gyro", "Heading - " + heading);
+//        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+//        double first = angles.firstAngle;
+//        heading = convert(angles.firstAngle - prevHeading);
+//        heading = devert(heading);
+//        robot.telemetry.addData("Gyro", "Heading - " + heading);
+//        robot.telemetry.addData("Gyro: ", first);
+//        robot.telemetry.update();
+//        return heading;
+        angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        heading = -angles.firstAngle;//make this negative
+        robot.telemetry.addData("Yaw", heading);
         robot.telemetry.update();
-        return heading;
+
+        return heading - prevHeading;
+
     }
     public void resetHeading() {
         prevHeading = heading;

@@ -12,7 +12,8 @@ public class Intake extends SubSystem {
     private DcMotor transfer;
     boolean intake_on = false;
     ElapsedTime intake_timer = new ElapsedTime();
-    public static final double INTAKE_SPEED = 0.5;
+    public static double INTAKE_SPEED = 0.5;
+    public static double TRANSFER_SPEED = 0.25;
 
     int sum = 2;
 
@@ -32,6 +33,22 @@ public class Intake extends SubSystem {
             sum ++;
         }
 
+        if (robot.gamepad2.right_trigger > 0.5) {
+            TRANSFER_SPEED = 0.75;
+        }
+        else {
+            TRANSFER_SPEED = 0.25;
+        }
+
+        if (robot.gamepad2.left_trigger > 0.5) {
+            INTAKE_SPEED = -1 * Math.abs(INTAKE_SPEED);
+            TRANSFER_SPEED = -1 * Math.abs(TRANSFER_SPEED);
+        }
+        else {
+            TRANSFER_SPEED = Math.abs(TRANSFER_SPEED);
+            INTAKE_SPEED = Math.abs(INTAKE_SPEED);
+        }
+
         int remainder = sum % 2;
 
         if (remainder == 1) {
@@ -44,7 +61,7 @@ public class Intake extends SubSystem {
 
     public void startIntake() {
         intake.setPower(INTAKE_SPEED);
-        transfer.setPower(0.5);
+        transfer.setPower(TRANSFER_SPEED);
     }
 
     public void stopIntake() {

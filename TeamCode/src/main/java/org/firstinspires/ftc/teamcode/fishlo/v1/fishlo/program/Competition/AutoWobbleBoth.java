@@ -1,9 +1,12 @@
 package org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.program.Competition;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+
 import org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.program.FishloAutonomousProgram;
 import org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.robot.Utility.PID;
 import org.firstinspires.ftc.teamcode.robot.Robot;
 
+@Autonomous
 public class AutoWobbleBoth extends FishloAutonomousProgram {
     //Create the variable targetZone to store the targetZone value from vision
     protected char targetZone;
@@ -12,7 +15,6 @@ public class AutoWobbleBoth extends FishloAutonomousProgram {
     protected final double Kp = 0.1;
     protected final double HEADING_THRESHOLD = 1;
     protected final double Kd = 0; //425;
-    PID pidController = new PID(Kp, Kd, 0);
 
 
     //Build the robot
@@ -27,10 +29,9 @@ public class AutoWobbleBoth extends FishloAutonomousProgram {
     public void preMain() {
         //Initialize the imu
         gyro.initGyro();
+        shooter.resetPusher();
 
         //Reset claw and arm to starting position
-        claw.open();
-        claw.armUp();
 //        claw.close();
         //Timer for vision
 
@@ -41,6 +42,7 @@ public class AutoWobbleBoth extends FishloAutonomousProgram {
             sleep(50);
             idle();
         }
+        gyro.getHeading();
         telemetry.addData("Gyro", gyro.getCalibrationStatus());
         telemetry.update();
         while (!isStarted()) {
@@ -64,130 +66,222 @@ public class AutoWobbleBoth extends FishloAutonomousProgram {
             telemetry.addData("Main", "Driving - P: 55 in, S: 0.5");
             telemetry.update();
             //Drives to position (68 inches forward at 0.5 power)
-            drive.moveToPosition(68, 0.5);
-            sleep(100);
-            drive.strafeToPosition(-5, 0.4);
-            sleep(100);
+            drive.moveToPosition(78, 1);
+
+            drive.strafeToPosition(-10, 1);
+
             //Drops the wobble goal
             claw.armDown();
+            sleep(100);
             claw.open();
             sleep(100);
+
             claw.armUp();
             sleep(100);
+
             telemetry.addData("Main", "Strafing - P:-12 in, S: 0.4");
             telemetry.update();
-            drive.strafeToPosition(-29, 0.4);
-            sleep(100);
-            drive.moveToPosition(-53, 0.5);
-            sleep(100);
+
+            drive.strafeToPosition(-57, 1);
+
+            drive.moveToPosition(-63, 1);
+
             claw.armDown();
             sleep(100);
+
+            drive.strafeToPosition(8, 1);
+
+
+
+
+
             claw.close();
             sleep(50);
+
             claw.armUp();
             sleep(100);
-            drive.moveToPosition(53, 0.5);
-            sleep(100);
-            drive.strafeToPosition(29, 0.4);
-            sleep(100);
+
+            drive.moveToPosition(63, 1);
+
+            drive.strafeToPosition(34, 1);
+
             claw.armDown();
             sleep(100);
+
             claw.open();
             sleep(50);
+
+            claw.armUp();
+            sleep(100);
+
+            drive.strafeToPosition(-5, 1);
+
             shooter.startShooter();
-            sleep(50);
-            for (int i=0; i < 4; i++) {
-                shooter.shoot();
-                sleep(50);
-            }
+            sleep(1000);
+            drive.turnWithEncoder(1900, 1);
+            drive.moveToPosition(28, 1);
+            shooter.shoot();
+            sleep(500);
+            shooter.resetPusher();
+            sleep(1000);
+            shooter.shoot();
+            sleep(500);
+            shooter.resetPusher();
+            sleep(800);
+
+            drive.moveToPosition(-15, 1);
             shooter.stopShooter();
+            sleep(500);
 
         }
         //Move wobble goal to target zone B
         else if (targetZone == 'B') {
             telemetry.addData("Main", "Driving to Target Zone B");
             telemetry.update();
-            drive.moveToPosition(95, 0.5);
-            drive.strafeToPosition(-35, 0.4);
-            sleep(1500);
-            //Drop the wobble goal
+            //Status update: The robot is driving to the target zone
+            telemetry.addData("Main", "Driving - P: 55 in, S: 0.5");
+            telemetry.update();
+            //Drives to position (68 inches forward at 0.5 power)
+            drive.moveToPosition(85, 1);
+
+            drive.strafeToPosition(-30, 1);
+
+            //Drops the wobble goal
             claw.armDown();
             sleep(100);
             claw.open();
-            sleep(50);
-            drive.moveToPosition(-80, 0.5);
             sleep(100);
+
+            claw.armUp();
+            sleep(100);
+
+            telemetry.addData("Main", "Strafing - P:-12 in, S: 0.4");
+            telemetry.update();
+
+            drive.strafeToPosition(-37, 1);
+
+            drive.moveToPosition(-70, 1);
+
+
+            drive.strafeToPosition(8, 1);
+
+
             claw.armDown();
             sleep(100);
+
             claw.close();
             sleep(50);
+
             claw.armUp();
             sleep(100);
-            drive.moveToPosition(80, 0.5);
-            sleep(100);
+
+            drive.moveToPosition(70, 1);
+
+            drive.strafeToPosition(32, 1);
+
             claw.armDown();
             sleep(100);
+
             claw.open();
             sleep(50);
+
             claw.armUp();
-            sleep(50);
-            drive.moveToPosition(-15, 0.4);
+            sleep(100);
+
+            drive.moveToPosition(-20, 1);
+            drive.strafeToPosition(10, 1);
+
+            shooter.startShooter();
+            sleep(1000);
+            drive.turnWithEncoder(1900, 1);
+            drive.moveToPosition(28, 1);
+            shooter.shoot();
+            sleep(500);
+            shooter.resetPusher();
+            sleep(1000);
+            shooter.shoot();
+            sleep(500);
+            shooter.resetPusher();
+            sleep(800);
+
+            drive.moveToPosition(-15, 1);
+            shooter.stopShooter();
+            sleep(500);
         }
         //Move wobble goal to target zone C
         else if (targetZone == 'C') {
             telemetry.addData("Main", "Driving to Target Zone C");
             telemetry.update();
             //Status update: The robot is driving to the target zone
-            telemetry.addData("Main", "Driving - P: 100 in, S: 0.5");
+            telemetry.addData("Main", "Driving - P: 55 in, S: 0.5");
             telemetry.update();
-            //Drives to position (100 inches forward at 0.5 power)
-            drive.moveToPosition(125, 0.5);
-            sleep(50);
-            //Status update: The robot is driving to the line
-            telemetry.addData("Main", "Driving - P: -35 in, S: 0.5");
-            telemetry.update();
-            drive.strafeToPosition(-5, 0.4);
+            //Drives to position (68 inches forward at 0.5 power)
+            drive.moveToPosition(98, 1);
 
+            drive.strafeToPosition(-10, 1);
+
+            //Drops the wobble goal
             claw.armDown();
             sleep(100);
             claw.open();
-            sleep(50);
+            sleep(100);
+
             claw.armUp();
             sleep(100);
 
-            drive.strafeToPosition(-29, 0.4);
-            sleep(100);
-            drive.moveToPosition(-101, 0.5);
-            sleep(100);
+            telemetry.addData("Main", "Strafing - P:-12 in, S: 0.4");
+            telemetry.update();
+
+            drive.strafeToPosition(-57, 1);
+
+            drive.moveToPosition(-83, 1);
 
             claw.armDown();
             sleep(100);
+
+            drive.strafeToPosition(8, 1);
+
+
+
+
+
             claw.close();
             sleep(50);
+
             claw.armUp();
             sleep(100);
 
-            drive.moveToPosition(101, 0.5);
-            sleep(100);
-            drive.moveToPosition(29, 0.4);
-            sleep(100);
+            drive.moveToPosition(83, 1);
+
+            drive.strafeToPosition(34, 1);
 
             claw.armDown();
             sleep(100);
+
             claw.open();
             sleep(50);
+
             claw.armUp();
             sleep(100);
 
-            drive.moveToPosition(-50, 0.5);
-            sleep(100);
+            drive.strafeToPosition(-5, 1);
+
             shooter.startShooter();
-            sleep(50);
-            for (int i=0; i < 4; i++) {
-                shooter.shoot();
-                sleep(50);
-            }
+            sleep(1000);
+            drive.turnWithEncoder(1900, 1);
+            drive.moveToPosition(48, 1);
+            shooter.shoot();
+            sleep(500);
+            shooter.resetPusher();
+            sleep(1000);
+            shooter.shoot();
+            sleep(500);
+            shooter.resetPusher();
+            sleep(800);
+
+            drive.moveToPosition(-35, 1);
             shooter.stopShooter();
+            sleep(500);
 
         }
         //Clears the screen of all telemetry updates

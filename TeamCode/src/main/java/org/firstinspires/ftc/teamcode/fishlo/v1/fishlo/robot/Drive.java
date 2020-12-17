@@ -201,6 +201,30 @@ public class Drive extends SubSystem {
         return;
     }
 
+    public void turnWithEncoder(int move, double speed) {
+
+        encoderReset();
+
+        frontLeft.setTargetPosition(frontLeft.getCurrentPosition() - move);
+        backLeft.setTargetPosition(backLeft.getCurrentPosition() - move);
+        frontRight.setTargetPosition(frontRight.getCurrentPosition() + move);
+        backRight.setTargetPosition(backRight.getCurrentPosition() + move);
+
+        frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        drive(speed, speed);
+
+        while (frontLeft.isBusy() || frontRight.isBusy() || backLeft.isBusy() || backRight.isBusy()) {}
+        stop();
+        encoderReset();
+        return;
+    }
+
+
+
     public void stop() {
         drive(0, 0);
     }
@@ -219,11 +243,7 @@ public class Drive extends SubSystem {
         backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
-/*
-    public int getEncoder() {
-        return backRight.getCurrentPosition() - base;
-    }
-*/
+
 
 
 
