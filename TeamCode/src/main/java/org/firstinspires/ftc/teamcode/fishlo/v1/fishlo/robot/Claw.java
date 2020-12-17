@@ -33,12 +33,9 @@ public class Claw extends SubSystem {
     public void handle() {
         arm_speed = robot.gamepad2.right_stick_x * 0.5;
 
-        if (arm.getCurrentPosition() < ARM_LIMITER) {
-            arm.setPower(0);
-        }
-        else {
-            arm.setPower(arm_speed);
-        }
+
+        arm.setPower(0);
+        arm.setPower(arm_speed);
         if (robot.gamepad2.x) {
             open();
         }
