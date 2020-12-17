@@ -14,7 +14,7 @@ public class Shooter extends SubSystem {
 
     public static final double PUSHER_HOME = 1;
     public static final double PUSHER_MAX = 0.85;
-    public static final double SHOOTER_SPEED = 0.725;
+    public static final double SHOOTER_SPEED = 0.69;
     boolean shooter_started = false;
 
 

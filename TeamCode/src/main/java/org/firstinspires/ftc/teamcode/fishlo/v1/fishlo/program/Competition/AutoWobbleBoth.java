@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.program.Competition;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.program.FishloAutonomousProgram;
 import org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.robot.Utility.PID;
@@ -15,6 +16,9 @@ public class AutoWobbleBoth extends FishloAutonomousProgram {
     protected final double Kp = 0.1;
     protected final double HEADING_THRESHOLD = 1;
     protected final double Kd = 0; //425;
+    protected final double ROBOT_SPEED = 0.75;
+    protected final double PARK_TIME = 29;
+    ElapsedTime timer;
 
 
     //Build the robot
@@ -30,6 +34,7 @@ public class AutoWobbleBoth extends FishloAutonomousProgram {
         //Initialize the imu
         gyro.initGyro();
         shooter.resetPusher();
+        timer = new ElapsedTime();
 
         //Reset claw and arm to starting position
 //        claw.close();
@@ -57,6 +62,7 @@ public class AutoWobbleBoth extends FishloAutonomousProgram {
     //This method is for code that needs to run after start is pressed.
     @Override
     public void main() {
+        timer.reset();
 
         //Move wobble goal to target zone A
         if (targetZone == 'A') {
@@ -66,13 +72,10 @@ public class AutoWobbleBoth extends FishloAutonomousProgram {
             telemetry.addData("Main", "Driving - P: 55 in, S: 0.5");
             telemetry.update();
             //Drives to position (68 inches forward at 0.5 power)
-            drive.moveToPosition(78, 1);
-
-            drive.strafeToPosition(-10, 1);
+            drive.moveToPosition(73, ROBOT_SPEED);
 
             //Drops the wobble goal
             claw.armDown();
-            sleep(100);
             claw.open();
             sleep(100);
 
@@ -82,54 +85,58 @@ public class AutoWobbleBoth extends FishloAutonomousProgram {
             telemetry.addData("Main", "Strafing - P:-12 in, S: 0.4");
             telemetry.update();
 
-            drive.strafeToPosition(-57, 1);
+            drive.strafeToPosition(-57, ROBOT_SPEED);
 
-            drive.moveToPosition(-63, 1);
+            drive.moveToPosition(-58, ROBOT_SPEED);
 
             claw.armDown();
-            sleep(100);
 
-            drive.strafeToPosition(8, 1);
-
-
-
-
+            drive.strafeToPosition(10, ROBOT_SPEED);
 
             claw.close();
-            sleep(50);
-
-            claw.armUp();
             sleep(100);
 
-            drive.moveToPosition(63, 1);
+            claw.armUp();
 
-            drive.strafeToPosition(34, 1);
+            drive.moveToPosition(58, ROBOT_SPEED);
+
+            drive.strafeToPosition(36, ROBOT_SPEED);
 
             claw.armDown();
-            sleep(100);
 
             claw.open();
-            sleep(50);
-
-            claw.armUp();
             sleep(100);
 
-            drive.strafeToPosition(-5, 1);
+            claw.armUp();
+
+            drive.strafeToPosition(-5, ROBOT_SPEED);
 
             shooter.startShooter();
             sleep(1000);
-            drive.turnWithEncoder(1900, 1);
-            drive.moveToPosition(28, 1);
+            drive.turnWithEncoder(1900, ROBOT_SPEED);
+            drive.moveToPosition(10, ROBOT_SPEED);
             shooter.shoot();
             sleep(500);
             shooter.resetPusher();
-            sleep(1000);
+            sleep(800);
+            if (timer.seconds() > PARK_TIME) {
+                drive.moveToPosition(-10, 1);
+                shooter.stopShooter();
+            }
+            shooter.shoot();
+            sleep(500);
+            shooter.resetPusher();
+            sleep(800);
+            if (timer.seconds() > PARK_TIME) {
+                drive.moveToPosition(-10, 1);
+                shooter.stopShooter();
+            }
             shooter.shoot();
             sleep(500);
             shooter.resetPusher();
             sleep(800);
 
-            drive.moveToPosition(-15, 1);
+            drive.moveToPosition(-10, 1);
             shooter.stopShooter();
             sleep(500);
 
