@@ -21,6 +21,7 @@ public class Drive extends SubSystem {
     double bias = 0.955;
     double strafeBias = 0.9;
     double conversion = cpi * bias;
+
     private enum DriveControls {
         OLD,
         FIELD,
@@ -50,11 +51,11 @@ public class Drive extends SubSystem {
     }
 
     boolean reverse = false;
-    boolean FieldOriented = false;
 
     @Override
     public void handle() {
         double driveSpeed = -robot.gamepad1.left_stick_y;
+        double rightY = robot.gamepad1.right_stick_y;
         double turnSpeed = 0;
         double strafeSpeed = robot.gamepad1.left_stick_x;
         DriveControls driveType = DriveControls.ARCADE;
@@ -70,31 +71,19 @@ public class Drive extends SubSystem {
             reverse = true;
         }
 
-
-
         if (robot.gamepad1.dpad_up) {
-            runDrive("old", driveSpeed, strafeSpeed, turnSpeed);
+            runDrive(DriveControls.ARCADE, driveSpeed, strafeSpeed, turnSpeed, rightY, -driveSpeed);
         }
         else if (robot.gamepad1.dpad_down) {
-            runDrive("field", driveSpeed, strafeSpeed, turnSpeed);
+            gyro.resetHeading();
+            runDrive(DriveControls.FIELD, driveSpeed, strafeSpeed, turnSpeed, rightY, -driveSpeed);
         }
-        else if (robot.gamepad1.dpad_right){
-            runDrive("arcade", driveSpeed, strafeSpeed, turnSpeed);
+        else if (robot.gamepad1.dpad_right) {
+            runDrive(DriveControls.OLD, driveSpeed, strafeSpeed, turnSpeed, rightY, -driveSpeed);
         }
         else {
-            runDrive("arcade", driveSpeed, strafeSpeed, turnSpeed);
+            runDrive(DriveControls.ARCADE, driveSpeed, strafeSpeed, turnSpeed, rightY, -driveSpeed);
         }
-
-//        drive(driveSpeed, driveSpeed);
-//        strafe(strafeSpeed);
-//        drive(turnSpeed, -turnSpeed);
-//        if (robot.gamepad1.dpad_up && !FieldOriented) {
-//            runDrive("arcade", driveSpeed, strafeSpeed, turnSpeed);
-//        }
-//        if (robot.gamepad1.dpad_down && FieldOriented) {
-//            gyro.resetHeading();
-//            runDrive("field", driveSpeed, strafeSpeed, turnSpeed);
-//        }
 
 
         robot.telemetry.addData("Drive - Dat - Drive Speed", driveSpeed);
@@ -110,38 +99,47 @@ public class Drive extends SubSystem {
         robot.telemetry.update();
     }
 
-    public void runDrive(String drive, double driveSpeed, double strafeSpeed, double turnSpeed) {
-        if (drive.equalsIgnoreCase("arcade")) {
-            drive(driveSpeed, driveSpeed);
-            strafe(strafeSpeed);
-            drive(turnSpeed, -turnSpeed);
-        }
-        else if (drive.equalsIgnoreCase("field")) {
-            double gyroDegrees = gyro.getHeading() + 90;
-            double gyroRadians = gyroDegrees * Math.PI/180;
-            double temp = driveSpeed * Math.cos(gyroRadians) + strafeSpeed * Math.sin(gyroRadians);
-            strafeSpeed = -driveSpeed * Math.sin(gyroRadians) + strafeSpeed * Math.cos(gyroRadians);
-            driveSpeed = temp;
+    public void runDrive(DriveControls driveType, double driveSpeed, double strafeSpeed, double turnSpeed, double rightY, double leftY) {
+        switch (driveType) {
+            case ARCADE:
+                drive(driveSpeed, driveSpeed);
+                strafe(strafeSpeed);
+                drive(turnSpeed, -turnSpeed);
 
-            drive(driveSpeed, driveSpeed);
-            strafe(strafeSpeed);
-            drive(turnSpeed, -turnSpeed);
-        }
-        else if (drive.equalsIgnoreCase("old")) {
-            left(robot.gamepad1.left_stick_y);
-            right(robot.gamepad1.right_stick_y);
+                if (robot.gamepad1.dpad_down || robot.gamepad1.dpad_right) {
+                    break;
+                }
 
-            if (robot.gamepad1.right_bumper) {
-                strafe(0.75);
-            }
-            if (robot.gamepad1.left_bumper) {
-                strafe(-0.75);
+            case FIELD:
+                double gyroDegrees = gyro.getHeading() + 90;
+                double gyroRadians = gyroDegrees * Math.PI/180;
+                double temp = driveSpeed * Math.cos(gyroRadians) + strafeSpeed * Math.sin(gyroRadians);
+                strafeSpeed = -driveSpeed * Math.sin(gyroRadians) + strafeSpeed * Math.cos(gyroRadians);
+                driveSpeed = temp;
+
+                drive(driveSpeed, driveSpeed);
+                strafe(strafeSpeed);
+                drive(turnSpeed, -turnSpeed);
+
+                if (robot.gamepad1.dpad_right || robot.gamepad1.dpad_up) {
+                    break;
+                }
+            case OLD:
+                    left(leftY);
+                    right(rightY);
+
+                    if (robot.gamepad1.right_bumper) {
+                        strafe(0.75);
+                    }
+                    if (robot.gamepad1.left_bumper) {
+                        strafe(-0.75);
+                    }
+
+                    if (robot.gamepad1.dpad_down || robot.gamepad1.dpad_up) {
+                        break;
+                    }
             }
         }
-        else {
-            robot.telemetry.addData("Error", "Incorrect input");
-        }
-    }
 
     private void left(double power) {
         try {
