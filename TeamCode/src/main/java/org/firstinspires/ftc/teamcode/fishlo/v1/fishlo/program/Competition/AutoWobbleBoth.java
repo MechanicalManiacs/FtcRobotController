@@ -90,6 +90,7 @@ public class AutoWobbleBoth extends FishloAutonomousProgram {
             drive.moveToPosition(-58, ROBOT_SPEED);
 
             claw.armDown();
+            sleep(100);
 
             drive.strafeToPosition(10, ROBOT_SPEED);
 
@@ -103,6 +104,7 @@ public class AutoWobbleBoth extends FishloAutonomousProgram {
             drive.strafeToPosition(36, ROBOT_SPEED);
 
             claw.armDown();
+            sleep(80 );
 
             claw.open();
             sleep(100);
@@ -148,14 +150,15 @@ public class AutoWobbleBoth extends FishloAutonomousProgram {
             //Status update: The robot is driving to the target zone
             telemetry.addData("Main", "Driving - P: 55 in, S: 0.5");
             telemetry.update();
+            drive.moveToPosition(2, ROBOT_SPEED);
+            drive.strafeToPosition(11, ROBOT_SPEED);
             //Drives to position (68 inches forward at 0.5 power)
-            drive.moveToPosition(85, 1);
+            drive.moveToPosition(98, ROBOT_SPEED);
 
-            drive.strafeToPosition(-30, 1);
+            drive.strafeToPosition(-40, ROBOT_SPEED);
 
             //Drops the wobble goal
             claw.armDown();
-            sleep(100);
             claw.open();
             sleep(100);
 
@@ -165,53 +168,61 @@ public class AutoWobbleBoth extends FishloAutonomousProgram {
             telemetry.addData("Main", "Strafing - P:-12 in, S: 0.4");
             telemetry.update();
 
-            drive.strafeToPosition(-37, 1);
 
-            drive.moveToPosition(-70, 1);
+            drive.strafeToPosition(-32, ROBOT_SPEED);
 
-
-            drive.strafeToPosition(8, 1);
-
+            drive.moveToPosition(-85, ROBOT_SPEED);
 
             claw.armDown();
             sleep(100);
+
+            drive.strafeToPosition(13, ROBOT_SPEED);
 
             claw.close();
-            sleep(50);
-
-            claw.armUp();
             sleep(100);
 
-            drive.moveToPosition(70, 1);
+            claw.armUp();
 
-            drive.strafeToPosition(32, 1);
+            drive.moveToPosition(77, ROBOT_SPEED);
+
 
             claw.armDown();
-            sleep(100);
+            sleep(80 );
 
             claw.open();
-            sleep(50);
-
-            claw.armUp();
             sleep(100);
 
-            drive.moveToPosition(-20, 1);
-            drive.strafeToPosition(10, 1);
-
+            claw.armUp();
             shooter.startShooter();
-            sleep(1000);
-            drive.turnWithEncoder(1900, 1);
-            drive.moveToPosition(28, 1);
+
+
+
+            drive.strafeToPosition(-5, ROBOT_SPEED);
+
+            drive.turnWithEncoder(1900, ROBOT_SPEED);
+            drive.moveToPosition(40, ROBOT_SPEED);
             shooter.shoot();
             sleep(500);
             shooter.resetPusher();
-            sleep(1000);
+            sleep(800);
+            if (timer.seconds() > PARK_TIME) {
+                drive.moveToPosition(-10, 1);
+                shooter.stopShooter();
+            }
+            shooter.shoot();
+            sleep(500);
+            shooter.resetPusher();
+            sleep(800);
+            if (timer.seconds() > PARK_TIME) {
+                drive.moveToPosition(-10, 1);
+                shooter.stopShooter();
+            }
             shooter.shoot();
             sleep(500);
             shooter.resetPusher();
             sleep(800);
 
-            drive.moveToPosition(-15, 1);
+            drive.moveToPosition(-10, 1);
             shooter.stopShooter();
             sleep(500);
         }

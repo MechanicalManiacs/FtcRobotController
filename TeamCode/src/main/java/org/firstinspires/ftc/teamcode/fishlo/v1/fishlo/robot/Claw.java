@@ -12,7 +12,7 @@ public class Claw extends SubSystem {
     private DcMotor arm;
 
     public static final double CLAW_HOME = 0;
-    public static final double CLAW_MAX = 0.8;
+    public static final double CLAW_MAX = 0.78;
     public static double arm_speed = 0.5;
     public static final int ARM_LIMITER = -30;
 
@@ -63,7 +63,7 @@ public class Claw extends SubSystem {
     public void armDown() {
         armTimer.reset();
         while (armTimer.milliseconds() < 1000) {
-            arm.setPower(-0.5);
+            arm.setPower(-0.8);
         }
         arm.setPower(0);
 
@@ -72,7 +72,7 @@ public class Claw extends SubSystem {
     public void armUp() {
         armTimer.reset();
         while (armTimer.milliseconds() < 1000) {
-            arm.setPower(0.5);
+            arm.setPower(0.8);
         }
         arm.setPower(0);
 

@@ -21,6 +21,11 @@ public class Drive extends SubSystem {
     double bias = 0.955;
     double strafeBias = 0.9;
     double conversion = cpi * bias;
+    private enum DriveControls {
+        OLD,
+        FIELD,
+        ARCADE
+    }
 
     boolean exit = false;
     
@@ -52,6 +57,7 @@ public class Drive extends SubSystem {
         double driveSpeed = -robot.gamepad1.left_stick_y;
         double turnSpeed = 0;
         double strafeSpeed = robot.gamepad1.left_stick_x;
+        DriveControls driveType = DriveControls.ARCADE;
 
         if (Math.abs(robot.gamepad1.right_stick_x) > 0.1) {
             turnSpeed = robot.gamepad1.right_stick_x;
@@ -64,6 +70,8 @@ public class Drive extends SubSystem {
             reverse = true;
         }
 
+
+
         if (robot.gamepad1.dpad_up) {
             runDrive("old", driveSpeed, strafeSpeed, turnSpeed);
         }
@@ -74,7 +82,7 @@ public class Drive extends SubSystem {
             runDrive("arcade", driveSpeed, strafeSpeed, turnSpeed);
         }
         else {
-            runDrive("old", driveSpeed, strafeSpeed, turnSpeed);
+            runDrive("arcade", driveSpeed, strafeSpeed, turnSpeed);
         }
 
 //        drive(driveSpeed, driveSpeed);
@@ -122,6 +130,13 @@ public class Drive extends SubSystem {
         else if (drive.equalsIgnoreCase("old")) {
             left(robot.gamepad1.left_stick_y);
             right(robot.gamepad1.right_stick_y);
+
+            if (robot.gamepad1.right_bumper) {
+                strafe(0.75);
+            }
+            if (robot.gamepad1.left_bumper) {
+                strafe(-0.75);
+            }
         }
         else {
             robot.telemetry.addData("Error", "Incorrect input");
