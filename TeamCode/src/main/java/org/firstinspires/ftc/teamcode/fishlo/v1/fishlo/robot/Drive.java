@@ -64,9 +64,22 @@ public class Drive extends SubSystem {
             reverse = true;
         }
 
-        drive(driveSpeed, driveSpeed);
-        strafe(strafeSpeed);
-        drive(turnSpeed, -turnSpeed);
+        if (robot.gamepad1.dpad_up) {
+            runDrive("old", driveSpeed, strafeSpeed, turnSpeed);
+        }
+        else if (robot.gamepad1.dpad_down) {
+            runDrive("field", driveSpeed, strafeSpeed, turnSpeed);
+        }
+        else if (robot.gamepad1.dpad_right){
+            runDrive("arcade", driveSpeed, strafeSpeed, turnSpeed);
+        }
+        else {
+            runDrive("old", driveSpeed, strafeSpeed, turnSpeed);
+        }
+
+//        drive(driveSpeed, driveSpeed);
+//        strafe(strafeSpeed);
+//        drive(turnSpeed, -turnSpeed);
 //        if (robot.gamepad1.dpad_up && !FieldOriented) {
 //            runDrive("arcade", driveSpeed, strafeSpeed, turnSpeed);
 //        }
@@ -105,6 +118,10 @@ public class Drive extends SubSystem {
             drive(driveSpeed, driveSpeed);
             strafe(strafeSpeed);
             drive(turnSpeed, -turnSpeed);
+        }
+        else if (drive.equalsIgnoreCase("old")) {
+            left(robot.gamepad1.left_stick_y);
+            right(robot.gamepad1.right_stick_y);
         }
         else {
             robot.telemetry.addData("Error", "Incorrect input");
