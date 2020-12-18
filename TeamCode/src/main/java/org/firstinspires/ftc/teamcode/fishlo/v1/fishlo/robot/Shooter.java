@@ -14,7 +14,7 @@ public class Shooter extends SubSystem {
 
     public static final double PUSHER_HOME = 1;
     public static final double PUSHER_MAX = 0.85;
-    public static final double SHOOTER_SPEED = 0.69;
+    public static final double SHOOTER_SPEED = 0.5;
     boolean shooter_started = false;
 
 
@@ -26,6 +26,7 @@ public class Shooter extends SubSystem {
     public void init() {
         shooter = robot.hardwareMap.dcMotor.get("shooter");
         pusher = robot.hardwareMap.servo.get("pusher");
+        shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     @Override
