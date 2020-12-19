@@ -87,13 +87,14 @@ public class AutoWobbleBoth extends FishloAutonomousProgram {
 
             drive.strafeToPosition(-57, ROBOT_SPEED);
 
-            drive.moveToPosition(-58, ROBOT_SPEED);
+            drive.moveToPosition(-62, ROBOT_SPEED);
 
             claw.armDown();
             sleep(100);
 
-            drive.strafeToPosition(10, ROBOT_SPEED);
+            drive.strafeToPosition(8, ROBOT_SPEED);
 
+            sleep(20);
             claw.close();
             sleep(100);
 
@@ -117,6 +118,7 @@ public class AutoWobbleBoth extends FishloAutonomousProgram {
             sleep(1000);
             drive.turnWithEncoder(1900, ROBOT_SPEED);
             drive.moveToPosition(10, ROBOT_SPEED);
+            sleep(20);
             shooter.shoot();
             sleep(500);
             shooter.resetPusher();
@@ -169,17 +171,18 @@ public class AutoWobbleBoth extends FishloAutonomousProgram {
             telemetry.update();
 
 
-            drive.strafeToPosition(-32, ROBOT_SPEED);
+            drive.strafeToPosition(-40, 0.6);
 
             drive.moveToPosition(-85, ROBOT_SPEED);
 
             claw.armDown();
             sleep(100);
 
-            drive.strafeToPosition(13, ROBOT_SPEED);
+            drive.strafeToPosition(19, ROBOT_SPEED);
 
+            sleep(200);
             claw.close();
-            sleep(100);
+            sleep(400);
 
             claw.armUp();
 
@@ -195,18 +198,15 @@ public class AutoWobbleBoth extends FishloAutonomousProgram {
             claw.armUp();
             shooter.startShooter();
 
-
-
             drive.strafeToPosition(-5, ROBOT_SPEED);
 
-            drive.turnWithEncoder(1900, ROBOT_SPEED);
-            drive.moveToPosition(40, ROBOT_SPEED);
+            drive.turnWithEncoder(1300, ROBOT_SPEED);
             shooter.shoot();
             sleep(500);
             shooter.resetPusher();
             sleep(800);
             if (timer.seconds() > PARK_TIME) {
-                drive.moveToPosition(-10, 1);
+//                drive.moveToPosition(-10, 1);
                 shooter.stopShooter();
             }
             shooter.shoot();
@@ -214,7 +214,7 @@ public class AutoWobbleBoth extends FishloAutonomousProgram {
             shooter.resetPusher();
             sleep(800);
             if (timer.seconds() > PARK_TIME) {
-                drive.moveToPosition(-10, 1);
+//                drive.moveToPosition(-10, 1);
                 shooter.stopShooter();
             }
             shooter.shoot();
@@ -234,7 +234,7 @@ public class AutoWobbleBoth extends FishloAutonomousProgram {
             telemetry.addData("Main", "Driving - P: 55 in, S: 0.5");
             telemetry.update();
             //Drives to position (68 inches forward at 0.5 power)
-            drive.moveToPosition(98, 1);
+            drive.moveToPosition(110, 1);
 
             drive.strafeToPosition(-10, 1);
 
@@ -252,12 +252,12 @@ public class AutoWobbleBoth extends FishloAutonomousProgram {
 
             drive.strafeToPosition(-57, 1);
 
-            drive.moveToPosition(-83, 1);
+            drive.moveToPosition(-100, 1);
 
             claw.armDown();
             sleep(100);
 
-            drive.strafeToPosition(8, 1);
+            drive.strafeToPosition(12, 1);
 
 
 
@@ -269,7 +269,7 @@ public class AutoWobbleBoth extends FishloAutonomousProgram {
             claw.armUp();
             sleep(100);
 
-            drive.moveToPosition(83, 1);
+            drive.moveToPosition(100, 1);
 
             drive.strafeToPosition(34, 1);
 

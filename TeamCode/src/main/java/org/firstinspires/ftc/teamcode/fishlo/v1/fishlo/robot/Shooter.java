@@ -14,7 +14,7 @@ public class Shooter extends SubSystem {
 
     public static final double PUSHER_HOME = 1;
     public static final double PUSHER_MAX = 0.85;
-    public static final double SHOOTER_SPEED = 0.71;
+    public static double SHOOTER_SPEED = 0.71;
     boolean shooter_started = false;
 
 
@@ -31,6 +31,7 @@ public class Shooter extends SubSystem {
 
     @Override
     public void handle() {
+        SHOOTER_SPEED = 0.8;
         if (robot.gamepad2.right_bumper){
             startShooter();
         }

@@ -27,6 +27,7 @@ public class Drive extends SubSystem {
         FIELD,
         ARCADE
     }
+    DriveControls driveType = DriveControls.ARCADE;
 
     boolean exit = false;
     
@@ -47,6 +48,7 @@ public class Drive extends SubSystem {
 
         drive(0, 0);
 
+
         gyro.initGyro();
     }
 
@@ -58,7 +60,7 @@ public class Drive extends SubSystem {
         double rightY = robot.gamepad1.right_stick_y;
         double turnSpeed = 0;
         double strafeSpeed = robot.gamepad1.left_stick_x;
-        DriveControls driveType = DriveControls.ARCADE;
+
 
         if (Math.abs(robot.gamepad1.right_stick_x) > 0.1) {
             turnSpeed = robot.gamepad1.right_stick_x;
@@ -72,19 +74,17 @@ public class Drive extends SubSystem {
         }
 
         if (robot.gamepad1.dpad_up) {
-            runDrive(DriveControls.ARCADE, driveSpeed, strafeSpeed, turnSpeed, rightY, -driveSpeed);
+            driveType = DriveControls.ARCADE;
         }
         else if (robot.gamepad1.dpad_down) {
             gyro.resetHeading();
-            runDrive(DriveControls.FIELD, driveSpeed, strafeSpeed, turnSpeed, rightY, -driveSpeed);
+            driveType = DriveControls.FIELD;
         }
         else if (robot.gamepad1.dpad_right) {
-            runDrive(DriveControls.OLD, driveSpeed, strafeSpeed, turnSpeed, rightY, -driveSpeed);
-        }
-        else {
-            runDrive(DriveControls.ARCADE, driveSpeed, strafeSpeed, turnSpeed, rightY, -driveSpeed);
+            driveType = DriveControls.OLD;
         }
 
+        runDrive(driveType, driveSpeed, strafeSpeed, turnSpeed, rightY, -driveSpeed);
 
         robot.telemetry.addData("Drive - Dat - Drive Speed", driveSpeed);
         robot.telemetry.addData("Drive - Dat - Turn Speed", turnSpeed);
@@ -100,46 +100,39 @@ public class Drive extends SubSystem {
     }
 
     public void runDrive(DriveControls driveType, double driveSpeed, double strafeSpeed, double turnSpeed, double rightY, double leftY) {
-        switch (driveType) {
-            case ARCADE:
-                drive(driveSpeed, driveSpeed);
-                strafe(strafeSpeed);
-                drive(turnSpeed, -turnSpeed);
+        if (driveType == DriveControls.ARCADE) {
+            drive(driveSpeed, driveSpeed);
+            strafe(strafeSpeed);
+            drive(turnSpeed, -turnSpeed);
 
-                if (robot.gamepad1.dpad_down || robot.gamepad1.dpad_right) {
-                    break;
-                }
-
-            case FIELD:
-                double gyroDegrees = gyro.getHeading() + 90;
-                double gyroRadians = gyroDegrees * Math.PI/180;
-                double temp = driveSpeed * Math.cos(gyroRadians) + strafeSpeed * Math.sin(gyroRadians);
-                strafeSpeed = -driveSpeed * Math.sin(gyroRadians) + strafeSpeed * Math.cos(gyroRadians);
-                driveSpeed = temp;
-
-                drive(driveSpeed, driveSpeed);
-                strafe(strafeSpeed);
-                drive(turnSpeed, -turnSpeed);
-
-                if (robot.gamepad1.dpad_right || robot.gamepad1.dpad_up) {
-                    break;
-                }
-            case OLD:
-                    left(leftY);
-                    right(rightY);
-
-                    if (robot.gamepad1.right_bumper) {
-                        strafe(0.75);
-                    }
-                    if (robot.gamepad1.left_bumper) {
-                        strafe(-0.75);
-                    }
-
-                    if (robot.gamepad1.dpad_down || robot.gamepad1.dpad_up) {
-                        break;
-                    }
-            }
         }
+
+        if (driveType == DriveControls.FIELD) {
+            double gyroDegrees = gyro.getHeading() + 90;
+            double gyroRadians = gyroDegrees * Math.PI / 180;
+            double temp = driveSpeed * Math.cos(gyroRadians) + strafeSpeed * Math.sin(gyroRadians);
+            strafeSpeed = -driveSpeed * Math.sin(gyroRadians) + strafeSpeed * Math.cos(gyroRadians);
+            driveSpeed = temp;
+
+            drive(driveSpeed, driveSpeed);
+            strafe(strafeSpeed);
+            drive(turnSpeed, -turnSpeed);
+
+        }
+        if (driveType == DriveControls.OLD) {
+            left(-leftY);
+            right(-rightY);
+
+            if (robot.gamepad1.right_bumper) {
+                strafe(0.75);
+            }
+            if (robot.gamepad1.left_bumper) {
+                strafe(-0.75);
+            }
+
+
+        }
+    }
 
     private void left(double power) {
         try {
