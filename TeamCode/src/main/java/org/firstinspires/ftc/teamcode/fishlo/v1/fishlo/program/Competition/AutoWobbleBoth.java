@@ -33,6 +33,7 @@ public class AutoWobbleBoth extends FishloAutonomousProgram {
     public void preMain() {
         //Initialize the imu
         gyro.initGyro();
+        vuforia.init();
         shooter.resetPusher();
         timer = new ElapsedTime();
 
@@ -52,7 +53,7 @@ public class AutoWobbleBoth extends FishloAutonomousProgram {
         telemetry.update();
         while (!isStarted()) {
 
-            targetZone = vision.getTargetZone();
+            targetZone = vuforia.getTargetZone();
 
         }
 
