@@ -22,6 +22,13 @@ public class Drive extends SubSystem {
     double strafeBias = 0.9;
     double conversion = cpi * bias;
 
+    private enum DriveControls {
+        OLD,
+        FIELD,
+        ARCADE
+    }
+    DriveControls driveType = DriveControls.ARCADE;
+
     boolean exit = false;
     
     public Drive(Robot robot) {
@@ -41,17 +48,19 @@ public class Drive extends SubSystem {
 
         drive(0, 0);
 
+
         gyro.initGyro();
     }
 
     boolean reverse = false;
-    boolean FieldOriented = false;
 
     @Override
     public void handle() {
         double driveSpeed = -robot.gamepad1.left_stick_y;
+        double rightY = robot.gamepad1.right_stick_y;
         double turnSpeed = 0;
         double strafeSpeed = robot.gamepad1.left_stick_x;
+
 
         if (Math.abs(robot.gamepad1.right_stick_x) > 0.1) {
             turnSpeed = robot.gamepad1.right_stick_x;
@@ -64,14 +73,18 @@ public class Drive extends SubSystem {
             reverse = true;
         }
 
-        if (robot.gamepad1.start && !FieldOriented) {
-            runDrive("arcade", driveSpeed, strafeSpeed, turnSpeed);
+        if (robot.gamepad1.dpad_up) {
+            driveType = DriveControls.ARCADE;
         }
-        if (robot.gamepad1.start && FieldOriented) {
+        else if (robot.gamepad1.dpad_down) {
             gyro.resetHeading();
-            runDrive("field", driveSpeed, strafeSpeed, turnSpeed);
+            driveType = DriveControls.FIELD;
+        }
+        else if (robot.gamepad1.dpad_right) {
+            driveType = DriveControls.OLD;
         }
 
+        runDrive(driveType, driveSpeed, strafeSpeed, turnSpeed, rightY, -driveSpeed);
 
         robot.telemetry.addData("Drive - Dat - Drive Speed", driveSpeed);
         robot.telemetry.addData("Drive - Dat - Turn Speed", turnSpeed);
@@ -86,15 +99,17 @@ public class Drive extends SubSystem {
         robot.telemetry.update();
     }
 
-    public void runDrive(String drive, double driveSpeed, double strafeSpeed, double turnSpeed) {
-        if (drive.equalsIgnoreCase("arcade")) {
+    public void runDrive(DriveControls driveType, double driveSpeed, double strafeSpeed, double turnSpeed, double rightY, double leftY) {
+        if (driveType == DriveControls.ARCADE) {
             drive(driveSpeed, driveSpeed);
             strafe(strafeSpeed);
             drive(turnSpeed, -turnSpeed);
+
         }
-        else if (drive.equalsIgnoreCase("field")) {
+
+        if (driveType == DriveControls.FIELD) {
             double gyroDegrees = gyro.getHeading() + 90;
-            double gyroRadians = gyroDegrees * Math.PI/180;
+            double gyroRadians = gyroDegrees * Math.PI / 180;
             double temp = driveSpeed * Math.cos(gyroRadians) + strafeSpeed * Math.sin(gyroRadians);
             strafeSpeed = -driveSpeed * Math.sin(gyroRadians) + strafeSpeed * Math.cos(gyroRadians);
             driveSpeed = temp;
@@ -102,9 +117,20 @@ public class Drive extends SubSystem {
             drive(driveSpeed, driveSpeed);
             strafe(strafeSpeed);
             drive(turnSpeed, -turnSpeed);
+
         }
-        else {
-            robot.telemetry.addData("Error", "Incorrect input");
+        if (driveType == DriveControls.OLD) {
+            left(-leftY);
+            right(-rightY);
+
+            if (robot.gamepad1.right_bumper) {
+                strafe(0.75);
+            }
+            if (robot.gamepad1.left_bumper) {
+                strafe(-0.75);
+            }
+
+
         }
     }
 
@@ -198,6 +224,30 @@ public class Drive extends SubSystem {
         return;
     }
 
+    public void turnWithEncoder(int move, double speed) {
+
+        encoderReset();
+
+        frontLeft.setTargetPosition(frontLeft.getCurrentPosition() - move);
+        backLeft.setTargetPosition(backLeft.getCurrentPosition() - move);
+        frontRight.setTargetPosition(frontRight.getCurrentPosition() + move);
+        backRight.setTargetPosition(backRight.getCurrentPosition() + move);
+
+        frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        drive(speed, speed);
+
+        while (frontLeft.isBusy() || frontRight.isBusy() || backLeft.isBusy() || backRight.isBusy()) {}
+        stop();
+        encoderReset();
+        return;
+    }
+
+
+
     public void stop() {
         drive(0, 0);
     }
@@ -216,11 +266,7 @@ public class Drive extends SubSystem {
         backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
-/*
-    public int getEncoder() {
-        return backRight.getCurrentPosition() - base;
-    }
-*/
+
 
 
 

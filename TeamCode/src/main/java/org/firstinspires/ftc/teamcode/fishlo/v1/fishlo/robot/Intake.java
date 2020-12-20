@@ -9,8 +9,13 @@ import org.firstinspires.ftc.teamcode.robot.SubSystem;
 public class Intake extends SubSystem {
 
     private DcMotor intake;
+    private DcMotor transfer;
     boolean intake_on = false;
     ElapsedTime intake_timer = new ElapsedTime();
+    public static double INTAKE_SPEED = 0.5;
+    public static double TRANSFER_SPEED = 0.25;
+
+    int sum = 2;
 
     public Intake(Robot robot) {
         super(robot);
@@ -19,32 +24,53 @@ public class Intake extends SubSystem {
     @Override
     public void init() {
         intake = robot.hardwareMap.dcMotor.get("intake");
+        transfer = robot.hardwareMap.dcMotor.get("transfer");
     }
 
     @Override
     public void handle() {
-        if (robot.gamepad2.y && !intake_on && intake_timer.seconds() > 3) {
-            startIntake();
-            intake_on = true;
-            intake_timer.reset();
+        if (robot.gamepad2.y) {
+            sum ++;
         }
-        if (robot.gamepad2.y && intake_on && intake_timer.seconds() > 3) {
+
+        if (robot.gamepad2.right_trigger > 0.5) {
+            TRANSFER_SPEED = 0.75;
+        }
+        else {
+            TRANSFER_SPEED = 0.25;
+        }
+
+        if (robot.gamepad2.left_trigger > 0.5) {
+            INTAKE_SPEED = -1 * Math.abs(INTAKE_SPEED);
+            TRANSFER_SPEED = -1 * Math.abs(TRANSFER_SPEED);
+        }
+        else {
+            TRANSFER_SPEED = Math.abs(TRANSFER_SPEED);
+            INTAKE_SPEED = Math.abs(INTAKE_SPEED);
+        }
+
+        int remainder = sum % 2;
+
+        if (remainder == 1) {
+            startIntake();
+        }
+        else {
             stopIntake();
-            intake_on = false;
-            intake_timer.reset();
         }
     }
 
     public void startIntake() {
-        intake.setPower(1);
+        intake.setPower(INTAKE_SPEED);
+        transfer.setPower(TRANSFER_SPEED);
     }
 
     public void stopIntake() {
         intake.setPower(0);
+        transfer.setPower(0);
     }
 
     @Override
     public void stop() {
-        intake.setPower(0);
+        stopIntake();
     }
 }
