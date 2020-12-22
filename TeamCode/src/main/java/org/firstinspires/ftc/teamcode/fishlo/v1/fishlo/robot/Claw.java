@@ -8,7 +8,6 @@ import org.firstinspires.ftc.teamcode.robot.Robot;
 import org.firstinspires.ftc.teamcode.robot.SubSystem;
 
 public class Claw extends SubSystem {
-    //test
     private Servo claw;
     private DcMotor arm;
 
