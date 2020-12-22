@@ -1,171 +1,97 @@
 package org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.robot;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.EasyOpenCVExample;
 import org.firstinspires.ftc.teamcode.robot.Robot;
 import org.firstinspires.ftc.teamcode.robot.SubSystem;
-import org.opencv.core.Core;
-import org.opencv.core.Mat;
-import org.opencv.core.Point;
-import org.opencv.core.Rect;
-import org.opencv.core.Scalar;
-import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
-import org.openftc.easyopencv.OpenCvPipeline;
+
+import com.arcrobotics.ftclib.vision.InternalCameraExample;
+import com.arcrobotics.ftclib.vision.UGContourRingPipeline;
 
 public class Vision extends SubSystem {
-
-    OpenCvCamera webcam;
-    EasyOpenCVExample.SkystoneDeterminationPipeline pipeline;
-    char targetZone = 'X';
 
     public Vision(Robot robot) {
         super(robot);
     }
 
     @Override
-    public void init() {
-        int cameraMonitorViewId = robot.hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", robot.hardwareMap.appContext.getPackageName());
-        webcam = OpenCvCameraFactory.getInstance().createWebcam(robot.hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-        pipeline = new EasyOpenCVExample.SkystoneDeterminationPipeline();
-        webcam.setPipeline(pipeline);
-
-        webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
-            @Override
-            public void onOpened() {
-                webcam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
-            }
-        });
-    }
+    public void init() {}
 
     @Override
     public void handle() {}
 
     @Override
-    public void stop() {webcam.stopStreaming();}
+    public void stop() {}
 
-    public static class SkystoneDeterminationPipeline extends OpenCvPipeline
-    {
-        /*
-         * An enum to define the ring position
-         */
-        public enum RingPosition
-        {
-            FOUR,
-            ONE,
-            NONE
-        }
+    private static final int CAMERA_WIDTH = 320;
+    private static final int CAMERA_HEIGHT = 240;
 
-        /*
-         * Some color constants
-         */
-        static final Scalar BLUE = new Scalar(0, 0, 255);
-        static final Scalar GREEN = new Scalar(0, 255, 0);
+    private static final int HORIZON = 130;
 
-        /*
-         * The core values which define the location and size of the sample regions
-         */
-        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(100,100);
+    private static final boolean DEBUG = false;
 
-        static final int REGION_WIDTH = 35;
-        static final int REGION_HEIGHT = 25;
+    private static final boolean USING_WEBCAM = true;
+    private static final String WEBCAM_NAME = "Webcam 1";
 
-        final int FOUR_RING_THRESHOLD = 150;
-        final int ONE_RING_THRESHOLD = 135;
-
-        Point region1_pointA = new Point(
-                REGION1_TOPLEFT_ANCHOR_POINT.x,
-                REGION1_TOPLEFT_ANCHOR_POINT.y);
-        Point region1_pointB = new Point(
-                REGION1_TOPLEFT_ANCHOR_POINT.x + REGION_WIDTH,
-                REGION1_TOPLEFT_ANCHOR_POINT.y + REGION_HEIGHT);
-
-        /*
-         * Working variables
-         */
-        Mat region1_Cb;
-        Mat YCrCb = new Mat();
-        Mat Cb = new Mat();
-        int avg1;
-
-        // Volatile since accessed by OpMode thread w/o synchronization
-        public volatile EasyOpenCVExample.SkystoneDeterminationPipeline.RingPosition position = EasyOpenCVExample.SkystoneDeterminationPipeline.RingPosition.FOUR;
-
-        /*
-         * This function takes the RGB frame, converts to YCrCb,
-         * and extracts the Cb channel to the 'Cb' variable
-         */
-        void inputToCb(Mat input)
-        {
-            Imgproc.cvtColor(input, YCrCb, Imgproc.COLOR_RGB2YCrCb);
-            Core.extractChannel(YCrCb, Cb, 1);
-        }
-
-        @Override
-        public void init(Mat firstFrame)
-        {
-            inputToCb(firstFrame);
-
-            region1_Cb = Cb.submat(new Rect(region1_pointA, region1_pointB));
-        }
-
-        @Override
-        public Mat processFrame(Mat input)
-        {
-            inputToCb(input);
-
-            avg1 = (int) Core.mean(region1_Cb).val[0];
-
-            Imgproc.rectangle(
-                    input, // Buffer to draw on
-                    region1_pointA, // First point which defines the rectangle
-                    region1_pointB, // Second point which defines the rectangle
-                    BLUE, // The color the rectangle is drawn in
-                    2); // Thickness of the rectangle lines
-
-            if(avg1 > FOUR_RING_THRESHOLD){
-                position = EasyOpenCVExample.SkystoneDeterminationPipeline.RingPosition.FOUR;
-            }else if (avg1 > ONE_RING_THRESHOLD){
-                position = EasyOpenCVExample.SkystoneDeterminationPipeline.RingPosition.ONE;
-            }else{
-                position = EasyOpenCVExample.SkystoneDeterminationPipeline.RingPosition.NONE;
-            }
-
-            Imgproc.rectangle(
-                    input, // Buffer to draw on
-                    region1_pointA, // First point which defines the rectangle
-                    region1_pointB, // Second point which defines the rectangle
-                    GREEN, // The color the rectangle is drawn in
-                    -1); // Negative thickness means solid fill
-
-            return input;
-        }
-
-        public int getAnalysis()
-        {
-            return avg1;
-        }
+    public enum targetZone {
+        A,
+        B,
+        C,
+        X
     }
 
-    public char getTargetZone() {
+    private UGContourRingPipeline pipeline;
+    private OpenCvCamera camera;
 
-        robot.telemetry.addData("Analysis", pipeline.getAnalysis());
-        robot.telemetry.update();
+    public void initVision() {
+        int cameraMonitorViewId = this.robot.hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", robot.hardwareMap.appContext.getPackageName());
 
-        if (pipeline.position == EasyOpenCVExample.SkystoneDeterminationPipeline.RingPosition.NONE) {
-            targetZone = 'A';
+        if (USING_WEBCAM) {
+            camera = OpenCvCameraFactory.getInstance().createWebcam(robot.hardwareMap.get(WebcamName.class, WEBCAM_NAME), cameraMonitorViewId);
+        }
+        else {
+            camera = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
+        }
 
+        camera.setPipeline(pipeline = new UGContourRingPipeline(robot.telemetry, DEBUG));
+
+        UGContourRingPipeline.Config.setCAMERA_WIDTH(CAMERA_WIDTH);
+        UGContourRingPipeline.Config.setHORIZON(HORIZON);
+
+        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
+        {
+            @Override
+            public void onOpened()
+            {
+                camera.startStreaming(CAMERA_WIDTH,CAMERA_HEIGHT, OpenCvCameraRotation.UPRIGHT);
+            }
+        });
+    }
+
+    UGContourRingPipeline.Height height;
+
+    public targetZone getTargetZone() {
+
+        height = pipeline.getHeight();
+        targetZone targetZone = Vision.targetZone.X;
+
+        if (height == height.ONE) {
+            targetZone = Vision.targetZone.B;
         }
-        else if (pipeline.position == EasyOpenCVExample.SkystoneDeterminationPipeline.RingPosition.ONE) {
-            targetZone = 'B';
+        else if (height == height.FOUR) {
+            targetZone = Vision.targetZone.C;
         }
-        else if (pipeline.position == EasyOpenCVExample.SkystoneDeterminationPipeline.RingPosition.FOUR) {
-            targetZone = 'C';
+        else if (height == height.ZERO) {
+            targetZone = Vision.targetZone.A;
         }
+
         return targetZone;
     }
-}
 
+    public UGContourRingPipeline.Height getHeight() {
+        return height;
+    }
+}

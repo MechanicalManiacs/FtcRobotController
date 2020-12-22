@@ -1,16 +1,18 @@
 package org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.program.Competition;
 
+import com.arcrobotics.ftclib.vision.UGContourRingPipeline;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.program.FishloAutonomousProgram;
-import org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.robot.Utility.PID;
+import org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.robot.Vision;
 import org.firstinspires.ftc.teamcode.robot.Robot;
 
 @Autonomous
 public class AutoWobbleBoth extends FishloAutonomousProgram {
     //Create the variable targetZone to store the targetZone value from vision
-    protected char targetZone;
+    protected Vision.targetZone targetZone;
+    protected UGContourRingPipeline.Height height;
 
     //Create the variables for PID constants
     protected final double Kp = 0.1;
@@ -33,7 +35,7 @@ public class AutoWobbleBoth extends FishloAutonomousProgram {
     public void preMain() {
         //Initialize the imu
         gyro.initGyro();
-        vuforia.init();
+        vision.initVision();
         shooter.resetPusher();
         timer = new ElapsedTime();
 
@@ -53,7 +55,9 @@ public class AutoWobbleBoth extends FishloAutonomousProgram {
         telemetry.update();
         while (!isStarted()) {
 
-            targetZone = vuforia.getTargetZone();
+            targetZone = vision.getTargetZone();
+            telemetry.addData("TargetZone", targetZone);
+            telemetry.addData("Rings", vision.getHeight());
 
         }
 
@@ -66,7 +70,7 @@ public class AutoWobbleBoth extends FishloAutonomousProgram {
         timer.reset();
 
         //Move wobble goal to target zone A
-        if (targetZone == 'A') {
+        if (targetZone == Vision.targetZone.A) {
             telemetry.addData("Main", "Driving to Target Zone A");
             telemetry.update();
             //Status update: The robot is driving to the target zone
@@ -147,7 +151,7 @@ public class AutoWobbleBoth extends FishloAutonomousProgram {
 
         }
         //Move wobble goal to target zone B
-        else if (targetZone == 'B') {
+        else if (targetZone == Vision.targetZone.B) {
             telemetry.addData("Main", "Driving to Target Zone B");
             telemetry.update();
             //Status update: The robot is driving to the target zone
@@ -228,7 +232,7 @@ public class AutoWobbleBoth extends FishloAutonomousProgram {
             sleep(500);
         }
         //Move wobble goal to target zone C
-        else if (targetZone == 'C') {
+        else if (targetZone == Vision.targetZone.C) {
             telemetry.addData("Main", "Driving to Target Zone C");
             telemetry.update();
             //Status update: The robot is driving to the target zone
