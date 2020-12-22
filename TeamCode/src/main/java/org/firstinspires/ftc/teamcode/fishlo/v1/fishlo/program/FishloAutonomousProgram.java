@@ -21,7 +21,7 @@ public class FishloAutonomousProgram extends AutonomousProgram {
         gyro = (Gyro) fishlo.getSubSystem("Gyro");
         intake = (Intake) fishlo.getSubSystem("Intake");
         shooter = (Shooter) fishlo.getSubSystem("Shooter");
-        vision = (Vision) fishlo.getSubSystem("ContourTest");
+        vision = (Vision) fishlo.getSubSystem("Vision");
 
         return fishlo;
     }

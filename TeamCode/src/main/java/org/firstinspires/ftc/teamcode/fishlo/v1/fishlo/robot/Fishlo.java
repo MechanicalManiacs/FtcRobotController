@@ -15,7 +15,7 @@ public class Fishlo extends Robot {
         //putSubSystem("Vision", new Vision(this));
         putSubSystem("Shooter", new Shooter(this));
         putSubSystem("Intake", new Intake(this));
-        putSubSystem("ContourTest", new Vision(this));
+        putSubSystem("Vision", new Vision(this));
     }
 
 }
