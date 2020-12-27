@@ -8,12 +8,11 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 
-import com.arcrobotics.ftclib.vision.InternalCameraExample;
 import com.arcrobotics.ftclib.vision.UGContourRingPipeline;
 
-public class Vision extends SubSystem {
+public class OpenCV extends SubSystem {
 
-    public Vision(Robot robot) {
+    public OpenCV(Robot robot) {
         super(robot);
     }
 
@@ -25,6 +24,7 @@ public class Vision extends SubSystem {
 
     @Override
     public void stop() {}
+
 
     private static final int CAMERA_WIDTH = 320;
     private static final int CAMERA_HEIGHT = 240;
@@ -61,14 +61,7 @@ public class Vision extends SubSystem {
         UGContourRingPipeline.Config.setCAMERA_WIDTH(CAMERA_WIDTH);
         UGContourRingPipeline.Config.setHORIZON(HORIZON);
 
-        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
-        {
-            @Override
-            public void onOpened()
-            {
-                camera.startStreaming(CAMERA_WIDTH,CAMERA_HEIGHT, OpenCvCameraRotation.UPRIGHT);
-            }
-        });
+        camera.openCameraDeviceAsync(() -> camera.startStreaming(CAMERA_WIDTH,CAMERA_HEIGHT, OpenCvCameraRotation.UPRIGHT));
     }
 
     UGContourRingPipeline.Height height;
@@ -76,16 +69,16 @@ public class Vision extends SubSystem {
     public targetZone getTargetZone() {
 
         height = pipeline.getHeight();
-        targetZone targetZone = Vision.targetZone.X;
+        targetZone targetZone = OpenCV.targetZone.X;
 
         if (height == height.ONE) {
-            targetZone = Vision.targetZone.B;
+            targetZone = OpenCV.targetZone.B;
         }
         else if (height == height.FOUR) {
-            targetZone = Vision.targetZone.C;
+            targetZone = OpenCV.targetZone.C;
         }
         else if (height == height.ZERO) {
-            targetZone = Vision.targetZone.A;
+            targetZone = OpenCV.targetZone.A;
         }
 
         return targetZone;
@@ -94,4 +87,13 @@ public class Vision extends SubSystem {
     public UGContourRingPipeline.Height getHeight() {
         return height;
     }
+
+    public void stopStreaming() {
+        camera.stopStreaming();
+    }
+
+    public void stopAll() {
+        camera.closeCameraDeviceAsync(() -> camera.stopStreaming());
+    }
+
 }

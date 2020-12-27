@@ -5,13 +5,13 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.program.FishloAutonomousProgram;
-import org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.robot.Vision;
+import org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.robot.OpenCV;
 import org.firstinspires.ftc.teamcode.robot.Robot;
 
 @Autonomous
 public class AutoWobbleBoth extends FishloAutonomousProgram {
     //Create the variable targetZone to store the targetZone value from vision
-    protected Vision.targetZone targetZone;
+    protected OpenCV.targetZone targetZone;
     protected UGContourRingPipeline.Height height;
 
     //Create the variables for PID constants
@@ -35,9 +35,10 @@ public class AutoWobbleBoth extends FishloAutonomousProgram {
     public void preMain() {
         //Initialize the imu
         gyro.initGyro();
-        vision.initVision();
+        openCV.initVision();
         shooter.resetPusher();
         timer = new ElapsedTime();
+        vuforia.initVuforia();
 
         //Reset claw and arm to starting position
 //        claw.close();
@@ -55,22 +56,27 @@ public class AutoWobbleBoth extends FishloAutonomousProgram {
         telemetry.update();
         while (!isStarted()) {
 
-            targetZone = vision.getTargetZone();
+            targetZone = openCV.getTargetZone();
             telemetry.addData("TargetZone", targetZone);
-            telemetry.addData("Rings", vision.getHeight());
+            telemetry.addData("Rings", openCV.getHeight());
 
         }
-
-
     }
 
     //This method is for code that needs to run after start is pressed.
     @Override
     public void main() {
+        openCV.stopAll();
         timer.reset();
+        /**
+         * This is a placeholder for whatever we do with vuforia
+         */
+        while(!isStopRequested()) {
+            vuforia.turnToVumark("Red Alliance Target", 0.5);
+        }
 
         //Move wobble goal to target zone A
-        if (targetZone == Vision.targetZone.A) {
+        if (targetZone == OpenCV.targetZone.A) {
             telemetry.addData("Main", "Driving to Target Zone A");
             telemetry.update();
             //Status update: The robot is driving to the target zone
@@ -151,7 +157,7 @@ public class AutoWobbleBoth extends FishloAutonomousProgram {
 
         }
         //Move wobble goal to target zone B
-        else if (targetZone == Vision.targetZone.B) {
+        else if (targetZone == OpenCV.targetZone.B) {
             telemetry.addData("Main", "Driving to Target Zone B");
             telemetry.update();
             //Status update: The robot is driving to the target zone
@@ -232,7 +238,7 @@ public class AutoWobbleBoth extends FishloAutonomousProgram {
             sleep(500);
         }
         //Move wobble goal to target zone C
-        else if (targetZone == Vision.targetZone.C) {
+        else if (targetZone == OpenCV.targetZone.C) {
             telemetry.addData("Main", "Driving to Target Zone C");
             telemetry.update();
             //Status update: The robot is driving to the target zone
