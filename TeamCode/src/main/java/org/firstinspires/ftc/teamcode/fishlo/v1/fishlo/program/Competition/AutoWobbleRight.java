@@ -1,15 +1,18 @@
 package org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.program.Competition;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.program.FishloAutonomousProgram;
+import org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.robot.OpenCV;
 import org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.robot.Utility.PID;
 import org.firstinspires.ftc.teamcode.robot.Robot;
 
-@Autonomous 
+@Autonomous
+@Disabled
 public class AutoWobbleRight extends FishloAutonomousProgram {
     //Create the variable targetZone to store the targetZone value from vision
-    protected char targetZone;
+    protected OpenCV.targetZone targetZone;
 
     //Create the variables for PID constants
     protected final double Kp = 0.1;
@@ -49,7 +52,7 @@ public class AutoWobbleRight extends FishloAutonomousProgram {
         telemetry.update();
         while (!isStarted()) {
 
-            targetZone = vision.getTargetZone();
+            targetZone = openCV.getTargetZone();
 
         }
 
@@ -62,7 +65,7 @@ public class AutoWobbleRight extends FishloAutonomousProgram {
     public void main() {
 
         //Move wobble goal to target zone A
-        if (targetZone == 'A') {
+        if (targetZone == OpenCV.targetZone.A) {
             telemetry.addData("Main", "Driving to Target Zone A");
             telemetry.update();
             //Status update: The robot is driving to the target zone
@@ -80,7 +83,7 @@ public class AutoWobbleRight extends FishloAutonomousProgram {
 
         }
         //Move wobble goal to target zone B
-        else if (targetZone == 'B') {
+        else if (targetZone == OpenCV.targetZone.B) {
             telemetry.addData("Main", "Driving to Target Zone B");
             telemetry.update();
             drive.moveToPosition(95,0.5);
@@ -91,7 +94,7 @@ public class AutoWobbleRight extends FishloAutonomousProgram {
             drive.moveToPosition(-15, 0.3);
         }
         //Move wobble goal to target zone C
-        else if (targetZone == 'C') {
+        else if (targetZone == OpenCV.targetZone.C) {
             telemetry.addData("Main", "Driving to Target Zone C");
             telemetry.update();
             //Status update: The robot is driving to the target zone
