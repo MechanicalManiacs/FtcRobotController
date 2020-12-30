@@ -25,8 +25,8 @@ public class Drive extends SubSystem {
     double bias = 0.955;
     double strafeBias = 0.9;
     double conversion = cpi * bias;
-    int START_X = 0;
-    int START_Y = 0;
+    int START_X = -72;
+    int START_Y = -50;
 
     Pose2d startPose = new Pose2d(START_X, START_Y, 0);
 
