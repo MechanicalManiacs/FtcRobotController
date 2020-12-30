@@ -1,13 +1,17 @@
 package org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.robot;
 
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.robot.Robot;
 import org.firstinspires.ftc.teamcode.robot.SubSystem;
-import org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.robot.Gyro;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class Drive extends SubSystem {
+
+    SampleMecanumDrive mecanumDrive = new SampleMecanumDrive(robot.hardwareMap);
 
     Gyro gyro = new Gyro(robot);
     ElapsedTime teleop_timer = new ElapsedTime();
@@ -21,6 +25,10 @@ public class Drive extends SubSystem {
     double bias = 0.955;
     double strafeBias = 0.9;
     double conversion = cpi * bias;
+    int START_X = 0;
+    int START_Y = 0;
+
+    Pose2d startPose = new Pose2d(START_X, START_Y, 0);
 
     private enum DriveControls {
         OLD,
@@ -48,6 +56,7 @@ public class Drive extends SubSystem {
 
         drive(0, 0);
 
+        mecanumDrive.setPoseEstimate(startPose);
 
         gyro.initGyro();
     }
@@ -101,33 +110,62 @@ public class Drive extends SubSystem {
 
     public void runDrive(DriveControls driveType, double driveSpeed, double strafeSpeed, double turnSpeed, double rightY, double leftY) {
         if (driveType == DriveControls.ARCADE) {
-            drive(driveSpeed, driveSpeed);
-            strafe(strafeSpeed);
-            drive(turnSpeed, -turnSpeed);
-
+            mecanumDrive.setWeightedDrivePower(
+                new Pose2d(
+                   driveSpeed,
+                   -strafeSpeed,
+                   -turnSpeed
+                )
+            );
         }
 
         if (driveType == DriveControls.FIELD) {
-            double gyroDegrees = gyro.getHeading() + 90;
-            double gyroRadians = gyroDegrees * Math.PI / 180;
-            double temp = driveSpeed * Math.cos(gyroRadians) + strafeSpeed * Math.sin(gyroRadians);
-            strafeSpeed = -driveSpeed * Math.sin(gyroRadians) + strafeSpeed * Math.cos(gyroRadians);
-            driveSpeed = temp;
+            // Read pose
+            Pose2d poseEstimate = mecanumDrive.getPoseEstimate();
 
-            drive(driveSpeed, driveSpeed);
-            strafe(strafeSpeed);
-            drive(turnSpeed, -turnSpeed);
+            // Create a vector from the gamepad x/y inputs
+            // Then, rotate that vector by the inverse of that heading
+            Vector2d input = new Vector2d(
+                    driveSpeed,
+                    -strafeSpeed
+            ).rotated(-poseEstimate.getHeading() + 90); //Change + to - if it doesnt work properly
 
+            // Pass in the rotated input + right stick value for rotation
+            // Rotation is not part of the rotated input thus must be passed in separately
+            mecanumDrive.setWeightedDrivePower(
+                    new Pose2d(
+                            input.getX(),
+                            input.getY(),
+                            -turnSpeed
+                    )
+            );
         }
         if (driveType == DriveControls.OLD) {
             left(-leftY);
             right(-rightY);
 
             if (robot.gamepad1.right_bumper) {
-                strafe(0.75);
+                if (robot.gamepad1.right_trigger < 0.5) {
+                    strafe(0.5);
+                }
+                else if (robot.gamepad1.left_trigger < 0.5) {
+                    strafe(0.3);
+                }
+                else {
+                    strafe(0.75);
+                }
             }
+
             if (robot.gamepad1.left_bumper) {
-                strafe(-0.75);
+                if (robot.gamepad1.right_trigger < 0.5) {
+                    strafe(-0.5);
+                }
+                else if (robot.gamepad1.left_trigger < 0.5) {
+                    strafe(-0.3);
+                }
+                else {
+                    strafe(-0.75);
+                }
             }
 
 
