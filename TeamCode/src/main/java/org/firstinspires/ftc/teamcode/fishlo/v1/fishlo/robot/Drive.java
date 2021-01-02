@@ -31,11 +31,12 @@ public class Drive extends SubSystem {
     Pose2d startPose = new Pose2d(START_X, START_Y, 0);
 
     private enum DriveControls {
-        OLD,
+        TANK,
         FIELD,
         ARCADE
     }
     DriveControls driveType = DriveControls.ARCADE;
+    String driveMode = "Arcade";
 
     boolean exit = false;
     
@@ -84,17 +85,21 @@ public class Drive extends SubSystem {
 
         if (robot.gamepad1.dpad_up) {
             driveType = DriveControls.ARCADE;
+            driveMode = "Arcade";
         }
         else if (robot.gamepad1.dpad_down) {
             gyro.resetHeading();
             driveType = DriveControls.FIELD;
+            driveMode = "Field";
         }
         else if (robot.gamepad1.dpad_right) {
-            driveType = DriveControls.OLD;
+            driveType = DriveControls.TANK;
+            driveMode = "Tank";
         }
 
         runDrive(driveType, driveSpeed, strafeSpeed, turnSpeed, rightY, -driveSpeed);
 
+        robot.telemetry.addData("Drive - Dat - Drive Controls", driveMode);
         robot.telemetry.addData("Drive - Dat - Drive Speed", driveSpeed);
         robot.telemetry.addData("Drive - Dat - Turn Speed", turnSpeed);
         robot.telemetry.addData("Drive - Dat - GamepadX", robot.gamepad1.left_stick_x);
@@ -140,7 +145,7 @@ public class Drive extends SubSystem {
                     )
             );
         }
-        if (driveType == DriveControls.OLD) {
+        if (driveType == DriveControls.TANK) {
             left(-leftY);
             right(-rightY);
 
@@ -302,6 +307,23 @@ public class Drive extends SubSystem {
         backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    }
+
+    /**
+     * tests
+     */
+
+    public void testFrontLeft() {
+        frontLeft.setPower(1);
+    }
+    public void testFrontRight() {
+        frontRight.setPower(1);
+    }
+    public void testBackLeft() {
+        backLeft.setPower(1);
+    }
+    public void testBackRight() {
+        backRight.setPower(1);
     }
 
 

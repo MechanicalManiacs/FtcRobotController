@@ -23,13 +23,20 @@ public class RoadRunnerTestAuto extends FishloAutonomousProgram {
     @Override
     public void preMain() {
         telemetry.addLine("Ready");
+        Pose2d startPose = new Pose2d(-54, -54);
+        mecanumDrive.setPoseEstimate(startPose);
     }
 
     @Override
     public void main() {
-        Trajectory trajectory = mecanumDrive.trajectoryBuilder(new Pose2d())
+        Trajectory traj1 = mecanumDrive.trajectoryBuilder(new Pose2d())
             .lineToLinearHeading(new Pose2d(-54, -54, Math.toRadians(90)))
             .build();
-        mecanumDrive.followTrajectory(trajectory);
+        mecanumDrive.followTrajectory(traj1);
+
+        Trajectory traj2 = mecanumDrive.trajectoryBuilder(traj1.end())
+            .forward(100)
+            .build();
+        mecanumDrive.followTrajectory(traj2);
     }
 }
