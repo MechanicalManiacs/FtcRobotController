@@ -242,7 +242,7 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
     public Vector2d rotate(Vector2d point) {
         double x = point.getX();
         double y = point.getY();
-        Vector2d rotatedPoint = new Vector2d(-y, x);
+        Vector2d rotatedPoint = new Vector2d(y, -x);
         return rotatedPoint;
     }
 }
