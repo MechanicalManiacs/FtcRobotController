@@ -48,6 +48,10 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
     public void main() {
         openCV.stopAll();
 
+        /**
+         * Initialize Trajectories
+         */
+
         //First Trajectory - Move to Target Zone
         Trajectory targetZoneATraj1 = mecanumDrive.trajectoryBuilder(startPose)
             .splineTo(new Vector2d(6, -54), Math.toRadians(0))
@@ -129,6 +133,10 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
         Trajectory targetZoneCTraj5 = mecanumDrive.trajectoryBuilder(targetZoneCTraj4.end())
                 .splineTo(new Vector2d(30, -42), Math.toRadians(0))
                 .build();
+
+        /**
+         * Follow the appropriate trajectories
+         */
 
         if (targetZone == OpenCV.targetZone.A) {
             //Move to Target Zone A

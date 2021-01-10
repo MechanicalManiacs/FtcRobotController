@@ -1,14 +1,13 @@
 package org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.program.Competition;
 
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
 import org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.program.FishloAutonomousProgram;
 import org.firstinspires.ftc.teamcode.robot.Robot;
 
+@TeleOp
 public class WheelTests extends FishloAutonomousProgram {
 
-    boolean a = gamepad1.a;
-    boolean b = gamepad1.b;
-    boolean x = gamepad1.x;
-    boolean y = gamepad1.y;
 
     @Override
     protected Robot buildRobot() {
@@ -25,22 +24,22 @@ public class WheelTests extends FishloAutonomousProgram {
     @Override
     public void main() {
         while (opModeIsActive()) {
-            if (a) {
+            if (gamepad1.a) {
                 drive.testFrontRight();
                 telemetry.addData("Status", "Testing frontRight");
                 telemetry.update();
             }
-            else if (b) {
+            else if (gamepad1.b) {
                 drive.testFrontLeft();
                 telemetry.addData("Status", "Testing frontLeft");
                 telemetry.update();
             }
-            else if (x) {
+            else if (gamepad1.x) {
                 drive.testBackLeft();
                 telemetry.addData("Status", "Testing backLeft");
                 telemetry.update();
             }
-            else if (y) {
+            else if (gamepad1.y) {
                 drive.testBackRight();
                 telemetry.addData("Status", "Testing backRight");
                 telemetry.update();
