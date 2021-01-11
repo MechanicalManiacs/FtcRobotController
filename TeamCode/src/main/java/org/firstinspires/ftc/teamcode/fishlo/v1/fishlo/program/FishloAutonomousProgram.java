@@ -11,7 +11,6 @@ public class FishloAutonomousProgram extends AutonomousProgram {
     protected Intake intake;
     protected Shooter shooter;
     protected OpenCV openCV;
-    protected Vuforia vuforia;
 
     @Override
     protected Robot buildRobot() {
@@ -23,7 +22,6 @@ public class FishloAutonomousProgram extends AutonomousProgram {
         intake = (Intake) fishlo.getSubSystem("Intake");
         shooter = (Shooter) fishlo.getSubSystem("Shooter");
         openCV = (OpenCV) fishlo.getSubSystem("OpenCV");
-        vuforia = (Vuforia) fishlo.getSubSystem("Vuforia");
 
         return fishlo;
     }
