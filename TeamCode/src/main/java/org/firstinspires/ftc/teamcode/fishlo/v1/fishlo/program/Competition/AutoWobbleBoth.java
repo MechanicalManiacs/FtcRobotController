@@ -38,7 +38,6 @@ public class AutoWobbleBoth extends FishloAutonomousProgram {
         openCV.initVision();
         shooter.resetPusher();
         timer = new ElapsedTime();
-        vuforia.initVuforia();
 
         //Reset claw and arm to starting position
 //        claw.close();
@@ -68,12 +67,6 @@ public class AutoWobbleBoth extends FishloAutonomousProgram {
     public void main() {
         openCV.stopAll();
         timer.reset();
-        /**
-         * This is a placeholder for whatever we do with vuforia
-         */
-        while(!isStopRequested()) {
-            vuforia.turnToVumark("Red Alliance Target", 0.5);
-        }
 
         //Move wobble goal to target zone A
         if (targetZone == OpenCV.targetZone.A) {
