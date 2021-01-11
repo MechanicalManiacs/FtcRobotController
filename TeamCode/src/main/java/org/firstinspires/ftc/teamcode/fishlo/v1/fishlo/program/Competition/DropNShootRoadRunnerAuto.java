@@ -20,6 +20,7 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
 
     SampleMecanumDrive mecanumDrive = new SampleMecanumDrive(hardwareMap);
     Pose2d startPose;
+    public static Pose2d endPose;
     protected OpenCV.targetZone targetZone;
 
     @Override
@@ -217,6 +218,8 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
 
             mecanumDrive.followTrajectory(targetZoneCTraj5);
         }
+
+        endPose = mecanumDrive.getPoseEstimate();
 
     }
 

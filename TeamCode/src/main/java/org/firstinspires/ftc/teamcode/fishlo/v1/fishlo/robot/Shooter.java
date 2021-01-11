@@ -1,9 +1,11 @@
 package org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.robot;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.program.Competition.DropNShootRoadRunnerAuto;
 import org.firstinspires.ftc.teamcode.robot.Robot;
 import org.firstinspires.ftc.teamcode.robot.SubSystem;
 
@@ -14,8 +16,10 @@ public class Shooter extends SubSystem {
 
     public static final double PUSHER_HOME = 1;
     public static final double PUSHER_MAX = 0.85;
-    public static double SHOOTER_SPEED = 0.71;
+    public static double SHOOTER_CONSTANT = 0.71;
+    double shooter_speed;
     boolean shooter_started = false;
+    SampleMecanumDrive drive = new SampleMecanumDrive(robot.hardwareMap);
 
 
     public Shooter(Robot robot) {
@@ -27,11 +31,22 @@ public class Shooter extends SubSystem {
         shooter = robot.hardwareMap.dcMotor.get("shooter");
         pusher = robot.hardwareMap.servo.get("pusher");
         shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+
+        drive.setPoseEstimate(DropNShootRoadRunnerAuto.endPose);
     }
 
     @Override
     public void handle() {
-        SHOOTER_SPEED = 0.8;
+        drive.update();
+        Pose2d drivePose = drive.getPoseEstimate();
+        Pose2d goalPose = new Pose2d(64, -36);
+
+        double goalDistance = Math.sqrt(Math.pow(drivePose.getX() - goalPose.getX(), 2) +
+                Math.pow(drivePose.getY() - goalPose.getY(), 2));
+
+
+        shooter_speed = SHOOTER_CONSTANT * goalDistance;
         if (robot.gamepad2.right_bumper){
             startShooter();
         }
@@ -57,7 +72,7 @@ public class Shooter extends SubSystem {
     }
 
     public void startShooter() {
-        shooter.setPower(SHOOTER_SPEED);
+        shooter.setPower(shooter_speed);
         shooter_started = true;
     }
 
