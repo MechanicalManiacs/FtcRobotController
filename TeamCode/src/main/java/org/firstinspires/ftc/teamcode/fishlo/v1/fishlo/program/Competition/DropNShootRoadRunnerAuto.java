@@ -31,7 +31,7 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
     @Override
     public void preMain() {
         telemetry.addLine("Ready");
-        startPose = new Pose2d(-54 -54);
+        startPose = new Pose2d(-63 -49);
         mecanumDrive.setPoseEstimate(startPose);
         openCV.initVision();
 
@@ -52,38 +52,37 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
          * Initialize Trajectories
          */
 
+        // -9, -3
         //First Trajectory - Move to Target Zone
-        Trajectory targetZoneATraj1 = mecanumDrive.trajectoryBuilder(startPose)
-            .splineTo(new Vector2d(6, -54), Math.toRadians(0))
-            .splineTo(new Vector2d(30, -42), Math.toRadians(0))
+        Trajectory targetZoneATraj1 = mecanumDrive.trajectoryBuilder(startPose, true)
+            .splineToConstantHeading(new Vector2d(-20, -49), Math.toRadians(0))
+            .splineToConstantHeading(new Vector2d(12, -40), Math.toRadians(0))
             .build();
 
-        Trajectory targetZoneBTraj1 = mecanumDrive.trajectoryBuilder(startPose)
-                .splineTo(new Vector2d(6, -54), Math.toRadians(0))
-                .splineTo(new Vector2d(54, -18), Math.toRadians(0))
+        Trajectory targetZoneBTraj1 = mecanumDrive.trajectoryBuilder(startPose, true)
+                .splineToConstantHeading(new Vector2d(-20, -49), Math.toRadians(0))
+                .splineToConstantHeading(new Vector2d(34, -14), Math.toRadians(0))
                 .build();
 
-        Trajectory targetZoneCTraj1 = mecanumDrive.trajectoryBuilder(startPose)
-                .splineTo(new Vector2d(6, -54), Math.toRadians(0))
-                .splineTo(new Vector2d(76, -42), Math.toRadians(0))
+        Trajectory targetZoneCTraj1 = mecanumDrive.trajectoryBuilder(startPose, true)
+                .splineToConstantHeading(new Vector2d(-20, -49), Math.toRadians(0))
+                .splineToConstantHeading(new Vector2d(57, -39), Math.toRadians(0))
                 .build();
 
 
 
-        //Second Trajectory - Move to second wobble goal
+        //Second Trajectory - Move to shooting position
         Trajectory targetZoneATraj2 = mecanumDrive.trajectoryBuilder(targetZoneATraj1.end(), true)
-                .splineTo(new Vector2d(6, -34), Math.toRadians(0))
-                .splineTo(new Vector2d(-6, -22), Math.toRadians(0))
+                .back(12)
                 .build();
 
         Trajectory targetZoneBTraj2 = mecanumDrive.trajectoryBuilder(targetZoneBTraj1.end(), true)
-                .splineTo(new Vector2d(6, -34), Math.toRadians(0))
-                .splineTo(new Vector2d(-6, -22), Math.toRadians(0))
+                .splineTo(new Vector2d(17, -14), Math.toRadians(0))
+                .splineTo(new Vector2d(0, -40), Math.toRadians(0))
                 .build();
 
         Trajectory targetZoneCTraj2 = mecanumDrive.trajectoryBuilder(targetZoneCTraj1.end(), true)
-                .splineTo(new Vector2d(6, -34), Math.toRadians(0))
-                .splineTo(new Vector2d(-6, -22), Math.toRadians(0))
+                .back(57)
                 .build();
 
 
