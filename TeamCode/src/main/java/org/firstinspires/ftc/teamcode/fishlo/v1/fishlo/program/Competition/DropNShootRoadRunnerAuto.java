@@ -87,50 +87,49 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
 
 
 
-        //Third Trajectory - Move back to target zone
+        //Third Trajectory - Move to second wobble goal
         Trajectory targetZoneATraj3 = mecanumDrive.trajectoryBuilder(targetZoneATraj2.end())
-                .splineTo(new Vector2d(6, -34), Math.toRadians(0))
-                .splineTo(new Vector2d(30, -42), Math.toRadians(0))
+                .splineTo(new Vector2d(-24, -5), Math.toRadians(0))
+                .splineTo(new Vector2d(-49, -5), Math.toRadians(0))
                 .build();
 
         Trajectory targetZoneBTraj3 = mecanumDrive.trajectoryBuilder(targetZoneBTraj2.end())
-                .splineTo(new Vector2d(6, -34), Math.toRadians(0))
-                .splineTo(new Vector2d(54, -18), Math.toRadians(0))
+                .splineTo(new Vector2d(-24, -5), Math.toRadians(0))
+                .splineTo(new Vector2d(-49, -5), Math.toRadians(0))
                 .build();
 
         Trajectory targetZoneCTraj3 = mecanumDrive.trajectoryBuilder(targetZoneCTraj2.end())
-                .splineTo(new Vector2d(6, -34), Math.toRadians(0))
-                .splineTo(new Vector2d(76, -42), Math.toRadians(0))
+                .splineTo(new Vector2d(-24, -5), Math.toRadians(0))
+                .splineTo(new Vector2d(-49, -5), Math.toRadians(0))
                 .build();
 
 
 
-        //Fourth Trajectory - Move to shooting point
+        //Fourth Trajectory - Move to target zone
         Trajectory targetZoneATraj4 = mecanumDrive.trajectoryBuilder(targetZoneATraj3.end())
-                .splineTo(new Vector2d(18, -42), Math.toRadians(0))
+                .splineTo(new Vector2d(-24, -5), Math.toRadians(0))
+                .splineToConstantHeading(new Vector2d(12, -40), Math.toRadians(0))
                 .build();
 
         Trajectory targetZoneBTraj4 = mecanumDrive.trajectoryBuilder(targetZoneBTraj3.end())
-                .splineTo(new Vector2d(42, -18), Math.toRadians(0))
-                .splineTo(new Vector2d(18, -42), Math.toRadians(0))
+                .splineTo(new Vector2d(-24, -5), Math.toRadians(0))
+                .splineToConstantHeading(new Vector2d(34, -14), Math.toRadians(0))
                 .build();
 
         Trajectory targetZoneCTraj4 = mecanumDrive.trajectoryBuilder(targetZoneCTraj3.end())
-                .splineTo(new Vector2d(18, -42), Math.toRadians(0))
+                .splineTo(new Vector2d(-24, -5), Math.toRadians(0))
+                .splineToConstantHeading(new Vector2d(57, -39), Math.toRadians(0))
                 .build();
 
 
         //Fifth Trajectory - Park on the launch line
-        Trajectory targetZoneATraj5 = mecanumDrive.trajectoryBuilder(targetZoneATraj4.end())
-                .splineTo(new Vector2d(30, -42), Math.toRadians(0))
-                .build();
 
         Trajectory targetZoneBTraj5 = mecanumDrive.trajectoryBuilder(targetZoneBTraj4.end())
-                .splineTo(new Vector2d(30, -42), Math.toRadians(0))
+                .back(22)
                 .build();
 
         Trajectory targetZoneCTraj5 = mecanumDrive.trajectoryBuilder(targetZoneCTraj4.end())
-                .splineTo(new Vector2d(30, -42), Math.toRadians(0))
+                .back(45)
                 .build();
 
         /**
@@ -144,26 +143,25 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
             //Drop wobble goal
             dropWobbleGoal();
 
-            //Move to second wobble goal
+            //Move to shooting position
             mecanumDrive.followTrajectory(targetZoneATraj2);
 
             //Pick up wobble goal
+            shoot();
+
+            //Move to second wobble goal
+            mecanumDrive.followTrajectory(targetZoneATraj3);
+
+            //Grab wobble goal
             grabWobbleGoal();
 
-            //Move back to target zone
-            mecanumDrive.followTrajectory(targetZoneATraj3);
+            //Move to target zone
+            mecanumDrive.followTrajectory(targetZoneATraj4);
 
             //Drop wobble goal
             dropWobbleGoal();
 
-            //Move to shooting point
-            mecanumDrive.followTrajectory(targetZoneATraj4);
 
-            //Shoot the rings
-            shoot();
-
-            //Park on launch line
-            mecanumDrive.followTrajectory(targetZoneATraj5);
         }
         if (targetZone == OpenCV.targetZone.B) {
             //Move to Target Zone B
@@ -172,26 +170,25 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
             //Drop wobble goal
             dropWobbleGoal();
 
-            //Move to second wobble goal
+            //Move to shooting position
             mecanumDrive.followTrajectory(targetZoneBTraj2);
 
             //Pick up wobble goal
+            shoot();
+
+            //Move to second wobble goal
+            mecanumDrive.followTrajectory(targetZoneBTraj3);
+
+            //Grab wobble goal
             grabWobbleGoal();
 
-            //Move back to target zone
-            mecanumDrive.followTrajectory(targetZoneBTraj3);
+            //Move to target zone
+            mecanumDrive.followTrajectory(targetZoneBTraj4);
 
             //Drop wobble goal
             dropWobbleGoal();
 
-            //Move to shooting point
-            mecanumDrive.followTrajectory(targetZoneATraj4);
-
-            //Shoot the rings
-            shoot();
-
-            //Park on launch line
-            mecanumDrive.followTrajectory(targetZoneATraj5);
+            mecanumDrive.followTrajectory(targetZoneBTraj5);
         }
         if (targetZone == OpenCV.targetZone.C) {
             //Move to Target Zone C
@@ -200,26 +197,25 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
             //Drop wobble goal
             dropWobbleGoal();
 
-            //Move to second wobble goal
+            //Move to shooting position
             mecanumDrive.followTrajectory(targetZoneCTraj2);
 
             //Pick up wobble goal
+            shoot();
+
+            //Move to second wobble goal
+            mecanumDrive.followTrajectory(targetZoneCTraj3);
+
+            //Grab wobble goal
             grabWobbleGoal();
 
-            //Move back to target zone
-            mecanumDrive.followTrajectory(targetZoneBTraj3);
+            //Move to target zone
+            mecanumDrive.followTrajectory(targetZoneCTraj4);
 
             //Drop wobble goal
             dropWobbleGoal();
 
-            //Move to shooting point
-            mecanumDrive.followTrajectory(targetZoneATraj4);
-
-            //Shoot the rings
-            shoot();
-
-            //Park on launch line
-            mecanumDrive.followTrajectory(targetZoneATraj5);
+            mecanumDrive.followTrajectory(targetZoneCTraj5);
         }
 
     }
