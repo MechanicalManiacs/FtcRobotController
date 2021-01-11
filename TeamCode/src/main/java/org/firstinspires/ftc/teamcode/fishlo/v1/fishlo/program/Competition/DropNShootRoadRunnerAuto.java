@@ -73,51 +73,52 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
 
 
         //Second Trajectory - Move to shooting position
-        Trajectory targetZoneATraj2 = mecanumDrive.trajectoryBuilder(targetZoneATraj1.end(), true)
-                .back(12)
+        Trajectory targetZoneATraj2 = mecanumDrive.trajectoryBuilder(targetZoneATraj1.end())
+                .forward(12)
                 .build();
 
-        Trajectory targetZoneBTraj2 = mecanumDrive.trajectoryBuilder(targetZoneBTraj1.end(), true)
-                .splineTo(new Vector2d(17, -14), Math.toRadians(0))
-                .splineTo(new Vector2d(0, -40), Math.toRadians(0))
+        Trajectory targetZoneBTraj2 = mecanumDrive.trajectoryBuilder(targetZoneBTraj1.end())
+                .splineToConstantHeading(new Vector2d(17, -14), Math.toRadians(0))
+                .splineToConstantHeading(new Vector2d(0, -40), Math.toRadians(0))
                 .build();
 
-        Trajectory targetZoneCTraj2 = mecanumDrive.trajectoryBuilder(targetZoneCTraj1.end(), true)
-                .back(57)
+        Trajectory targetZoneCTraj2 = mecanumDrive.trajectoryBuilder(targetZoneCTraj1.end())
+                .forward(57)
                 .build();
+
 
 
 
         //Third Trajectory - Move to second wobble goal
         Trajectory targetZoneATraj3 = mecanumDrive.trajectoryBuilder(targetZoneATraj2.end())
-                .splineTo(new Vector2d(-24, -5), Math.toRadians(0))
-                .splineTo(new Vector2d(-49, -5), Math.toRadians(0))
+                .splineToConstantHeading(new Vector2d(-24, -5), Math.toRadians(0))
+                .splineToConstantHeading(new Vector2d(-49, -5), Math.toRadians(0))
                 .build();
 
         Trajectory targetZoneBTraj3 = mecanumDrive.trajectoryBuilder(targetZoneBTraj2.end())
-                .splineTo(new Vector2d(-24, -5), Math.toRadians(0))
+                .splineToConstantHeading(new Vector2d(-24, -5), Math.toRadians(0))
                 .splineTo(new Vector2d(-49, -5), Math.toRadians(0))
                 .build();
 
         Trajectory targetZoneCTraj3 = mecanumDrive.trajectoryBuilder(targetZoneCTraj2.end())
-                .splineTo(new Vector2d(-24, -5), Math.toRadians(0))
-                .splineTo(new Vector2d(-49, -5), Math.toRadians(0))
+                .splineToConstantHeading(new Vector2d(-24, -5), Math.toRadians(0))
+                .splineToConstantHeading(new Vector2d(-49, -5), Math.toRadians(0))
                 .build();
 
 
 
         //Fourth Trajectory - Move to target zone
-        Trajectory targetZoneATraj4 = mecanumDrive.trajectoryBuilder(targetZoneATraj3.end())
+        Trajectory targetZoneATraj4 = mecanumDrive.trajectoryBuilder(targetZoneATraj3.end(), true)
                 .splineTo(new Vector2d(-24, -5), Math.toRadians(0))
                 .splineToConstantHeading(new Vector2d(12, -40), Math.toRadians(0))
                 .build();
 
-        Trajectory targetZoneBTraj4 = mecanumDrive.trajectoryBuilder(targetZoneBTraj3.end())
+        Trajectory targetZoneBTraj4 = mecanumDrive.trajectoryBuilder(targetZoneBTraj3.end(), true)
                 .splineTo(new Vector2d(-24, -5), Math.toRadians(0))
                 .splineToConstantHeading(new Vector2d(34, -14), Math.toRadians(0))
                 .build();
 
-        Trajectory targetZoneCTraj4 = mecanumDrive.trajectoryBuilder(targetZoneCTraj3.end())
+        Trajectory targetZoneCTraj4 = mecanumDrive.trajectoryBuilder(targetZoneCTraj3.end(), true)
                 .splineTo(new Vector2d(-24, -5), Math.toRadians(0))
                 .splineToConstantHeading(new Vector2d(57, -39), Math.toRadians(0))
                 .build();
@@ -126,11 +127,11 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
         //Fifth Trajectory - Park on the launch line
 
         Trajectory targetZoneBTraj5 = mecanumDrive.trajectoryBuilder(targetZoneBTraj4.end())
-                .back(22)
+                .forward(22)
                 .build();
 
         Trajectory targetZoneCTraj5 = mecanumDrive.trajectoryBuilder(targetZoneCTraj4.end())
-                .back(45)
+                .forward(45)
                 .build();
 
         /**
