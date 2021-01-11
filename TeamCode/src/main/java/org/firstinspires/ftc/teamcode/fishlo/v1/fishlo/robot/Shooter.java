@@ -16,10 +16,10 @@ public class Shooter extends SubSystem {
 
     public static final double PUSHER_HOME = 1;
     public static final double PUSHER_MAX = 0.85;
-    public static double SHOOTER_CONSTANT = 0.71;
-    double shooter_speed;
+    public static double RAMP_ANGLE = 30;
+    double shooter_power;
     boolean shooter_started = false;
-    SampleMecanumDrive drive = new SampleMecanumDrive(robot.hardwareMap);
+    SampleMecanumDrive mecanumDrive = new SampleMecanumDrive(robot.hardwareMap);
 
 
     public Shooter(Robot robot) {
@@ -33,21 +33,27 @@ public class Shooter extends SubSystem {
         shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
-        drive.setPoseEstimate(DropNShootRoadRunnerAuto.endPose);
+        mecanumDrive.setPoseEstimate(DropNShootRoadRunnerAuto.endPose);
     }
 
     @Override
     public void handle() {
-        drive.update();
-        Pose2d drivePose = drive.getPoseEstimate();
+        mecanumDrive.update();
+        Pose2d drivePose = mecanumDrive.getPoseEstimate();
         Pose2d goalPose = new Pose2d(64, -36);
 
         double goalDistance = Math.sqrt(Math.pow(drivePose.getX() - goalPose.getX(), 2) +
                 Math.pow(drivePose.getY() - goalPose.getY(), 2));
 
+        double goalAngle = Math.tan((drivePose.getY()-goalPose.getY())/(drivePose.getX()-goalPose.getX()));
 
-        shooter_speed = SHOOTER_CONSTANT * goalDistance;
+        robot.telemetry.addData("Goal Distance: ", goalDistance);
+        robot.telemetry.update();
+
+        double shooter_speed = Math.sqrt((goalDistance * 9.8)/Math.sin(2 * RAMP_ANGLE));
+        shooter_power = 7.2 / shooter_speed;
         if (robot.gamepad2.right_bumper){
+            mecanumDrive.turn(Math.toRadians(90-goalAngle));
             startShooter();
         }
         else if (robot.gamepad2.left_bumper) {
@@ -72,7 +78,7 @@ public class Shooter extends SubSystem {
     }
 
     public void startShooter() {
-        shooter.setPower(shooter_speed);
+        shooter.setPower(shooter_power);
         shooter_started = true;
     }
 
@@ -80,6 +86,16 @@ public class Shooter extends SubSystem {
         shooter.setPower(0);
         shooter_started = false;
     }
+
+    public void startShooterAuto(double distance) {
+        double shooter_speed = Math.sqrt((distance * 9.8)/Math.sin(2 * RAMP_ANGLE));
+        shooter_power = 7.2 / shooter_speed;
+        shooter.setPower(shooter_power);
+        shooter_started = true;
+    }
+
+
+
 
     public void resetPusher() {
         pusher.setPosition(PUSHER_HOME);
