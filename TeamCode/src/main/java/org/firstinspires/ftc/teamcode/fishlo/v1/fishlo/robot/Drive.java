@@ -1,13 +1,13 @@
 package org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.robot;
 
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.robot.Robot;
-import org.firstinspires.ftc.teamcode.robot.SubSystem;
-
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.robot.Robot;
+import org.firstinspires.ftc.teamcode.robot.SubSystem;
 
 public class Drive extends SubSystem {
 
@@ -47,6 +47,8 @@ public class Drive extends SubSystem {
 
     @Override
     public void init() {
+        frontLeft = null;
+        backLeft = null;
         frontLeft = robot.hardwareMap.dcMotor.get("frontLeft");
         frontRight = robot.hardwareMap.dcMotor.get("frontRight");
         backLeft = robot.hardwareMap.dcMotor.get("backLeft");
@@ -314,16 +316,16 @@ public class Drive extends SubSystem {
      */
 
     public void testFrontLeft() {
-        frontLeft.setPower(1);
+        frontLeft.setPower(0.2);
     }
     public void testFrontRight() {
-        frontRight.setPower(1);
+        frontRight.setPower(0.2);
     }
     public void testBackLeft() {
-        backLeft.setPower(1);
+        backLeft.setPower(0.2);
     }
     public void testBackRight() {
-        backRight.setPower(1);
+        backRight.setPower(0.2);
     }
 
 

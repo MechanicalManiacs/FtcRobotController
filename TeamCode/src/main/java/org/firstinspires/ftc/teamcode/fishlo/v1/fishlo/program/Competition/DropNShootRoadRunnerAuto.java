@@ -18,7 +18,7 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
     //Front right corner is (72, -72)
     //Front left corner is (72, 24)
 
-    SampleMecanumDrive mecanumDrive = new SampleMecanumDrive(hardwareMap);
+    SampleMecanumDrive mecanumDrive;
     Pose2d startPose;
     public static Pose2d endPose;
     protected OpenCV.targetZone targetZone;
@@ -35,6 +35,8 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
         startPose = new Pose2d(-63 -49);
         mecanumDrive.setPoseEstimate(startPose);
         openCV.initVision();
+
+        mecanumDrive = new SampleMecanumDrive(hardwareMap);
 
         while (!isStarted()) {
 
@@ -138,7 +140,10 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
          * Follow the appropriate trajectories
          */
 
+        telemetry.addLine("Starting Program");
+        telemetry.update();
         if (targetZone == OpenCV.targetZone.A) {
+
             //Move to Target Zone A
             mecanumDrive.followTrajectory(targetZoneATraj1);
 
