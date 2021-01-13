@@ -22,6 +22,7 @@ public class FishloAutonomousProgram extends AutonomousProgram {
     protected Robot buildRobot() {
         Fishlo fishlo = new Fishlo(this);
 
+        drive = (Drive) fishlo.getSubSystem("Drive");
         claw = (Claw) fishlo.getSubSystem("Claw");
         gyro = (Gyro) fishlo.getSubSystem("Gyro");
         intake = (Intake) fishlo.getSubSystem("Intake");
