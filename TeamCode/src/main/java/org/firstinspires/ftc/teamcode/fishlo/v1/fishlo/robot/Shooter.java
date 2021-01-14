@@ -41,19 +41,35 @@ public class Shooter extends SubSystem {
         mecanumDrive.update();
         Pose2d drivePose = mecanumDrive.getPoseEstimate();
         Pose2d goalPose = new Pose2d(64, -36);
+        Pose2d goalPoseLeft = new Pose2d(64, -28);
+        Pose2d goalPoseRight = new Pose2d(64, -44);
 
         double goalDistance = Math.sqrt(Math.pow(drivePose.getX() - goalPose.getX(), 2) +
                 Math.pow(drivePose.getY() - goalPose.getY(), 2));
-
-        double goalAngle = Math.tan((drivePose.getY()-goalPose.getY())/(drivePose.getX()-goalPose.getX()));
+        double goalAngle = Math.atan(drivePose.getX()-goalPose.getX())/(drivePose.getY()-goalPose.getY());
 
         robot.telemetry.addData("Goal Distance: ", goalDistance);
+        robot.telemetry.addData("Goal Angle: ", goalAngle);
         robot.telemetry.update();
 
-        double shooter_speed = Math.sqrt((goalDistance * 9.8)/Math.sin(2 * RAMP_ANGLE));
-        shooter_power = 7.2 / shooter_speed;
+        double slope = Math.tan(drivePose.getHeading());
+        double yInt = drivePose.getX() - slope * drivePose.getY();
+        double xInt = (drivePose.getX() - yInt)/slope;
+        double shootDistance;
+        if (xInt < goalPoseLeft.getY() && xInt > goalPoseRight.getY()) {
+            double shootX = xInt;
+            double shootY = slope*xInt + yInt;
+            shootDistance = Math.sqrt(Math.pow(drivePose.getX() - shootY, 2) +
+                    Math.pow(drivePose.getY() - shootX, 2));
+        }
+        else {
+            shootDistance = 0;
+        }
+
+        double shooter_speed = Math.sqrt((shootDistance * 9.8)/Math.sin(2 * RAMP_ANGLE));
+        shooter_power = Math.max(0, Math.min(1, 7.2 / shooter_speed));
+
         if (robot.gamepad2.right_bumper){
-            mecanumDrive.turn(Math.toRadians(90-goalAngle));
             startShooter();
         }
         else if (robot.gamepad2.left_bumper) {
