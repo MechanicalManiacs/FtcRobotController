@@ -65,6 +65,7 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
     @Override
     public void preMain() {
 
+
         // Make the SampleMecanumDrive object for RoadRunner
         mecanumDrive = new SampleMecanumDrive(hardwareMap);
         startPose = new Pose2d(-63, -49, Math.toRadians(180));
@@ -208,8 +209,16 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
 
             // Grab wobble goal
 
+//            claw.armDown();
+//            sleep(100);
+
             telemetry.addLine("Grabbing wobble goal");
+            telemetry.update();
             mecanumDrive.followTrajectory(targetZoneATraj4);
+
+//            claw.close();
+//            sleep(500);
+//            claw.armUp();
 
             // Move back to target zone A and drop wobble goal
             telemetry.addLine("Moving back to target zone A");
@@ -348,18 +357,16 @@ class TrajectoryBuilderA extends Thread {
 
             Trajectory targetZoneATraj3 = mecanumDrive.trajectoryBuilder(targetZoneATraj2.end())
                     .splineToConstantHeading(new Vector2d(5, -5), Math.toRadians(0))
-                    .splineToConstantHeading(new Vector2d(-56, -3.5), Math.toRadians(0))
+                    .splineToConstantHeading(new Vector2d(-67, 4), Math.toRadians(0))
                     .build();
             trajectoryList.add(targetZoneATraj3);
 
             Trajectory targetZoneATraj4 = mecanumDrive.trajectoryBuilder(targetZoneATraj3.end(), true)
-                    .addDisplacementMarker(() -> {
-                        robot.telemetry.addLine("Grabbing wobble goal");
-                        robot.telemetry.update();
+                    .addDisplacementMarker(0, 0, () -> {
                         DropNShootRoadRunnerAuto.claw.armDown();
                     })
-                    .strafeLeft(8)
-                    .addDisplacementMarker(() -> {
+                    .splineToConstantHeading(new Vector2d(-67, -4), Math.toRadians(0))
+                    .addDisplacementMarker(1, 0, () -> {
                         DropNShootRoadRunnerAuto.claw.close();
                         DropNShootRoadRunnerAuto.claw.armUp();
                     })
@@ -368,7 +375,7 @@ class TrajectoryBuilderA extends Thread {
 
             Trajectory targetZoneATraj5 = mecanumDrive.trajectoryBuilder(targetZoneATraj4.end(), true)
                     .splineToConstantHeading(new Vector2d(-24, -5), Math.toRadians(0))
-                    .splineToConstantHeading(new Vector2d(-15, -45), Math.toRadians(0))
+                    .splineToConstantHeading(new Vector2d(-15, -40), Math.toRadians(0))
                     .addDisplacementMarker(() -> {
                         robot.telemetry.addLine("Dropping wobble goal");
                         robot.telemetry.update();
@@ -380,10 +387,10 @@ class TrajectoryBuilderA extends Thread {
             trajectoryList.add(targetZoneATraj5);
 
 
-            Trajectory targetZoneATraj6 = mecanumDrive.trajectoryBuilder(targetZoneATraj5.end(), true)
+            Trajectory targetZoneATraj7 = mecanumDrive.trajectoryBuilder(targetZoneATraj5.end(), true)
                     .back(5)
                     .build();
-            trajectoryList.add(targetZoneATraj6);
+            trajectoryList.add(targetZoneATraj7);
 
             robot.telemetry.addLine("Target Zone A Trajectories Built");
             robot.telemetry.update();

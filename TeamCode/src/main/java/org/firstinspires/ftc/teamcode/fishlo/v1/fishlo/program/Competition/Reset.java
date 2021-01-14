@@ -29,7 +29,7 @@ public class Reset extends FishloAutonomousProgram {
                 .build();
 
         returnTrajectory =  mecanumDrive.trajectoryBuilder(forwardTrajectory.end())
-                .splineTo(new Vector2d(-63, -64), Math.toRadians(180))
+                .splineTo(new Vector2d(-72, -49), Math.toRadians(180))
                 .build();
 
         telemetry.addLine("Ready");
