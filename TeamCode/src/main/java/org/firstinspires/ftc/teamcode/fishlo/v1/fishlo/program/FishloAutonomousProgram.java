@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.opMode.AutonomousProgram;
 import org.firstinspires.ftc.teamcode.robot.Robot;
 
 public class FishloAutonomousProgram extends AutonomousProgram {
-    protected Claw claw;
+    public static Claw claw;
     protected Drive drive;
     protected Gyro gyro;
     protected Intake intake;
