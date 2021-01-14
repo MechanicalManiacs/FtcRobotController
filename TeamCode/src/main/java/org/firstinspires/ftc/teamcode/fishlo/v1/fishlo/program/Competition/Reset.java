@@ -25,11 +25,11 @@ public class Reset extends FishloAutonomousProgram {
         mecanumDrive.setPoseEstimate(DropNShootRoadRunnerAuto.endPose);
 
         forwardTrajectory = mecanumDrive.trajectoryBuilder(mecanumDrive.getPoseEstimate())
-                .splineTo(new Vector2d(-10, -24), Math.toRadians(270))
+                .splineTo(new Vector2d(-5, -24), Math.toRadians(270))
                 .build();
 
         returnTrajectory =  mecanumDrive.trajectoryBuilder(forwardTrajectory.end())
-                .splineTo(new Vector2d(-72, -64), Math.toRadians(180))
+                .splineTo(new Vector2d(-63, -64), Math.toRadians(180))
                 .build();
 
         telemetry.addLine("Ready");

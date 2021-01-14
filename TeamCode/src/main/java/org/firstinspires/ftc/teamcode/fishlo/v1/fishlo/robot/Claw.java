@@ -26,6 +26,7 @@ public class Claw extends SubSystem {
         claw = robot.hardwareMap.servo.get("claw");
         arm = robot.hardwareMap.dcMotor.get("arm");
         arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         close();
     }
 
@@ -62,7 +63,7 @@ public class Claw extends SubSystem {
 
     public void armDown() {
         armTimer.reset();
-        while (armTimer.milliseconds() < 1000) {
+        while (armTimer.milliseconds() < 1200) {
             arm.setPower(-0.8);
         }
         arm.setPower(0);
@@ -71,7 +72,7 @@ public class Claw extends SubSystem {
 
     public void armUp() {
         armTimer.reset();
-        while (armTimer.milliseconds() < 1000) {
+        while (armTimer.milliseconds() < 1200) {
             arm.setPower(0.8);
         }
         arm.setPower(0);

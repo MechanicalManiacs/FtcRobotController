@@ -37,7 +37,7 @@ public abstract class AutonomousProgram extends LinearOpMode {
     @Override
     public final void runOpMode() throws InterruptedException {
         robot = buildRobot();
-        telemetry.setAutoClear(true);
+        telemetry.setAutoClear(false);
 
         try {
             robot.init();
