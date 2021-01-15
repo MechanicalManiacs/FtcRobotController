@@ -3,13 +3,7 @@ package org.firstinspires.ftc.teamcode.opMode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
 import org.firstinspires.ftc.teamcode.robot.Robot;
-import android.text.InputType;
-import android.text.method.NumberKeyListener;
-import org.firstinspires.ftc.robotcontroller.internal.FtcOpModeRegister;
-import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
-import com.qualcomm.ftcrobotcontroller.R;
 
 /**
  * An Autonomous program.
@@ -72,6 +66,7 @@ public abstract class AutonomousProgram extends LinearOpMode {
         } catch(Exception ex) {
             telemetry.addData("ERROR!!!", ex.getMessage());
         }
+
     }
 
     /**
