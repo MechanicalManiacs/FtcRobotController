@@ -571,7 +571,7 @@ class TrajectoryBuilderC extends Thread {
 
             Trajectory targetZoneCTraj5 = mecanumDrive.trajectoryBuilder(targetZoneCTraj4.end(), true)
                     .splineToConstantHeading(new Vector2d(-24, -5), Math.toRadians(0))
-                    .splineToConstantHeading(new Vector2d(41, -40), Math.toRadians(0))
+                    .splineToConstantHeading(new Vector2d(43, -40), Math.toRadians(0))
                     .build();
             trajectoryList.add(targetZoneCTraj5);
 
