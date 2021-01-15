@@ -402,8 +402,8 @@ class TrajectoryBuilderA extends Thread {
         {
             // Build trajectories
             Trajectory targetZoneATraj1 = mecanumDrive.trajectoryBuilder(startPose, true)
-                    .splineToConstantHeading(new Vector2d(-20, -49), Math.toRadians(0))
-                    .splineToConstantHeading(new Vector2d(7, -35), Math.toRadians(0))
+                    .splineToConstantHeading(new Vector2d(-20, -49), Math.toRadians(180))
+                    .splineToConstantHeading(new Vector2d(7, -35), Math.toRadians(180))
                     .build();
             trajectoryList.add(targetZoneATraj1);
 
@@ -413,8 +413,8 @@ class TrajectoryBuilderA extends Thread {
             trajectoryList.add(targetZoneATraj2);
 
             Trajectory targetZoneATraj3 = mecanumDrive.trajectoryBuilder(targetZoneATraj2.end())
-                    .splineToConstantHeading(new Vector2d(5, -5), Math.toRadians(0))
-                    .splineToConstantHeading(new Vector2d(-67, 4), Math.toRadians(0))
+                    .splineToConstantHeading(new Vector2d(5, -5), Math.toRadians(180))
+                    .splineToConstantHeading(new Vector2d(-67, 4), Math.toRadians(180))
                     .build();
             trajectoryList.add(targetZoneATraj3);
 
@@ -424,8 +424,8 @@ class TrajectoryBuilderA extends Thread {
             trajectoryList.add(targetZoneATraj4);
 
             Trajectory targetZoneATraj5 = mecanumDrive.trajectoryBuilder(targetZoneATraj4.end(), true)
-                    .splineToConstantHeading(new Vector2d(-24, -5), Math.toRadians(0))
-                    .splineToConstantHeading(new Vector2d(-10, -40), Math.toRadians(0))
+                    .splineToConstantHeading(new Vector2d(-24, -5), Math.toRadians(180))
+                    .splineToConstantHeading(new Vector2d(-10, -40), Math.toRadians(180))
                     .build();
             trajectoryList.add(targetZoneATraj5);
 
@@ -475,22 +475,22 @@ class TrajectoryBuilderB extends Thread {
         {
             // Displaying the thread that is running
             Trajectory targetZoneBTraj1 = mecanumDrive.trajectoryBuilder(startPose, true)
-                    .splineToConstantHeading(new Vector2d(-20, -49), Math.toRadians(0))
-                    .splineToConstantHeading(new Vector2d(35, -14), Math.toRadians(0))
+                    .splineToConstantHeading(new Vector2d(-20, -49), Math.toRadians(180))
+                    .splineToConstantHeading(new Vector2d(35, -14), Math.toRadians(180))
                     .build();
             trajectoryList.add(targetZoneBTraj1);
 
 
             Trajectory targetZoneBTraj2 = mecanumDrive.trajectoryBuilder(targetZoneBTraj1.end())
-                    .splineToConstantHeading(new Vector2d(17, -14), Math.toRadians(0))
-                    .splineToConstantHeading(new Vector2d(3, -35), Math.toRadians(0))
+                    .splineToConstantHeading(new Vector2d(17, -14), Math.toRadians(180))
+                    .splineToConstantHeading(new Vector2d(3, -35), Math.toRadians(180))
                     .build();
             trajectoryList.add(targetZoneBTraj2);
 
 
             Trajectory targetZoneBTraj3 = mecanumDrive.trajectoryBuilder(targetZoneBTraj2.end())
-                    .splineToConstantHeading(new Vector2d(5, -5), Math.toRadians(0))
-                    .splineToConstantHeading(new Vector2d(-56.5, 5.5), Math.toRadians(0))
+                    .splineToConstantHeading(new Vector2d(5, -5), Math.toRadians(180))
+                    .splineToConstantHeading(new Vector2d(-56.5, 5.5), Math.toRadians(180))
                     .build();
             trajectoryList.add(targetZoneBTraj3);
 
@@ -502,8 +502,8 @@ class TrajectoryBuilderB extends Thread {
 
 
             Trajectory targetZoneBTraj5 = mecanumDrive.trajectoryBuilder(targetZoneBTraj4.end(), true)
-                    .splineToConstantHeading(new Vector2d(0, -5), Math.toRadians(0))
-                    .splineToConstantHeading(new Vector2d(28.5, -20), Math.toRadians(0))
+                    .splineToConstantHeading(new Vector2d(0, -5), Math.toRadians(180))
+                    .splineToConstantHeading(new Vector2d(28.5, -20), Math.toRadians(180))
                     .build();
             trajectoryList.add(targetZoneBTraj5);
 
@@ -548,8 +548,8 @@ class TrajectoryBuilderC extends Thread {
         {
             // Displaying the thread that is running
             Trajectory targetZoneCTraj1 = mecanumDrive.trajectoryBuilder(startPose, true)
-                    .splineToConstantHeading(new Vector2d(-20, -49), Math.toRadians(0))
-                    .splineToConstantHeading(new Vector2d(56, -40), Math.toRadians(0))
+                    .splineToConstantHeading(new Vector2d(-20, -49), Math.toRadians(180))
+                    .splineToConstantHeading(new Vector2d(56, -40), Math.toRadians(180))
                     .build();
             trajectoryList.add(targetZoneCTraj1);
 
@@ -559,8 +559,8 @@ class TrajectoryBuilderC extends Thread {
             trajectoryList.add(targetZoneCTraj2);
 
             Trajectory targetZoneCTraj3 = mecanumDrive.trajectoryBuilder(targetZoneCTraj2.end())
-                    .splineToConstantHeading(new Vector2d(5, -5), Math.toRadians(0))
-                    .splineToConstantHeading(new Vector2d(-63.5, 12), Math.toRadians(0))
+                    .splineToConstantHeading(new Vector2d(-20, -40), Math.toRadians(180))
+                    .splineToLinearHeading(new Pose2d(-60, -40, Math.toRadians(180)), Math.toRadians(0))
                     .build();
             trajectoryList.add(targetZoneCTraj3);
 
@@ -570,8 +570,8 @@ class TrajectoryBuilderC extends Thread {
             trajectoryList.add(targetZoneCTraj4);
 
             Trajectory targetZoneCTraj5 = mecanumDrive.trajectoryBuilder(targetZoneCTraj4.end(), true)
-                    .splineToConstantHeading(new Vector2d(-24, -5), Math.toRadians(0))
-                    .splineToConstantHeading(new Vector2d(43, -40), Math.toRadians(0))
+                    .splineToConstantHeading(new Vector2d(-24, -5), Math.toRadians(180))
+                    .splineToConstantHeading(new Vector2d(43, -40), Math.toRadians(180))
                     .build();
             trajectoryList.add(targetZoneCTraj5);
 
