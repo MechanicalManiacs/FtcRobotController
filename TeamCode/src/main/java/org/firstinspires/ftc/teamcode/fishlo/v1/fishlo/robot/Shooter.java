@@ -19,8 +19,14 @@ public class Shooter extends SubSystem {
     public static double RAMP_ANGLE = 30;
     double shooter_power;
     boolean shooter_started = false;
-    SampleMecanumDrive mecanumDrive = new SampleMecanumDrive(robot.hardwareMap);
-
+    private SampleMecanumDrive mecanumDrive = new SampleMecanumDrive(robot.hardwareMap);
+    private enum Goals {
+        LOW,
+        MIDDLE,
+        HIGH,
+        NONE
+    }
+    private Goals targetGoal;
 
     public Shooter(Robot robot) {
         super(robot);
@@ -41,32 +47,36 @@ public class Shooter extends SubSystem {
         mecanumDrive.update();
         Pose2d drivePose = mecanumDrive.getPoseEstimate();
         Pose2d goalPose = new Pose2d(64, -36);
-        Pose2d goalPoseLeft = new Pose2d(64, -28);
-        Pose2d goalPoseRight = new Pose2d(64, -44);
 
         double goalDistance = Math.sqrt(Math.pow(drivePose.getX() - goalPose.getX(), 2) +
                 Math.pow(drivePose.getY() - goalPose.getY(), 2));
         double goalAngle = Math.atan(drivePose.getX()-goalPose.getX())/(drivePose.getY()-goalPose.getY());
 
-        robot.telemetry.addData("Goal Distance: ", goalDistance);
-        robot.telemetry.addData("Goal Angle: ", goalAngle);
-        robot.telemetry.update();
+        double shooter_speed = Math.sqrt((goalDistance * 0.0254 * 9.8)/Math.sin(2 * RAMP_ANGLE));
+        shooter_speed = Math.max(0, Math.min(7.2, shooter_speed));
+        double x_velocity = shooter_speed * Math.cos(RAMP_ANGLE);
+        double y_velocity = shooter_speed * Math.sin(RAMP_ANGLE);
+        double ringETA = goalDistance * 0.0254 / x_velocity;
+        double height = y_velocity * ringETA / 0.0254;
 
-        double slope = Math.tan(drivePose.getHeading());
-        double yInt = drivePose.getX() - slope * drivePose.getY();
-        double xInt = (drivePose.getX() - yInt)/slope;
-        double shootDistance;
-        if (xInt < goalPoseLeft.getY() && xInt > goalPoseRight.getY()) {
-            double shootX = xInt;
-            double shootY = slope*xInt + yInt;
-            shootDistance = Math.sqrt(Math.pow(drivePose.getX() - shootY, 2) +
-                    Math.pow(drivePose.getY() - shootX, 2));
+        if (height > 13) {
+            targetGoal = Goals.LOW;
+        }
+        else if (height > 21) {
+            targetGoal = Goals.MIDDLE;
+        }
+        else if (height > 33.125 && height < 38.625) {
+            targetGoal = Goals.HIGH;
         }
         else {
-            shootDistance = 0;
+            targetGoal = Goals.NONE;
         }
 
-        double shooter_speed = Math.sqrt((shootDistance * 9.8)/Math.sin(2 * RAMP_ANGLE));
+        robot.telemetry.addData("Goal Distance: ", goalDistance);
+        robot.telemetry.addData("Goal Angle: ", goalAngle);
+        robot.telemetry.addData("Target Goal: ", targetGoal);
+        robot.telemetry.update();
+
         shooter_power = Math.max(0, Math.min(1, 7.2 / shooter_speed));
 
         if (robot.gamepad2.right_bumper){

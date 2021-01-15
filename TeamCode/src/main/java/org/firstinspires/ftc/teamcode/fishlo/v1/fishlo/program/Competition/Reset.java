@@ -13,6 +13,7 @@ public class Reset extends FishloAutonomousProgram {
     SampleMecanumDrive mecanumDrive;
     Trajectory returnTrajectory;
     Trajectory forwardTrajectory;
+
     @Override
     protected Robot buildRobot() {
         return super.buildRobot();
@@ -29,7 +30,7 @@ public class Reset extends FishloAutonomousProgram {
                 .build();
 
         returnTrajectory =  mecanumDrive.trajectoryBuilder(forwardTrajectory.end())
-                .splineTo(new Vector2d(-72, -49), Math.toRadians(180))
+                .splineTo(new Vector2d(-67, -57), Math.toRadians(180))
                 .build();
 
         telemetry.addLine("Ready");

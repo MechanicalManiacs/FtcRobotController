@@ -14,7 +14,7 @@ public class Claw extends SubSystem {
     public static final double CLAW_HOME = 0;
     public static final double CLAW_MAX = 0.78;
     public static double arm_speed = 0.5;
-    public static final int ARM_LIMITER = -30;
+    ElapsedTime armTimer = new ElapsedTime();
 
 
     public Claw(Robot robot) {
@@ -27,6 +27,7 @@ public class Claw extends SubSystem {
         arm = robot.hardwareMap.dcMotor.get("arm");
         arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        armTimer.reset();
         close();
     }
 
@@ -58,8 +59,6 @@ public class Claw extends SubSystem {
     public void open() {
         claw.setPosition(CLAW_HOME);
     }
-
-    ElapsedTime armTimer = new ElapsedTime();
 
     public void armDown() {
         armTimer.reset();
