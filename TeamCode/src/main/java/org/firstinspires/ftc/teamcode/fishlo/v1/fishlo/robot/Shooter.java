@@ -45,9 +45,9 @@ public class Shooter extends SubSystem {
         shooter = robot.hardwareMap.dcMotor.get("shooter");
         pusher = robot.hardwareMap.servo.get("pusher");
         shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        goalMap.put(Goals.LOW, new Pose3d(new Pose2d(64, -36), 14));
-        goalMap.put(Goals.LOW, new Pose3d(new Pose2d(64, -36), 22));
-        goalMap.put(Goals.LOW, new Pose3d(new Pose2d(64, -36), 35));
+        goalMap.put(Goals.LOW, new Pose3d(new Pose2d(64, -36, 180), 14));
+        goalMap.put(Goals.LOW, new Pose3d(new Pose2d(64, -36, 180), 22));
+        goalMap.put(Goals.LOW, new Pose3d(new Pose2d(64, -36, 180), 35));
         mecanumDrive.setPoseEstimate(DropNShootRoadRunnerAuto.endPose);
     }
 
@@ -78,6 +78,7 @@ public class Shooter extends SubSystem {
                 );
 
 
+        robot.telemetry.addData("Goal: ", target.name());
         robot.telemetry.addData("Goal Distance: ", goalDistance);
         robot.telemetry.addData("Goal Angle: ", goalAngle);
         robot.telemetry.update();
