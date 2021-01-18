@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.robot;
 
+import com.arcrobotics.ftclib.vision.UGContourRingPipeline;
+
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.robot.Robot;
 import org.firstinspires.ftc.teamcode.robot.SubSystem;
@@ -7,8 +9,6 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
-
-import com.arcrobotics.ftclib.vision.UGContourRingPipeline;
 
 public class OpenCV extends SubSystem {
 
@@ -29,7 +29,7 @@ public class OpenCV extends SubSystem {
     private static final int CAMERA_WIDTH = 320;
     private static final int CAMERA_HEIGHT = 240;
 
-    private static final int HORIZON = 130;
+    private static final int HORIZON = 100;
 
     private static final boolean DEBUG = false;
 

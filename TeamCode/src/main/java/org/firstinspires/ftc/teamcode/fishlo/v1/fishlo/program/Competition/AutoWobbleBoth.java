@@ -65,7 +65,6 @@ public class AutoWobbleBoth extends FishloAutonomousProgram {
     //This method is for code that needs to run after start is pressed.
     @Override
     public void main() {
-        openCV.stopAll();
         timer.reset();
 
         //Move wobble goal to target zone A

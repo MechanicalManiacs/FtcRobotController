@@ -76,7 +76,7 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
         poseTracker = new PoseTracker(mecanumDrive, startPose);
         poseTracker.start();
 
-        //openCV.initVision();
+        openCV.initVision();
 
 
         // Make TrajectoryBuilderA thread
@@ -163,18 +163,16 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
         // Get the target zone from the webcam
         while (!isStarted()) {
 
-            targetZone = OpenCV.targetZone.C; //openCV.getTargetZone();
-            //telemetry.addData("Rings", openCV.getHeight());
-
+            targetZone = openCV.getTargetZone();
+            telemetry.clear();
+            telemetry.addData("Target Zone: ", targetZone);
+            telemetry.addData("Rings: ", openCV.getHeight());
+            telemetry.update();
         }
     }
 
     @Override
     public void main() {
-
-        // Stop streaming from the webcam to save power
-        // openCV.stopAll();
-
 
         // Show the target zone
         telemetry.addData("TargetZone", targetZone);
@@ -402,8 +400,8 @@ class TrajectoryBuilderA extends Thread {
         {
             // Build trajectories
             Trajectory targetZoneATraj1 = mecanumDrive.trajectoryBuilder(startPose, true)
-                    .splineToConstantHeading(new Vector2d(-20, -49), Math.toRadians(180))
-                    .splineToConstantHeading(new Vector2d(7, -35), Math.toRadians(180))
+                    .splineToConstantHeading(new Vector2d(-20, -49), Math.toRadians(0))
+                    .splineToConstantHeading(new Vector2d(7, -35), Math.toRadians(0))
                     .build();
             trajectoryList.add(targetZoneATraj1);
 
@@ -413,8 +411,8 @@ class TrajectoryBuilderA extends Thread {
             trajectoryList.add(targetZoneATraj2);
 
             Trajectory targetZoneATraj3 = mecanumDrive.trajectoryBuilder(targetZoneATraj2.end())
-                    .splineToConstantHeading(new Vector2d(5, -5), Math.toRadians(180))
-                    .splineToConstantHeading(new Vector2d(-67, 4), Math.toRadians(180))
+                    .splineToConstantHeading(new Vector2d(5, -5), Math.toRadians(0))
+                    .splineToConstantHeading(new Vector2d(-64, 4), Math.toRadians(0))
                     .build();
             trajectoryList.add(targetZoneATraj3);
 
@@ -424,8 +422,8 @@ class TrajectoryBuilderA extends Thread {
             trajectoryList.add(targetZoneATraj4);
 
             Trajectory targetZoneATraj5 = mecanumDrive.trajectoryBuilder(targetZoneATraj4.end(), true)
-                    .splineToConstantHeading(new Vector2d(-24, -5), Math.toRadians(180))
-                    .splineToConstantHeading(new Vector2d(-10, -40), Math.toRadians(180))
+                    .splineToConstantHeading(new Vector2d(-24, -5), Math.toRadians(0))
+                    .splineToConstantHeading(new Vector2d(-10, -40), Math.toRadians(0))
                     .build();
             trajectoryList.add(targetZoneATraj5);
 
@@ -443,7 +441,7 @@ class TrajectoryBuilderA extends Thread {
         catch (Exception e)
         {
             // Throwing an exception
-            System.out.println ("Exception is caught");
+            robot.telemetry.addLine("Exception is caught");
         }
     }
 
@@ -475,22 +473,22 @@ class TrajectoryBuilderB extends Thread {
         {
             // Displaying the thread that is running
             Trajectory targetZoneBTraj1 = mecanumDrive.trajectoryBuilder(startPose, true)
-                    .splineToConstantHeading(new Vector2d(-20, -49), Math.toRadians(180))
-                    .splineToConstantHeading(new Vector2d(35, -14), Math.toRadians(180))
+                    .splineToConstantHeading(new Vector2d(-20, -49), Math.toRadians(0))
+                    .splineToConstantHeading(new Vector2d(35, -14), Math.toRadians(0))
                     .build();
             trajectoryList.add(targetZoneBTraj1);
 
 
             Trajectory targetZoneBTraj2 = mecanumDrive.trajectoryBuilder(targetZoneBTraj1.end())
-                    .splineToConstantHeading(new Vector2d(17, -14), Math.toRadians(180))
-                    .splineToConstantHeading(new Vector2d(3, -35), Math.toRadians(180))
+                    .splineToConstantHeading(new Vector2d(17, -14), Math.toRadians(0))
+                    .splineToConstantHeading(new Vector2d(3, -35), Math.toRadians(0))
                     .build();
             trajectoryList.add(targetZoneBTraj2);
 
 
             Trajectory targetZoneBTraj3 = mecanumDrive.trajectoryBuilder(targetZoneBTraj2.end())
-                    .splineToConstantHeading(new Vector2d(5, -5), Math.toRadians(180))
-                    .splineToConstantHeading(new Vector2d(-56.5, 5.5), Math.toRadians(180))
+                    .splineToConstantHeading(new Vector2d(5, -5), Math.toRadians(0))
+                    .splineToConstantHeading(new Vector2d(-56.5, 5.5), Math.toRadians(0))
                     .build();
             trajectoryList.add(targetZoneBTraj3);
 
@@ -502,8 +500,8 @@ class TrajectoryBuilderB extends Thread {
 
 
             Trajectory targetZoneBTraj5 = mecanumDrive.trajectoryBuilder(targetZoneBTraj4.end(), true)
-                    .splineToConstantHeading(new Vector2d(0, -5), Math.toRadians(180))
-                    .splineToConstantHeading(new Vector2d(28.5, -20), Math.toRadians(180))
+                    .splineToConstantHeading(new Vector2d(0, -5), Math.toRadians(0))
+                    .splineToConstantHeading(new Vector2d(28.5, -20), Math.toRadians(0))
                     .build();
             trajectoryList.add(targetZoneBTraj5);
 
@@ -519,7 +517,7 @@ class TrajectoryBuilderB extends Thread {
         catch (Exception e)
         {
             // Throwing an exception
-            System.out.println ("Exception is caught");
+            robot.telemetry.addLine("Exception is caught");
         }
     }
 
@@ -548,8 +546,8 @@ class TrajectoryBuilderC extends Thread {
         {
             // Displaying the thread that is running
             Trajectory targetZoneCTraj1 = mecanumDrive.trajectoryBuilder(startPose, true)
-                    .splineToConstantHeading(new Vector2d(-20, -49), Math.toRadians(180))
-                    .splineToConstantHeading(new Vector2d(56, -40), Math.toRadians(180))
+                    .splineToConstantHeading(new Vector2d(-20, -49), Math.toRadians(0))
+                    .splineToConstantHeading(new Vector2d(56, -40), Math.toRadians(0))
                     .build();
             trajectoryList.add(targetZoneCTraj1);
 
@@ -559,8 +557,7 @@ class TrajectoryBuilderC extends Thread {
             trajectoryList.add(targetZoneCTraj2);
 
             Trajectory targetZoneCTraj3 = mecanumDrive.trajectoryBuilder(targetZoneCTraj2.end())
-                    .splineToConstantHeading(new Vector2d(-20, -40), Math.toRadians(180))
-                    .splineToLinearHeading(new Pose2d(-60, -40, Math.toRadians(180)), Math.toRadians(0))
+                    .splineToLinearHeading(new Pose2d(-50, -40, Math.toRadians(0)), Math.toRadians(180))
                     .build();
             trajectoryList.add(targetZoneCTraj3);
 
@@ -569,14 +566,13 @@ class TrajectoryBuilderC extends Thread {
                     .build();
             trajectoryList.add(targetZoneCTraj4);
 
-            Trajectory targetZoneCTraj5 = mecanumDrive.trajectoryBuilder(targetZoneCTraj4.end(), true)
-                    .splineToConstantHeading(new Vector2d(-24, -5), Math.toRadians(180))
-                    .splineToConstantHeading(new Vector2d(43, -40), Math.toRadians(180))
+            Trajectory targetZoneCTraj5 = mecanumDrive.trajectoryBuilder(targetZoneCTraj4.end())
+                    .splineToLinearHeading(new Pose2d(53, -40, Math.toRadians(180)), Math.toRadians(0))
                     .build();
             trajectoryList.add(targetZoneCTraj5);
 
             Trajectory targetZoneCTraj6 = mecanumDrive.trajectoryBuilder(targetZoneCTraj5.end())
-                    .forward(40)
+                    .forward(38)
                     .build();
             trajectoryList.add(targetZoneCTraj6);
 
@@ -589,7 +585,7 @@ class TrajectoryBuilderC extends Thread {
         catch (Exception e)
         {
             // Throwing an exception
-            System.out.println ("Exception is caught");
+            robot.telemetry.addLine("Exception is caught");
         }
     }
 

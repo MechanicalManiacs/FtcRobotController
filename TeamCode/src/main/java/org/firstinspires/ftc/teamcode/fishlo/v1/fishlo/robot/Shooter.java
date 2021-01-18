@@ -51,14 +51,8 @@ public class Shooter extends SubSystem {
         double goalDistance = Math.sqrt(Math.pow(drivePose.getX() - goalPose.getX(), 2) +
                 Math.pow(drivePose.getY() - goalPose.getY(), 2));
         double goalAngle = Math.atan(drivePose.getX()-goalPose.getX())/(drivePose.getY()-goalPose.getY());
-
-        double shooter_speed = Math.sqrt((goalDistance * 0.0254 * 9.8)/Math.sin(2 * RAMP_ANGLE));
-        shooter_speed = Math.max(0, Math.min(7.2, shooter_speed));
-        double x_velocity = shooter_speed * Math.cos(RAMP_ANGLE);
-        double y_velocity = shooter_speed * Math.sin(RAMP_ANGLE);
-        double ringETA = goalDistance * 0.0254 / x_velocity;
-        double height = y_velocity * ringETA / 0.0254;
-
+        double height = 35;
+        double GRAVITY = 9.8;
         if (height > 13) {
             targetGoal = Goals.LOW;
         }
@@ -72,12 +66,19 @@ public class Shooter extends SubSystem {
             targetGoal = Goals.NONE;
         }
 
+        double shooter_speed = Math.sqrt(
+                (GRAVITY * Math.pow(goalDistance, 2)) /
+                ( 2 * Math.pow(Math.cos(RAMP_ANGLE), 2) * (Math.tan(RAMP_ANGLE) * goalDistance - height))
+                );
+
+
         robot.telemetry.addData("Goal Distance: ", goalDistance);
         robot.telemetry.addData("Goal Angle: ", goalAngle);
         robot.telemetry.addData("Target Goal: ", targetGoal);
         robot.telemetry.update();
 
-        shooter_power = Math.max(0, Math.min(1, 7.2 / shooter_speed));
+        shooter_speed = Math.max(0, Math.min(7.2, shooter_speed));
+        shooter_power = 7.2/shooter_speed;
 
         if (robot.gamepad2.right_bumper){
             startShooter();
