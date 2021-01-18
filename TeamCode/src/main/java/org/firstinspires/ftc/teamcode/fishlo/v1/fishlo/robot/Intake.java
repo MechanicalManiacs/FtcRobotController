@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.robot;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.robot.Robot;
 import org.firstinspires.ftc.teamcode.robot.SubSystem;
@@ -10,8 +9,6 @@ public class Intake extends SubSystem {
 
     private DcMotor intake;
     private DcMotor transfer;
-    boolean intake_on = false;
-    ElapsedTime intake_timer = new ElapsedTime();
     public static double INTAKE_SPEED = 0.5;
     public static double TRANSFER_SPEED = 0.25;
 
@@ -31,6 +28,9 @@ public class Intake extends SubSystem {
     public void handle() {
         if (robot.gamepad2.y) {
             sum ++;
+            if (sum > 4) {
+                sum = 2;
+            }
         }
 
         if (robot.gamepad2.right_trigger > 0.5) {
