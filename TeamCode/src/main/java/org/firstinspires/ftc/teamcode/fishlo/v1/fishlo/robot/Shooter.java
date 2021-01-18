@@ -26,14 +26,13 @@ public class Shooter extends SubSystem {
         LOW,
         MIDDLE,
         HIGH,
-        POWER1,
-        POWER2,
-        POWER3,
-        NONE
+        POWER_SHOT_1,
+        POWER_SHOT_2,
+        POWER_SHOT_3
     }
     private HashMap<Goals, Pose3d> goalMap = new HashMap<Goals, Pose3d>();
 
-    private Goals[] targets = {Goals.LOW, Goals.MIDDLE, Goals.HIGH, Goals.POWER1, Goals.POWER2, Goals.POWER3};
+    private Goals[] targets = {Goals.LOW, Goals.MIDDLE, Goals.HIGH, Goals.POWER_SHOT_1, Goals.POWER_SHOT_2, Goals.POWER_SHOT_3};
     private Goals target;
     int targetIndex = 2;
     public Shooter(Robot robot) {
@@ -45,9 +44,15 @@ public class Shooter extends SubSystem {
         shooter = robot.hardwareMap.dcMotor.get("shooter");
         pusher = robot.hardwareMap.servo.get("pusher");
         shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        goalMap.put(Goals.LOW, new Pose3d(new Pose2d(64, -36, 180), 14));
-        goalMap.put(Goals.LOW, new Pose3d(new Pose2d(64, -36, 180), 22));
-        goalMap.put(Goals.LOW, new Pose3d(new Pose2d(64, -36, 180), 35));
+
+        // Set target positions in hash map
+        goalMap.put(Goals.LOW, new Pose3d(new Pose2d(74, -36, 180), 17));
+        goalMap.put(Goals.MIDDLE, new Pose3d(new Pose2d(74, -36, 180), 25));
+        goalMap.put(Goals.HIGH, new Pose3d(new Pose2d(74, -36, 180), 35));
+        goalMap.put(Goals.POWER_SHOT_1, new Pose3d(new Pose2d(74.5, 45, 180), 30));
+        goalMap.put(Goals.POWER_SHOT_2, new Pose3d(new Pose2d(74.5, 37.5, 180), 30));
+        goalMap.put(Goals.POWER_SHOT_3, new Pose3d(new Pose2d(74.5, 30, 180), 30));
+
         mecanumDrive.setPoseEstimate(DropNShootRoadRunnerAuto.endPose);
     }
 
@@ -56,9 +61,15 @@ public class Shooter extends SubSystem {
 
         if (robot.gamepad2.dpad_right) {
             targetIndex++;
+            if (targetIndex > 5) {
+                targetIndex = 0;
+            }
         }
         if (robot.gamepad2.dpad_left) {
             targetIndex--;
+            if (targetIndex < 0) {
+                targetIndex = 5;
+            }
         }
         target = targets[targetIndex];
 
