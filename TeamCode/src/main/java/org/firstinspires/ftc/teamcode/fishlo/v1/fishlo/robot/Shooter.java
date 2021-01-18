@@ -9,6 +9,8 @@ import org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.program.Competition.DropN
 import org.firstinspires.ftc.teamcode.robot.Robot;
 import org.firstinspires.ftc.teamcode.robot.SubSystem;
 
+import java.util.HashMap;
+
 public class Shooter extends SubSystem {
 
     private Servo pusher;
@@ -24,10 +26,16 @@ public class Shooter extends SubSystem {
         LOW,
         MIDDLE,
         HIGH,
+        POWER1,
+        POWER2,
+        POWER3,
         NONE
     }
-    private Goals targetGoal;
+    private HashMap<Goals, Pose3d> goalMap = new HashMap<Goals, Pose3d>();
 
+    private Goals[] targets = {Goals.LOW, Goals.MIDDLE, Goals.HIGH, Goals.POWER1, Goals.POWER2, Goals.POWER3};
+    private Goals target;
+    int targetIndex = 2;
     public Shooter(Robot robot) {
         super(robot);
     }
@@ -37,34 +45,32 @@ public class Shooter extends SubSystem {
         shooter = robot.hardwareMap.dcMotor.get("shooter");
         pusher = robot.hardwareMap.servo.get("pusher");
         shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-
+        goalMap.put(Goals.LOW, new Pose3d(new Pose2d(64, -36), 14));
+        goalMap.put(Goals.LOW, new Pose3d(new Pose2d(64, -36), 22));
+        goalMap.put(Goals.LOW, new Pose3d(new Pose2d(64, -36), 35));
         mecanumDrive.setPoseEstimate(DropNShootRoadRunnerAuto.endPose);
     }
 
     @Override
     public void handle() {
+
+        if (robot.gamepad2.dpad_right) {
+            targetIndex++;
+        }
+        if (robot.gamepad2.dpad_left) {
+            targetIndex--;
+        }
+        target = targets[targetIndex];
+
         mecanumDrive.update();
         Pose2d drivePose = mecanumDrive.getPoseEstimate();
-        Pose2d goalPose = new Pose2d(64, -36);
+        Pose2d goalPose = goalMap.get(target).getPosition();
+        double height = goalMap.get(target).getHeight();
 
         double goalDistance = Math.sqrt(Math.pow(drivePose.getX() - goalPose.getX(), 2) +
                 Math.pow(drivePose.getY() - goalPose.getY(), 2));
         double goalAngle = Math.atan(drivePose.getX()-goalPose.getX())/(drivePose.getY()-goalPose.getY());
-        double height = 35;
         double GRAVITY = 9.8;
-        if (height > 13) {
-            targetGoal = Goals.LOW;
-        }
-        else if (height > 21) {
-            targetGoal = Goals.MIDDLE;
-        }
-        else if (height > 33.125 && height < 38.625) {
-            targetGoal = Goals.HIGH;
-        }
-        else {
-            targetGoal = Goals.NONE;
-        }
 
         double shooter_speed = Math.sqrt(
                 (GRAVITY * Math.pow(goalDistance, 2)) /
@@ -74,7 +80,6 @@ public class Shooter extends SubSystem {
 
         robot.telemetry.addData("Goal Distance: ", goalDistance);
         robot.telemetry.addData("Goal Angle: ", goalAngle);
-        robot.telemetry.addData("Target Goal: ", targetGoal);
         robot.telemetry.update();
 
         shooter_speed = Math.max(0, Math.min(7.2, shooter_speed));
@@ -126,5 +131,23 @@ public class Shooter extends SubSystem {
 
     public void resetPusher() {
         pusher.setPosition(PUSHER_HOME);
+    }
+}
+
+class Pose3d {
+    private Pose2d position;
+    private double height;
+
+    public Pose3d(Pose2d pos, double h) {
+        position = pos;
+        height = h;
+    }
+
+    public Pose2d getPosition() {
+        return position;
+    }
+
+    public double getHeight() {
+        return height;
     }
 }
