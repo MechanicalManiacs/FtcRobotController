@@ -35,8 +35,9 @@ public class Drive extends SubSystem {
         FIELD,
         ARCADE
     }
-    DriveControls driveType = DriveControls.ARCADE;
-    String driveMode = "Arcade";
+    DriveControls[] driveControls = {DriveControls.ARCADE, DriveControls.FIELD, DriveControls.TANK};
+    DriveControls driveType;
+    int driveIndex = 0;
 
     boolean exit = false;
     
@@ -85,23 +86,24 @@ public class Drive extends SubSystem {
             reverse = true;
         }
 
-        if (robot.gamepad1.dpad_up) {
-            driveType = DriveControls.ARCADE;
-            driveMode = "Arcade";
+        driveType = driveControls[driveIndex];
+
+        if (robot.gamepad1.dpad_right) {
+            driveIndex++;
+            if (driveIndex > 2) {
+                driveIndex = 0;
+            }
         }
-        else if (robot.gamepad1.dpad_down) {
-            gyro.resetHeading();
-            driveType = DriveControls.FIELD;
-            driveMode = "Field";
-        }
-        else if (robot.gamepad1.dpad_right) {
-            driveType = DriveControls.TANK;
-            driveMode = "Tank";
+        if (robot.gamepad1.dpad_left) {
+            driveIndex--;
+            if (driveIndex < 0) {
+                driveIndex = 2;
+            }
         }
 
         runDrive(driveType, driveSpeed, strafeSpeed, turnSpeed, rightY, -driveSpeed);
 
-        robot.telemetry.addData("Drive - Dat - Drive Controls", driveMode);
+        robot.telemetry.addData("Drive - Dat - Drive Controls", driveType.name());
         robot.telemetry.addData("Drive - Dat - Drive Speed", driveSpeed);
         robot.telemetry.addData("Drive - Dat - Turn Speed", turnSpeed);
         robot.telemetry.addData("Drive - Dat - GamepadX", robot.gamepad1.left_stick_x);
