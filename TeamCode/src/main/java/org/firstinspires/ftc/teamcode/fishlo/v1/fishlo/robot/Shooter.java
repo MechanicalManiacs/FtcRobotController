@@ -21,7 +21,7 @@ public class Shooter extends SubSystem {
     public static double RAMP_ANGLE = 30;
     double shooter_power;
     boolean shooter_started = false;
-    private SampleMecanumDrive mecanumDrive = new SampleMecanumDrive(robot.hardwareMap);
+    private SampleMecanumDrive mecanumDrive;
     private enum Goals {
         LOW,
         MIDDLE,
@@ -30,10 +30,17 @@ public class Shooter extends SubSystem {
         POWER_SHOT_2,
         POWER_SHOT_3
     }
+
+    private enum Modes {
+        AUTOMATIC,
+        OVERRIDE
+    }
+
     private HashMap<Goals, Pose3d> goalMap = new HashMap<Goals, Pose3d>();
 
     private Goals[] targets = {Goals.LOW, Goals.MIDDLE, Goals.HIGH, Goals.POWER_SHOT_1, Goals.POWER_SHOT_2, Goals.POWER_SHOT_3};
     private Goals target;
+    private Modes mode;
     int targetIndex = 2;
     public Shooter(Robot robot) {
         super(robot);
@@ -44,6 +51,8 @@ public class Shooter extends SubSystem {
         shooter = robot.hardwareMap.dcMotor.get("shooter");
         pusher = robot.hardwareMap.servo.get("pusher");
         shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        mecanumDrive = new SampleMecanumDrive(robot.hardwareMap);
 
         // Set target positions in hash map
         goalMap.put(Goals.LOW, new Pose3d(new Pose2d(74, -36, 180), 17));
@@ -59,6 +68,7 @@ public class Shooter extends SubSystem {
     @Override
     public void handle() {
 
+        //Driver can cycle through the targets using the d-pad
         if (robot.gamepad2.dpad_right) {
             targetIndex++;
             if (targetIndex > 5) {
@@ -89,13 +99,17 @@ public class Shooter extends SubSystem {
                 );
 
 
-        robot.telemetry.addData("Goal: ", target.name());
-        robot.telemetry.addData("Goal Distance: ", goalDistance);
-        robot.telemetry.addData("Goal Angle: ", goalAngle);
-        robot.telemetry.update();
-
         shooter_speed = Math.max(0, Math.min(7.2, shooter_speed));
         shooter_power = 7.2/shooter_speed;
+
+        //Driver can manually override the shooter power
+        if (robot.gamepad2.dpad_up) {
+            shooter_power = 0.75;
+            mode = Modes.OVERRIDE;
+        }
+        else {
+            mode = Modes.AUTOMATIC;
+        }
 
         if (robot.gamepad2.right_bumper){
             startShooter();
@@ -109,6 +123,12 @@ public class Shooter extends SubSystem {
         if (robot.gamepad2.dpad_down) {
             resetPusher();
         }
+
+        robot.telemetry.addData("Goal: ", target.name());
+        robot.telemetry.addData("Goal Distance: ", goalDistance);
+        robot.telemetry.addData("Goal Angle: ", goalAngle);
+        robot.telemetry.addData("Mode: ", mode);
+        robot.telemetry.update();
     }
 
     @Override
