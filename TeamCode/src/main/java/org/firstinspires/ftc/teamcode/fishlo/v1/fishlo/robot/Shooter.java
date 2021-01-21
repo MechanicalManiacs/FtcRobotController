@@ -62,7 +62,9 @@ public class Shooter extends SubSystem {
         goalMap.put(Goals.POWER_SHOT_2, new Pose3d(new Pose2d(74.5, 37.5, 180), 30));
         goalMap.put(Goals.POWER_SHOT_3, new Pose3d(new Pose2d(74.5, 30, 180), 30));
 
-        mecanumDrive.setPoseEstimate(DropNShootRoadRunnerAuto.endPose);
+        if (DropNShootRoadRunnerAuto.autoEnded) {
+            mecanumDrive.setPoseEstimate(DropNShootRoadRunnerAuto.endPose);
+        }
     }
 
     @Override
