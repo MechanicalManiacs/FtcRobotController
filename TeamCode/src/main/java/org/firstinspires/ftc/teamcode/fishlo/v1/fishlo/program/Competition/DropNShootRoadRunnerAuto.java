@@ -24,7 +24,7 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
 
     public static SampleMecanumDrive mecanumDrive;
     public static Pose2d startPose;
-    public static boolean autoEnded = false;
+    public static boolean autoEnded;
     public volatile static Pose2d endPose;
     protected OpenCV.targetZone targetZone;
 
@@ -67,6 +67,7 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
     public void preMain() {
 
 
+        autoEnded = false;
         // Make the SampleMecanumDrive object for RoadRunner
         mecanumDrive = new SampleMecanumDrive(hardwareMap);
         startPose = new Pose2d(-63, -49, Math.toRadians(180));
@@ -164,7 +165,7 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
         // Get the target zone from the webcam
         while (!isStarted()) {
 
-//            targetZone = openCV.getTargetZone();
+            targetZone = OpenCV.targetZone.A;//openCV.getTargetZone();
 //            telemetry.clear();
 //            telemetry.addData("Target Zone: ", targetZone);
 //            telemetry.addData("Rings: ", openCV.getHeight());

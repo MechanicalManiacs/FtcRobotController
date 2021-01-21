@@ -114,7 +114,6 @@ public class Drive extends SubSystem {
         robot.telemetry.addData("Drive - Set - backRight", backRight.getPower());
         robot.telemetry.addData("Drive - Enc - Left", frontLeft.getCurrentPosition());
         robot.telemetry.addData("Drive - Enc - Right", frontRight.getCurrentPosition());
-        robot.telemetry.update();
     }
 
     public void runDrive(DriveControls driveType, double driveSpeed, double strafeSpeed, double turnSpeed, double rightY, double leftY) {
