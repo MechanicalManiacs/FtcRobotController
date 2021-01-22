@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.robot;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.program.Competition.DropNShootRoadRunnerAuto;
@@ -13,15 +15,16 @@ import java.util.HashMap;
 
 public class Shooter extends SubSystem {
 
-    private Servo pusher;
+    private CRServo pusher;
     private DcMotor shooter;
 
-    public static final double PUSHER_HOME = 1;
-    public static final double PUSHER_MAX = 0.85;
     public static double RAMP_ANGLE = 30;
     double shooter_power;
     boolean shooter_started = false;
     private SampleMecanumDrive mecanumDrive;
+
+    ElapsedTime timer = new ElapsedTime();
+
     private enum Goals {
         LOW,
         MIDDLE,
@@ -49,7 +52,7 @@ public class Shooter extends SubSystem {
     @Override
     public void init() {
         shooter = robot.hardwareMap.dcMotor.get("shooter");
-        pusher = robot.hardwareMap.servo.get("pusher");
+        pusher = robot.hardwareMap.crservo.get("pusher");
         shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         mecanumDrive = new SampleMecanumDrive(robot.hardwareMap);
@@ -62,9 +65,9 @@ public class Shooter extends SubSystem {
         goalMap.put(Goals.POWER_SHOT_2, new Pose3d(new Pose2d(74.5, 37.5, 180), 30));
         goalMap.put(Goals.POWER_SHOT_3, new Pose3d(new Pose2d(74.5, 30, 180), 30));
 
-        if (DropNShootRoadRunnerAuto.autoEnded) {
-            mecanumDrive.setPoseEstimate(DropNShootRoadRunnerAuto.endPose);
-        }
+        //if (DropNShootRoadRunnerAuto.autoEnded) {
+           // mecanumDrive.setPoseEstimate(DropNShootRoadRunnerAuto.endPose);
+       // }
     }
 
     @Override
@@ -122,9 +125,6 @@ public class Shooter extends SubSystem {
         if (robot.gamepad2.a && shooter_started) {
             shoot();
         }
-        if (robot.gamepad2.dpad_down) {
-            resetPusher();
-        }
 
         robot.telemetry.addData("Goal: ", target.name());
         robot.telemetry.addData("Goal Distance: ", goalDistance);
@@ -136,11 +136,14 @@ public class Shooter extends SubSystem {
     @Override
     public void stop() {
         stopShooter();
-        resetPusher();
     }
 
     public void shoot() {
-        pusher.setPosition(PUSHER_MAX);
+        timer.reset();
+        while (timer.milliseconds() < 1000) {
+            pusher.setPower(0.5);
+        }
+        pusher.setPower(0);
     }
 
     public void startShooter() {
@@ -160,12 +163,6 @@ public class Shooter extends SubSystem {
         shooter_started = true;
     }
 
-
-
-
-    public void resetPusher() {
-        pusher.setPosition(PUSHER_HOME);
-    }
 }
 
 class Pose3d {

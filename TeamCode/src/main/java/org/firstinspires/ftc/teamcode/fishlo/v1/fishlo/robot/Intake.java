@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.robot;
 
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.robot.Robot;
 import org.firstinspires.ftc.teamcode.robot.SubSystem;
@@ -9,8 +11,13 @@ public class Intake extends SubSystem {
 
     private DcMotor intake;
     private DcMotor transfer;
+    private CRServo intakeLever;
     public static double INTAKE_SPEED = 0.5;
     public static double TRANSFER_SPEED = 0.25;
+
+    boolean intake_down = false;
+
+    ElapsedTime intake_timer = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
 
     int sum = 2;
 
@@ -22,10 +29,26 @@ public class Intake extends SubSystem {
     public void init() {
         intake = robot.hardwareMap.dcMotor.get("intake");
         transfer = robot.hardwareMap.dcMotor.get("transfer");
+        intakeLever = robot.hardwareMap.crservo.get("intakeLever");
     }
 
     @Override
     public void handle() {
+
+        if (intake_down == false) {
+            intakeDown();
+            intake_down = true;
+        }
+
+        if (intake_down == true && robot.gamepad2.a) {
+            intakeUp();
+            intake_down = false;
+        }
+        else if (intake_down == false && robot.gamepad2.a) {
+            intakeDown();
+            intake_down = true;
+        }
+
         if (robot.gamepad2.y) {
             sum ++;
             if (sum > 4) {
@@ -68,6 +91,23 @@ public class Intake extends SubSystem {
         intake.setPower(0);
         transfer.setPower(0);
     }
+
+    public void intakeUp() {
+        intake_timer.reset();
+        while (intake_timer.time() < 300) {
+            intakeLever.setPower(1);
+        }
+        intakeLever.setPower(0);
+    }
+
+    public void intakeDown() {
+        intake_timer.reset();
+        while (intake_timer.time() < 1000 ) {
+            intakeLever.setPower(-1);
+        }
+        intakeLever.setPower(0);
+    }
+
 
     @Override
     public void stop() {

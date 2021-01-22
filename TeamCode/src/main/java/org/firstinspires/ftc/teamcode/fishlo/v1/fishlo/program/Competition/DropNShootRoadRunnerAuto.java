@@ -93,7 +93,7 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
         TrajectoryBuilderC trajectoryBuilderC = new TrajectoryBuilderC();
         trajectoryBuilderC.setRobot(getRobot());
 
-        //Start all of the threads
+         //Start all of the threads
 
         trajectoryBuilderA.start();
 
@@ -404,7 +404,7 @@ class TrajectoryBuilderA extends Thread {
             // Build trajectories
             Trajectory targetZoneATraj1 = mecanumDrive.trajectoryBuilder(startPose, true)
                     .splineToConstantHeading(new Vector2d(-20, -49), Math.toRadians(0))
-                    .splineToConstantHeading(new Vector2d(7, -35), Math.toRadians(0))
+                    .splineToConstantHeading(new Vector2d(7, -30), Math.toRadians(0))
                     .build();
             trajectoryList.add(targetZoneATraj1);
 

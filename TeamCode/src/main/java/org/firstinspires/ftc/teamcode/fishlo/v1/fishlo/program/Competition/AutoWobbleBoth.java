@@ -36,7 +36,6 @@ public class AutoWobbleBoth extends FishloAutonomousProgram {
         //Initialize the imu
         gyro.initGyro();
         openCV.initVision();
-        shooter.resetPusher();
         timer = new ElapsedTime();
 
         //Reset claw and arm to starting position
@@ -123,24 +122,18 @@ public class AutoWobbleBoth extends FishloAutonomousProgram {
             drive.moveToPosition(10, ROBOT_SPEED);
             sleep(20);
             shooter.shoot();
-            sleep(500);
-            shooter.resetPusher();
             sleep(800);
             if (timer.seconds() > PARK_TIME) {
                 drive.moveToPosition(-10, 1);
                 shooter.stopShooter();
             }
             shooter.shoot();
-            sleep(500);
-            shooter.resetPusher();
             sleep(800);
             if (timer.seconds() > PARK_TIME) {
                 drive.moveToPosition(-10, 1);
                 shooter.stopShooter();
             }
             shooter.shoot();
-            sleep(500);
-            shooter.resetPusher();
             sleep(800);
 
             drive.moveToPosition(-10, 1);
@@ -205,24 +198,18 @@ public class AutoWobbleBoth extends FishloAutonomousProgram {
 
             drive.turnWithEncoder(1300, ROBOT_SPEED);
             shooter.shoot();
-            sleep(500);
-            shooter.resetPusher();
             sleep(800);
             if (timer.seconds() > PARK_TIME) {
 //                drive.moveToPosition(-10, 1);
                 shooter.stopShooter();
             }
             shooter.shoot();
-            sleep(500);
-            shooter.resetPusher();
             sleep(800);
             if (timer.seconds() > PARK_TIME) {
 //                drive.moveToPosition(-10, 1);
                 shooter.stopShooter();
             }
             shooter.shoot();
-            sleep(500);
-            shooter.resetPusher();
             sleep(800);
 
             drive.moveToPosition(-10, 1);
@@ -292,12 +279,8 @@ public class AutoWobbleBoth extends FishloAutonomousProgram {
             drive.turnWithEncoder(1900, 1);
             drive.moveToPosition(48, 1);
             shooter.shoot();
-            sleep(500);
-            shooter.resetPusher();
             sleep(1000);
             shooter.shoot();
-            sleep(500);
-            shooter.resetPusher();
             sleep(800);
 
             drive.moveToPosition(-35, 1);
