@@ -12,8 +12,6 @@ public class Intake extends SubSystem {
     private DcMotor intake;
     private DcMotor transfer;
     private CRServo intakeLever;
-    public static double INTAKE_SPEED = 0.5;
-    public static double TRANSFER_SPEED = 0.25;
 
     boolean intake_down = false;
 
@@ -49,42 +47,8 @@ public class Intake extends SubSystem {
             intake_down = true;
         }
 
-        if (robot.gamepad2.y) {
-            sum ++;
-            if (sum > 4) {
-                sum = 2;
-            }
-        }
-
-        if (robot.gamepad2.right_trigger > 0.5) {
-            TRANSFER_SPEED = 0.75;
-        }
-        else {
-            TRANSFER_SPEED = 0.25;
-        }
-
-        if (robot.gamepad2.left_trigger > 0.5) {
-            INTAKE_SPEED = -1 * Math.abs(INTAKE_SPEED);
-            TRANSFER_SPEED = -1 * Math.abs(TRANSFER_SPEED);
-        }
-        else {
-            TRANSFER_SPEED = Math.abs(TRANSFER_SPEED);
-            INTAKE_SPEED = Math.abs(INTAKE_SPEED);
-        }
-
-        int remainder = sum % 2;
-
-        if (remainder == 1) {
-            startIntake();
-        }
-        else {
-            stopIntake();
-        }
-    }
-
-    public void startIntake() {
-        intake.setPower(INTAKE_SPEED);
-        transfer.setPower(TRANSFER_SPEED);
+        intake.setPower(robot.gamepad2.left_stick_y);
+        transfer.setPower(robot.gamepad2.left_stick_y);
     }
 
     public void stopIntake() {

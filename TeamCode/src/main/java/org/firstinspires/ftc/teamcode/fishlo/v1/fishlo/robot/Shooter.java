@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.robot;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
@@ -65,9 +64,9 @@ public class Shooter extends SubSystem {
         goalMap.put(Goals.POWER_SHOT_2, new Pose3d(new Pose2d(74.5, 37.5, 180), 30));
         goalMap.put(Goals.POWER_SHOT_3, new Pose3d(new Pose2d(74.5, 30, 180), 30));
 
-        //if (DropNShootRoadRunnerAuto.autoEnded) {
-           // mecanumDrive.setPoseEstimate(DropNShootRoadRunnerAuto.endPose);
-       // }
+        if (DropNShootRoadRunnerAuto.autoEnded) {
+            mecanumDrive.setPoseEstimate(DropNShootRoadRunnerAuto.endPose);
+        }
     }
 
     @Override
@@ -130,7 +129,6 @@ public class Shooter extends SubSystem {
         robot.telemetry.addData("Goal Distance: ", goalDistance);
         robot.telemetry.addData("Goal Angle: ", goalAngle);
         robot.telemetry.addData("Mode: ", mode);
-        robot.telemetry.update();
     }
 
     @Override
