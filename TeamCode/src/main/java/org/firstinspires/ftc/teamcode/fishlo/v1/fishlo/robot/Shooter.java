@@ -24,7 +24,7 @@ public class Shooter extends SubSystem {
 
     ElapsedTime timer = new ElapsedTime();
 
-    private enum Goals {
+    public enum Goals {
         LOW,
         MIDDLE,
         HIGH,
@@ -38,7 +38,7 @@ public class Shooter extends SubSystem {
         OVERRIDE
     }
 
-    private HashMap<Goals, Pose3d> goalMap = new HashMap<Goals, Pose3d>();
+    public HashMap<Goals, Pose3d> goalMap = new HashMap<Goals, Pose3d>();
 
     private Goals[] targets = {Goals.LOW, Goals.MIDDLE, Goals.HIGH, Goals.POWER_SHOT_1, Goals.POWER_SHOT_2, Goals.POWER_SHOT_3};
     private Goals target;
@@ -154,11 +154,19 @@ public class Shooter extends SubSystem {
         shooter_started = false;
     }
 
-    public void startShooterAuto(double distance) {
-        double shooter_speed = Math.sqrt((distance * 9.8)/Math.sin(2 * RAMP_ANGLE));
-        shooter_power = 7.2 / shooter_speed;
-        shooter.setPower(shooter_power);
-        shooter_started = true;
+    public void startShooterAuto(Goals goal, Pose2d drivePose) {
+        Pose2d goalPose = goalMap.get(target).getPosition();
+        double height = goalMap.get(target).getHeight();
+
+        double goalDistance = Math.sqrt(Math.pow(drivePose.getX() - goalPose.getX(), 2) +
+                Math.pow(drivePose.getY() - goalPose.getY(), 2));
+        double goalAngle = Math.atan(drivePose.getX()-goalPose.getX())/(drivePose.getY()-goalPose.getY());
+        double GRAVITY = 9.8;
+
+        double shooter_speed = Math.sqrt(
+                (GRAVITY * Math.pow(goalDistance, 2)) /
+                        ( 2 * Math.pow(Math.cos(RAMP_ANGLE), 2) * (Math.tan(RAMP_ANGLE) * goalDistance - height))
+        );
     }
 
 }

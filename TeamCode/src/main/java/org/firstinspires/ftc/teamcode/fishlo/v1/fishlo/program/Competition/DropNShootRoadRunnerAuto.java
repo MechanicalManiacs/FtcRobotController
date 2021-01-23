@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.program.FishloAutonomousProgram;
 import org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.robot.OpenCV;
+import org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.robot.Shooter;
 import org.firstinspires.ftc.teamcode.robot.Robot;
 
 import java.util.ArrayList;
@@ -379,7 +380,12 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
     }
 
     // Shoot function
-    public void shoot() {}
+    public void shoot() {
+        shooter.startShooterAuto(Shooter.Goals.HIGH, mecanumDrive.getPoseEstimate());
+        sleep(500);
+        shooter.shoot();
+        sleep(500);
+    }
 
     // Rotate function
     public Vector2d rotate(Vector2d point) {
