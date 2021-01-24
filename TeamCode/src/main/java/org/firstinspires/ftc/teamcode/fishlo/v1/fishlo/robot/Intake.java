@@ -27,7 +27,7 @@ public class Intake extends SubSystem {
     public void handle() {
         intake.setPower(robot.gamepad2.left_stick_y);
         transfer.setPower(robot.gamepad2.left_stick_y);
-        intakeLever.setPower(robot.gamepad2.left_trigger-robot.gamepad2.right_trigger);
+        intakeLever.setPower((robot.gamepad2.left_trigger-robot.gamepad2.right_trigger)/2);
     }
 
     public void stopIntake() {

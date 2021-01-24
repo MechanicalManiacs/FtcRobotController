@@ -19,7 +19,7 @@ public class Shooter extends SubSystem {
 
     public static double RAMP_ANGLE = 30;
     double shooter_power;
-    boolean shooter_started = false;
+    public boolean shooter_started = false;
     private SampleMecanumDrive mecanumDrive;
 
     ElapsedTime timer = new ElapsedTime();
@@ -42,7 +42,7 @@ public class Shooter extends SubSystem {
 
     private Goals[] targets = {Goals.LOW, Goals.MIDDLE, Goals.HIGH, Goals.POWER_SHOT_1, Goals.POWER_SHOT_2, Goals.POWER_SHOT_3};
     private Goals target;
-    private Modes mode;
+    private Modes mode = Modes.AUTOMATIC;
     int targetIndex = 2;
     public Shooter(Robot robot) {
         super(robot);
@@ -67,52 +67,63 @@ public class Shooter extends SubSystem {
         if (DropNShootRoadRunnerAuto.autoEnded) {
             mecanumDrive.setPoseEstimate(DropNShootRoadRunnerAuto.endPose);
         }
+        else {
+            mecanumDrive.setPoseEstimate(new Pose2d(-63, -49, 180));
+        }
     }
 
     @Override
     public void handle() {
 
         //Driver can cycle through the targets using the d-pad
-        if (robot.gamepad2.dpad_right) {
+        if (robot.gamepad2.dpad_up) {
             targetIndex++;
             if (targetIndex > 5) {
                 targetIndex = 0;
             }
         }
-        if (robot.gamepad2.dpad_left) {
+        if (robot.gamepad2.dpad_down) {
             targetIndex--;
             if (targetIndex < 0) {
                 targetIndex = 5;
             }
+        }
+        if (robot.gamepad2.dpad_right) {
+            targetIndex = 2;
+        }
+        if (robot.gamepad2.dpad_left) {
+            targetIndex = 4;
         }
         target = targets[targetIndex];
 
         mecanumDrive.update();
         Pose2d drivePose = mecanumDrive.getPoseEstimate();
         Pose2d goalPose = goalMap.get(target).getPosition();
-        double height = goalMap.get(target).getHeight();
+        double height = goalMap.get(target).getHeight() * 0.0254;
 
         double goalDistance = Math.sqrt(Math.pow(drivePose.getX() - goalPose.getX(), 2) +
-                Math.pow(drivePose.getY() - goalPose.getY(), 2));
+                Math.pow(drivePose.getY() - goalPose.getY(), 2)) * 0.0254;
         double goalAngle = Math.atan(drivePose.getX()-goalPose.getX())/(drivePose.getY()-goalPose.getY());
         double GRAVITY = 9.8;
 
         double shooter_speed = Math.sqrt(
                 (GRAVITY * Math.pow(goalDistance, 2)) /
-                ( 2 * Math.pow(Math.cos(RAMP_ANGLE), 2) * (Math.tan(RAMP_ANGLE) * goalDistance - height))
+                        ( 2 * Math.pow(Math.cos(Math.toRadians(RAMP_ANGLE)), 2) * (Math.tan(Math.toRadians(RAMP_ANGLE)) * goalDistance - height))
                 );
 
 
-        shooter_speed = Math.max(0, Math.min(7.2, shooter_speed));
-        shooter_power = 7.2/shooter_speed;
-
         //Driver can manually override the shooter power
-        if (robot.gamepad2.dpad_up) {
-            shooter_power = 0.75;
+        if (robot.gamepad2.left_stick_button) {
             mode = Modes.OVERRIDE;
         }
-        else {
+        if (robot.gamepad2.right_stick_button){
             mode = Modes.AUTOMATIC;
+        }
+        if (mode == Modes.AUTOMATIC) {
+            shooter_power = Math.max(0, Math.min(1, shooter_power));
+        }
+        if (mode == Modes.OVERRIDE) {
+            shooter_power = 1;
         }
 
         if (robot.gamepad2.right_bumper){
@@ -125,10 +136,12 @@ public class Shooter extends SubSystem {
             shoot();
         }
 
+        robot.telemetry.addData("Mode: ", mode);
         robot.telemetry.addData("Goal: ", target.name());
         robot.telemetry.addData("Goal Distance: ", goalDistance);
         robot.telemetry.addData("Goal Angle: ", goalAngle);
-        robot.telemetry.addData("Mode: ", mode);
+        robot.telemetry.addData("Shooting Speed (Max is 7.2): ", shooter_speed);
+        robot.telemetry.addData("Shooting Power", shooter_power);
     }
 
     @Override
@@ -138,8 +151,8 @@ public class Shooter extends SubSystem {
 
     public void shoot() {
         timer.reset();
-        while (timer.milliseconds() < 1000) {
-            pusher.setPower(0.5);
+        while (timer.milliseconds() < 400) {
+            pusher.setPower(0.3);
         }
         pusher.setPower(0);
     }
@@ -149,24 +162,40 @@ public class Shooter extends SubSystem {
         shooter_started = true;
     }
 
+    public void startPusher(double power) {
+        pusher.setPower(power);
+    }
+    public void stopPusher() {
+        pusher.setPower(0);
+    }
+
     public void stopShooter() {
         shooter.setPower(0);
         shooter_started = false;
     }
 
     public void startShooterAuto(Goals goal, Pose2d drivePose) {
-        Pose2d goalPose = goalMap.get(target).getPosition();
-        double height = goalMap.get(target).getHeight();
+        Pose2d goalPose = goalMap.get(goal).getPosition();
+        double height = goalMap.get(goal).getHeight();
 
         double goalDistance = Math.sqrt(Math.pow(drivePose.getX() - goalPose.getX(), 2) +
                 Math.pow(drivePose.getY() - goalPose.getY(), 2));
         double goalAngle = Math.atan(drivePose.getX()-goalPose.getX())/(drivePose.getY()-goalPose.getY());
         double GRAVITY = 9.8;
 
+
         double shooter_speed = Math.sqrt(
                 (GRAVITY * Math.pow(goalDistance, 2)) /
-                        ( 2 * Math.pow(Math.cos(RAMP_ANGLE), 2) * (Math.tan(RAMP_ANGLE) * goalDistance - height))
+                        ( 2 * Math.pow(Math.cos(Math.toRadians(RAMP_ANGLE)), 2) * (Math.tan(Math.toRadians(RAMP_ANGLE)) * goalDistance - height))
         );
+
+        shooter_speed = Math.max(0, Math.min(7.2, shooter_speed));
+        robot.telemetry.addData("Shooter Speed", shooter_speed);
+        robot.telemetry.addData("Shooting Angle", Math.toDegrees(goalAngle));
+
+        shooter_power = 7.2 / shooter_speed;
+
+        shooter.setPower(shooter_power);
     }
 
 }

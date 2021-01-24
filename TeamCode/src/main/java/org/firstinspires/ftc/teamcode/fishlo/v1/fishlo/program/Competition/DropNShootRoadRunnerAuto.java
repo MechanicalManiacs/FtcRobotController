@@ -207,10 +207,12 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
             telemetry.update();
             mecanumDrive.followTrajectory(targetZoneATraj2);
 
+            telemetry.addData("Angle: ", mecanumDrive.getPoseEstimate());
             // Shoot
             telemetry.addLine("Shooting");
             telemetry.update();
-            shoot();
+
+            shoot(Shooter.Goals.MIDDLE, targetZoneATraj2.end());
 
             // Move to second wobble goal
             telemetry.addLine("Moving to second wobble goal");
@@ -224,7 +226,7 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
             claw.armDown();
             mecanumDrive.followTrajectory(targetZoneATraj4);
             claw.close();
-            sleep(500);
+            sleep(700);
             claw.armUp();
 
             // Move back to target zone A and drop wobble goal
@@ -271,7 +273,9 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
             // Shoot rings
             telemetry.addLine("Shooting");
             telemetry.update();
-            shoot();
+            shoot(Shooter.Goals.POWER_SHOT_3, targetZoneBTraj2.end());
+            shoot(Shooter.Goals.POWER_SHOT_2, targetZoneBTraj2.end());
+            shoot(Shooter.Goals.POWER_SHOT_1, targetZoneBTraj2.end());
 
             // Move to second wobble goal
             telemetry.addLine("Moving to second wobble goal");
@@ -331,7 +335,9 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
             // Shoot the rings
             telemetry.addLine("Shooting rings");
             telemetry.update();
-            shoot();
+            shoot(Shooter.Goals.POWER_SHOT_3, targetZoneCTraj2.end());
+            shoot(Shooter.Goals.POWER_SHOT_2, targetZoneCTraj2.end());
+            shoot(Shooter.Goals.POWER_SHOT_1, targetZoneCTraj2.end());
 
             // Move to second wobble goal
             telemetry.addLine("Moving to second wobble goal");
@@ -380,11 +386,15 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
     }
 
     // Shoot function
-    public void shoot() {
-        shooter.startShooterAuto(Shooter.Goals.HIGH, mecanumDrive.getPoseEstimate());
-        sleep(500);
-        shooter.shoot();
-        sleep(500);
+    public void shoot(Shooter.Goals goal, Pose2d curPose) {
+        telemetry.addLine("Starting shooter...");
+        shooter.startShooterAuto(goal, curPose);
+        sleep(2000);
+        telemetry.addLine("Shooting...");
+        shooter.startPusher(0.2);
+        sleep(1000);
+        shooter.stopPusher();
+        shooter.stopShooter();
     }
 
     // Rotate function
@@ -421,7 +431,7 @@ class TrajectoryBuilderA extends Thread {
 
             Trajectory targetZoneATraj3 = mecanumDrive.trajectoryBuilder(targetZoneATraj2.end())
                     .splineToConstantHeading(new Vector2d(5, -5), Math.toRadians(0))
-                    .splineToConstantHeading(new Vector2d(-64, 4), Math.toRadians(0))
+                    .splineToConstantHeading(new Vector2d(-64, 20), Math.toRadians(0))
                     .build();
             trajectoryList.add(targetZoneATraj3);
 
