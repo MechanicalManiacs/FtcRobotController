@@ -22,11 +22,18 @@ public class OpenCV extends SubSystem {
     private UGContourRingDetector detector = new UGContourRingDetector(robot.hardwareMap, "Webcam 1");
     private UGContourRingPipeline.Height height;
 
+    private final int HORIZON = 100;
+
     public enum targetZone {
         A,
         B,
         C,
         X
+    }
+
+    public void initVision() {
+        detector.init();
+        UGContourRingPipeline.Config.setHORIZON(HORIZON);
     }
 
     @Override
@@ -36,11 +43,7 @@ public class OpenCV extends SubSystem {
     public void handle() {}
 
     @Override
-    public void stop() {}
-
-    public void initVision() {
-        detector.init();
-    }
+    public void stop() {detector.camera.stopStreaming();}
 
     public targetZone getTargetZone() {
         height = detector.getHeight();
@@ -68,4 +71,7 @@ public class OpenCV extends SubSystem {
         return height;
     }
 
+    public void stopAll() {
+        detector.camera.closeCameraDevice();
+    }
 }
