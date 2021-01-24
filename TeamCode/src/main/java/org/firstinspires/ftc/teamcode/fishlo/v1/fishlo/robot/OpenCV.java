@@ -19,12 +19,8 @@ public class OpenCV extends SubSystem {
         super(robot);
     }
 
-    private UGRectDetector detector = new UGRectDetector(robot.hardwareMap, "Webcam 1");
-
-    private UGRectDetector.Stack stack;
-
-    private final int RECT_WIDTH = 50;
-    private final int RECT_HEIGHT = 50;
+    private UGContourRingDetector detector = new UGContourRingDetector(robot.hardwareMap, "Webcam 1");
+    private UGContourRingPipeline.Height height;
 
     public enum targetZone {
         A,
@@ -44,15 +40,14 @@ public class OpenCV extends SubSystem {
 
     public void initVision() {
         detector.init();
-        detector.setRectangleSize(RECT_WIDTH, RECT_HEIGHT);
     }
 
     public targetZone getTargetZone() {
-        stack = detector.getStack();
+        height = detector.getHeight();
 
         targetZone targetZone = OpenCV.targetZone.X;
 
-        switch (stack) {
+        switch (height) {
             case ZERO:
                 targetZone = targetZone.A;
                 break;
@@ -67,10 +62,10 @@ public class OpenCV extends SubSystem {
         return targetZone;
     }
 
-    public UGRectDetector.Stack getHeight() {
-        stack = detector.getStack();
+    public UGContourRingPipeline.Height getHeight() {
+        height = detector.getHeight();
 
-        return stack;
+        return height;
     }
 
 }
