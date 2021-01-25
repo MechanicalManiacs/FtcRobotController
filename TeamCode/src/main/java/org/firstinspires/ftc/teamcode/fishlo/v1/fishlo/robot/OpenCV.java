@@ -3,15 +3,10 @@ package org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.robot;
 import com.arcrobotics.ftclib.vision.UGContourRingDetector;
 import com.arcrobotics.ftclib.vision.UGContourRingPipeline;
 import com.arcrobotics.ftclib.vision.UGRectDetector;
-import com.arcrobotics.ftclib.vision.UGRectRingPipeline;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.robot.Robot;
 import org.firstinspires.ftc.teamcode.robot.SubSystem;
-import org.openftc.easyopencv.OpenCvCamera;
-import org.openftc.easyopencv.OpenCvCameraFactory;
-import org.openftc.easyopencv.OpenCvCameraRotation;
-import org.openftc.easyopencv.OpenCvInternalCamera;
+import org.opencv.core.Scalar;
 
 public class OpenCV extends SubSystem {
 
@@ -19,10 +14,10 @@ public class OpenCV extends SubSystem {
         super(robot);
     }
 
-    private UGContourRingDetector detector = new UGContourRingDetector(robot.hardwareMap, "Webcam 1");
+    private UGContourRingDetector detector = new UGContourRingDetector(robot.hardwareMap, "Webcam 1", robot.telemetry, true);
     private UGContourRingPipeline.Height height;
 
-    private final int HORIZON = 100;
+    private final int HORIZON = 150;
 
     public enum targetZone {
         A,
@@ -33,6 +28,7 @@ public class OpenCV extends SubSystem {
 
     public void initVision() {
         detector.init();
+        UGContourRingPipeline.Config.setCAMERA_WIDTH(320);
         UGContourRingPipeline.Config.setHORIZON(HORIZON);
     }
 
@@ -48,20 +44,20 @@ public class OpenCV extends SubSystem {
     public targetZone getTargetZone() {
         height = detector.getHeight();
 
-        targetZone targetZone = OpenCV.targetZone.X;
+        targetZone targetZone;
 
-        switch (height) {
-            case ZERO:
-                targetZone = targetZone.A;
-                break;
-            case ONE:
-                targetZone = targetZone.B;
-                break;
-            case FOUR:
-                targetZone = targetZone.C;
-                break;
+        if (height == UGContourRingPipeline.Height.ZERO) {
+            targetZone = OpenCV.targetZone.A;
         }
-
+        else if (height == UGContourRingPipeline.Height.ONE) {
+            targetZone = OpenCV.targetZone.B;
+        }
+        else if (height == UGContourRingPipeline.Height.FOUR) {
+            targetZone = OpenCV.targetZone.C;
+        }
+        else {
+            targetZone = OpenCV.targetZone.X;
+        }
         return targetZone;
     }
 

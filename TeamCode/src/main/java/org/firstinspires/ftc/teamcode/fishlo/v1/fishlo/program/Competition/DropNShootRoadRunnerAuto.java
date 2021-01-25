@@ -79,7 +79,7 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
         poseTracker = new PoseTracker(mecanumDrive, startPose);
         poseTracker.start();
 
-//        openCV.initVision();
+        openCV.initVision();
 
 
         // Make TrajectoryBuilderA thread
@@ -166,11 +166,11 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
         // Get the target zone from the webcam
         while (!isStarted()) {
 
-            targetZone = OpenCV.targetZone.A;//openCV.getTargetZone();
-//            telemetry.clear();
-//            telemetry.addData("Target Zone: ", targetZone);
-//            telemetry.addData("Rings: ", openCV.getHeight());
-//            telemetry.update();
+            targetZone = openCV.getTargetZone();
+            telemetry.clear();
+            telemetry.addData("Target Zone: ", targetZone);
+            telemetry.addData("Rings: ", openCV.getHeight());
+            telemetry.update();
         }
     }
 
