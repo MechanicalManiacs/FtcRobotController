@@ -21,9 +21,9 @@ repositories {
 dependencies {
     annotationProcessor files('lib/OpModeAnnotationProcessor.jar')
     implementation 'org.openftc:easyopencv:1.4.1'
-    implementation 'com.arcrobotics:ftclib:1.1.6'
+    implementation 'com.arcrobotics:ftclib:1.2.0'
     // the following is optional if you want vision
-    implementation 'com.arcrobotics.ftclib:vision:1.1.0'
+    implementation 'com.arcrobotics.ftclib:vision:1.2.0'
 }
 android {
     compileOptions {
