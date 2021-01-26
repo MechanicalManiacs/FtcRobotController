@@ -103,8 +103,8 @@ public class Shooter extends SubSystem {
 
         double goalDistance = Math.sqrt(Math.pow(drivePose.getX() - goalPose.getX(), 2) +
                 Math.pow(drivePose.getY() - goalPose.getY(), 2)) * 0.0254;
-        double goalAngle = Math.atan((drivePose.getX()-goalPose.getX())
-                /(drivePose.getY()-goalPose.getY()));
+        double goalAngle = Math.toDegrees(Math.atan((drivePose.getX()-goalPose.getX())
+                /(drivePose.getY()-goalPose.getY())));
         double GRAVITY = 9.8;
 
         double shooter_speed = Math.sqrt(
