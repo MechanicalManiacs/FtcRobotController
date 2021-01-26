@@ -133,7 +133,7 @@ public class Shooter extends SubSystem {
         else if (robot.gamepad2.left_bumper) {
             stopShooter();
         }
-        if (robot.gamepad2.a && shooter_started) {
+        if (robot.gamepad2.a) {
             shoot();
         }
 
@@ -153,7 +153,7 @@ public class Shooter extends SubSystem {
     public void shoot() {
         timer.reset();
         while (timer.milliseconds() < 400) {
-            pusher.setPower(0.3);
+            pusher.setPower(0.2);
         }
         pusher.setPower(0);
     }

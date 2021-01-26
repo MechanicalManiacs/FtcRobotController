@@ -1,10 +1,14 @@
 package org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.robot;
 
-import com.arcrobotics.ftclib.vision.UGContourRingDetector;
 import com.arcrobotics.ftclib.vision.UGContourRingPipeline;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.robot.Robot;
 import org.firstinspires.ftc.teamcode.robot.SubSystem;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvCameraRotation;
+import org.openftc.easyopencv.OpenCvInternalCamera;
 // com/arcrobotics/ftclib/vision/UGContourRingDetector.kt
 
 public class OpenCV extends SubSystem {
@@ -13,10 +17,7 @@ public class OpenCV extends SubSystem {
         super(robot);
     }
 
-    private UGContourRingDetector detector;
     private UGContourRingPipeline.Height height;
-
-    private final int HORIZON = 100;
 
     public enum targetZone {
         A,
@@ -24,25 +25,49 @@ public class OpenCV extends SubSystem {
         C,
         X
     }
+    private static final int CAMERA_WIDTH = 320; // width  of wanted camera resolution
+    private static final int CAMERA_HEIGHT = 240; // height of wanted camera resolution
+
+    private static final int HORIZON = 100; // horizon value to tune
+
+    private static final boolean DEBUG = false; // if debug is wanted, change to true
+
+    private static final boolean USING_WEBCAM = true; // change to true if using webcam
+    private static final String WEBCAM_NAME = "Webcam 1"; // insert webcam name from configuration if using webcam
+
+    private UGContourRingPipeline pipeline;
+    private OpenCvCamera camera;
 
     public void initVision() {
-        detector = new UGContourRingDetector(robot.hardwareMap, "Webcam 1", robot.telemetry, false);
-        detector.init();
-        UGContourRingPipeline.Config.setCAMERA_WIDTH(320);
+        int cameraMonitorViewId = robot
+                .hardwareMap
+                .appContext
+                .getResources().getIdentifier(
+                        "cameraMonitorViewId",
+                        "id",
+                        robot.hardwareMap.appContext.getPackageName()
+                );
+        if (USING_WEBCAM) {
+            camera = OpenCvCameraFactory
+                    .getInstance()
+                    .createWebcam(robot.hardwareMap.get(WebcamName.class, WEBCAM_NAME), cameraMonitorViewId);
+        } else {
+            camera = OpenCvCameraFactory
+                    .getInstance()
+                    .createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
+        }
+
+        camera.setPipeline(pipeline = new UGContourRingPipeline(robot.telemetry, DEBUG));
+
+        UGContourRingPipeline.Config.setCAMERA_WIDTH(CAMERA_WIDTH);
+
         UGContourRingPipeline.Config.setHORIZON(HORIZON);
+
+        camera.openCameraDeviceAsync(() -> camera.startStreaming(CAMERA_WIDTH, CAMERA_HEIGHT, OpenCvCameraRotation.UPRIGHT));
     }
 
-    @Override
-    public void init() {}
-
-    @Override
-    public void handle() {}
-
-    @Override
-    public void stop() {detector.camera.stopStreaming();}
-
     public targetZone getTargetZone() {
-        height = detector.getHeight();
+        height = pipeline.getHeight();
 
         targetZone targetZone;
 
@@ -62,12 +87,18 @@ public class OpenCV extends SubSystem {
     }
 
     public UGContourRingPipeline.Height getHeight() {
-        height = detector.getHeight();
-
         return height;
     }
 
-    public void stopAll() {
-        detector.camera.closeCameraDevice();
-    }
+
+    @Override
+    public void init() {}
+
+    @Override
+    public void handle() {}
+
+    @Override
+    public void stop() {camera.stopStreaming();}
+
+
 }
