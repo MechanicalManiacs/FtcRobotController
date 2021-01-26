@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 @Autonomous
 public class OpenCVtest extends LinearOpMode {
 
-    private final int HORIZON = 200;
+    private final int HORIZON = 100;
 
     public enum targetZone {
         A,

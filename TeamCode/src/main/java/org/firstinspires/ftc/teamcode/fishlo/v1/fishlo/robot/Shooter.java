@@ -103,7 +103,8 @@ public class Shooter extends SubSystem {
 
         double goalDistance = Math.sqrt(Math.pow(drivePose.getX() - goalPose.getX(), 2) +
                 Math.pow(drivePose.getY() - goalPose.getY(), 2)) * 0.0254;
-        double goalAngle = Math.atan(drivePose.getX()-goalPose.getX())/(drivePose.getY()-goalPose.getY());
+        double goalAngle = Math.atan((drivePose.getX()-goalPose.getX())
+                /(drivePose.getY()-goalPose.getY()));
         double GRAVITY = 9.8;
 
         double shooter_speed = Math.sqrt(
@@ -162,12 +163,6 @@ public class Shooter extends SubSystem {
         shooter_started = true;
     }
 
-    public void startPusher(double power) {
-        pusher.setPower(power);
-    }
-    public void stopPusher() {
-        pusher.setPower(0);
-    }
 
     public void stopShooter() {
         shooter.setPower(0);
@@ -180,7 +175,8 @@ public class Shooter extends SubSystem {
 
         double goalDistance = Math.sqrt(Math.pow(drivePose.getX() - goalPose.getX(), 2) +
                 Math.pow(drivePose.getY() - goalPose.getY(), 2));
-        double goalAngle = Math.atan(drivePose.getX()-goalPose.getX())/(drivePose.getY()-goalPose.getY());
+        double goalAngle = Math.atan((drivePose.getX()-goalPose.getX())
+                /(drivePose.getY()-goalPose.getY()));
         double GRAVITY = 9.8;
 
 
@@ -196,6 +192,7 @@ public class Shooter extends SubSystem {
         shooter_power = 7.2 / shooter_speed;
 
         shooter.setPower(shooter_power);
+        mecanumDrive.turn(goalAngle);
     }
 
 }

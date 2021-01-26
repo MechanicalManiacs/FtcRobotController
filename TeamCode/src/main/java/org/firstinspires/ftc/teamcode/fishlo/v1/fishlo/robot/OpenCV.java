@@ -2,11 +2,10 @@ package org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.robot;
 
 import com.arcrobotics.ftclib.vision.UGContourRingDetector;
 import com.arcrobotics.ftclib.vision.UGContourRingPipeline;
-import com.arcrobotics.ftclib.vision.UGRectDetector;
 
 import org.firstinspires.ftc.teamcode.robot.Robot;
 import org.firstinspires.ftc.teamcode.robot.SubSystem;
-import org.opencv.core.Scalar;
+// com/arcrobotics/ftclib/vision/UGContourRingDetector.kt
 
 public class OpenCV extends SubSystem {
 
@@ -14,10 +13,10 @@ public class OpenCV extends SubSystem {
         super(robot);
     }
 
-    private UGContourRingDetector detector = new UGContourRingDetector(robot.hardwareMap, "Webcam 1", robot.telemetry, true);
+    private UGContourRingDetector detector;
     private UGContourRingPipeline.Height height;
 
-    private final int HORIZON = 150;
+    private final int HORIZON = 100;
 
     public enum targetZone {
         A,
@@ -27,6 +26,7 @@ public class OpenCV extends SubSystem {
     }
 
     public void initVision() {
+        detector = new UGContourRingDetector(robot.hardwareMap, "Webcam 1", robot.telemetry, false);
         detector.init();
         UGContourRingPipeline.Config.setCAMERA_WIDTH(320);
         UGContourRingPipeline.Config.setHORIZON(HORIZON);

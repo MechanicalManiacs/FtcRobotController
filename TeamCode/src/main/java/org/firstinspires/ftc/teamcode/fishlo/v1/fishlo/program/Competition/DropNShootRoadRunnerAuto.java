@@ -212,7 +212,9 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
             telemetry.addLine("Shooting");
             telemetry.update();
 
-            shoot(Shooter.Goals.MIDDLE, targetZoneATraj2.end());
+            shoot(Shooter.Goals.POWER_SHOT_3, targetZoneATraj2.end());
+            shoot(Shooter.Goals.POWER_SHOT_2, targetZoneATraj2.end());
+            shoot(Shooter.Goals.POWER_SHOT_1, targetZoneATraj2.end());
 
             // Move to second wobble goal
             telemetry.addLine("Moving to second wobble goal");
@@ -391,9 +393,8 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
         shooter.startShooterAuto(goal, curPose);
         sleep(2000);
         telemetry.addLine("Shooting...");
-        shooter.startPusher(0.2);
-        sleep(1000);
-        shooter.stopPusher();
+        shooter.shoot();
+        sleep(500);
         shooter.stopShooter();
     }
 
