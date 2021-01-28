@@ -17,9 +17,10 @@ public class Shooter extends SubSystem {
     private CRServo pusher;
     private DcMotor shooter;
 
-    public static double RAMP_ANGLE = 30;
+    public static double RAMP_ANGLE = 45;
     double shooter_power;
     public boolean shooter_started = false;
+    private double MAX_SPEED = 7.2;
     private SampleMecanumDrive mecanumDrive;
 
     ElapsedTime timer = new ElapsedTime();
@@ -52,12 +53,13 @@ public class Shooter extends SubSystem {
     public void init() {
         shooter = robot.hardwareMap.dcMotor.get("shooter");
         pusher = robot.hardwareMap.crservo.get("pusher");
+        shooter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         mecanumDrive = new SampleMecanumDrive(robot.hardwareMap);
 
         // Set target positions in hash map
-        goalMap.put(Goals.LOW, new Pose3d(new Pose2d(74, -36, 180), 17));
+        goalMap.put(Goals.LOW, new Pose3d(new Pose2d(74, -36, 180), 16));
         goalMap.put(Goals.MIDDLE, new Pose3d(new Pose2d(74, -36, 180), 25));
         goalMap.put(Goals.HIGH, new Pose3d(new Pose2d(74, -36, 180), 35));
         goalMap.put(Goals.POWER_SHOT_1, new Pose3d(new Pose2d(74.5, 45, 180), 30));
@@ -121,6 +123,7 @@ public class Shooter extends SubSystem {
             mode = Modes.AUTOMATIC;
         }
         if (mode == Modes.AUTOMATIC) {
+            shooter_power = shooter_speed/MAX_SPEED;
             shooter_power = Math.max(0, Math.min(1, shooter_power));
         }
         if (mode == Modes.OVERRIDE) {
@@ -152,8 +155,8 @@ public class Shooter extends SubSystem {
 
     public void shoot() {
         timer.reset();
-        while (timer.milliseconds() < 400) {
-            pusher.setPower(0.2);
+        while (timer.milliseconds() < 500) {
+            pusher.setPower(0.1);
         }
         pusher.setPower(0);
     }

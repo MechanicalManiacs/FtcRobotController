@@ -149,31 +149,32 @@ public class Drive extends SubSystem {
             );
         }
         if (driveType == DriveControls.TANK) {
-            left(-leftY);
-            right(-rightY);
 
             if (robot.gamepad1.right_bumper) {
-//                if (robot.gamepad1.right_trigger < 0.5) {
-//                    strafe(0.5);
-//                }
-//                else if (robot.gamepad1.left_trigger < 0.5) {
-//                    strafe(0.3);
-//                }
-//                else {
-                strafe(0.75);
-//                }
+                if (robot.gamepad1.right_trigger < 0.5) {
+                    strafe(0.5);
+                }
+                else if (robot.gamepad1.left_trigger < 0.5) {
+                    strafe(0.3);
+                }
+                else {
+                    strafe(1);
+                }
             }
-
-            if (robot.gamepad1.left_bumper) {
-//                if (robot.gamepad1.right_trigger < 0.5) {
-//                    strafe(-0.5);
-//                }
-//                else if (robot.gamepad1.left_trigger < 0.5) {
-//                    strafe(-0.3);
-//                }
-//                else {
-                strafe(-0.75);
-//                }
+            else if (robot.gamepad1.left_bumper) {
+                if (robot.gamepad1.right_trigger < 0.5) {
+                    strafe(-0.5);
+                }
+                else if (robot.gamepad1.left_trigger < 0.5) {
+                    strafe(-0.3);
+                }
+                else {
+                    strafe(-1);
+                }
+            }
+            else {
+                left(-leftY);
+                right(-rightY);
             }
 
 
