@@ -17,10 +17,12 @@ public class Shooter extends SubSystem {
     private CRServo pusher;
     private DcMotor shooter;
 
-    public static double RAMP_ANGLE = 45;
+    public static double RAMP_ANGLE = 35;
     double shooter_power;
     public boolean shooter_started = false;
-    private double MAX_SPEED = 7.2;
+    private double RPM = 5700;
+    private double WHEEL_DIAMETER = 0.072;
+    private double MAX_SPEED = WHEEL_DIAMETER*RPM/60;
     private SampleMecanumDrive mecanumDrive;
 
     ElapsedTime timer = new ElapsedTime();
@@ -106,12 +108,12 @@ public class Shooter extends SubSystem {
         double goalDistance = Math.sqrt(Math.pow(drivePose.getX() - goalPose.getX(), 2) +
                 Math.pow(drivePose.getY() - goalPose.getY(), 2)) * 0.0254;
         double goalAngle = Math.toDegrees(Math.atan((drivePose.getX()-goalPose.getX())
-                /(drivePose.getY()-goalPose.getY())));
+                /(drivePose.getY()-goalPose.getY()))) - mecanumDrive.getPoseEstimate().getHeading() + 15;
         double GRAVITY = 9.8;
 
         double shooter_speed = Math.sqrt(
                 (GRAVITY * Math.pow(goalDistance, 2)) /
-                        ( 2 * Math.pow(Math.cos(Math.toRadians(RAMP_ANGLE)), 2) * (Math.tan(Math.toRadians(RAMP_ANGLE)) * goalDistance - height))
+                        ( 2 * Math.pow(Math.cos(Math.toRadians(RAMP_ANGLE)), 2) * (Math.tan(Math.toRadians(RAMP_ANGLE)) * goalDistance - (height-8.5)))
                 );
 
 
@@ -144,8 +146,8 @@ public class Shooter extends SubSystem {
         robot.telemetry.addData("Goal: ", target.name());
         robot.telemetry.addData("Goal Distance: ", goalDistance);
         robot.telemetry.addData("Goal Angle: ", goalAngle);
-        robot.telemetry.addData("Shooting Speed (Max is 7.2): ", shooter_speed);
-        robot.telemetry.addData("Shooting Power", shooter_power);
+        robot.telemetry.addData("Shooting Speed (Max is " + MAX_SPEED + "): ", shooter_speed);
+        robot.telemetry.addData("Shooting Power (Goal is " + shooter_power + "): ", shooter.getPower());
     }
 
     @Override
@@ -156,7 +158,7 @@ public class Shooter extends SubSystem {
     public void shoot() {
         timer.reset();
         while (timer.milliseconds() < 500) {
-            pusher.setPower(0.1);
+            pusher.setPower(0.2);
         }
         pusher.setPower(0);
     }
@@ -172,30 +174,14 @@ public class Shooter extends SubSystem {
         shooter_started = false;
     }
 
-    public void startShooterAuto(Goals goal, Pose2d drivePose) {
-        Pose2d goalPose = goalMap.get(goal).getPosition();
-        double height = goalMap.get(goal).getHeight();
-
-        double goalDistance = Math.sqrt(Math.pow(drivePose.getX() - goalPose.getX(), 2) +
-                Math.pow(drivePose.getY() - goalPose.getY(), 2));
-        double goalAngle = Math.atan((drivePose.getX()-goalPose.getX())
-                /(drivePose.getY()-goalPose.getY()));
-        double GRAVITY = 9.8;
-
-
-        double shooter_speed = Math.sqrt(
-                (GRAVITY * Math.pow(goalDistance, 2)) /
-                        ( 2 * Math.pow(Math.cos(Math.toRadians(RAMP_ANGLE)), 2) * (Math.tan(Math.toRadians(RAMP_ANGLE)) * goalDistance - height))
-        );
-
-        shooter_speed = Math.max(0, Math.min(7.2, shooter_speed));
-        robot.telemetry.addData("Shooter Speed", shooter_speed);
-        robot.telemetry.addData("Shooting Angle", Math.toDegrees(goalAngle));
-
-        shooter_power = 7.2 / shooter_speed;
-
-        shooter.setPower(shooter_power);
-        mecanumDrive.turn(goalAngle);
+    public void startShooterAuto(double power) {
+        shooter.setPower(power);
+    }
+    public void shootAuto(double power) {
+        pusher.setPower(power);
+    }
+    public void stopPusher() {
+        pusher.setPower(0);
     }
 
 }
