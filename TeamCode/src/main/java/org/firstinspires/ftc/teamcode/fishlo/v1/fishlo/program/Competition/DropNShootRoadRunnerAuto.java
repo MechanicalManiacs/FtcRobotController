@@ -268,21 +268,21 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
             sleep(500);
             claw.armUp();
 
-//            // Move to shooting position
-//            telemetry.addLine("Moving to shooting position");
-//            telemetry.update();
-//            mecanumDrive.followTrajectory(targetZoneBTraj2);
-//
-//            claw.armDown();
-//            sleep(500);
-//            mecanumDrive.turn(Math.toRadians(-15));
-//            // Shoot rings
-//            telemetry.addLine("Shooting");
-//            telemetry.update();
-//            shoot();
-//            mecanumDrive.turn(Math.toRadians( 15));
-//            claw.armUp();
-//            sleep(500);
+            // Move to shooting position
+            telemetry.addLine("Moving to shooting position");
+            telemetry.update();
+            mecanumDrive.followTrajectory(targetZoneBTraj2);
+
+            claw.armDown();
+            sleep(500);
+            mecanumDrive.turn(Math.toRadians(-15));
+            // Shoot rings
+            telemetry.addLine("Shooting");
+            telemetry.update();
+            shoot();
+            mecanumDrive.turn(Math.toRadians( 15));
+            claw.armUp();
+            sleep(500);
 //
 //            // Move to second wobble goal
 //            telemetry.addLine("Moving to second wobble goal");
@@ -499,7 +499,7 @@ class TrajectoryBuilderB extends Thread {
             // Displaying the thread that is running
             Trajectory targetZoneBTraj1 = mecanumDrive.trajectoryBuilder(startPose, true)
                     .splineToConstantHeading(new Vector2d(-20, -49), Math.toRadians(0))
-                    .splineToConstantHeading(new Vector2d(48, -21), Math.toRadians(0))
+                    .splineToConstantHeading(new Vector2d(44, -21), Math.toRadians(0))
                     .build();
             trajectoryList.add(targetZoneBTraj1);
 
