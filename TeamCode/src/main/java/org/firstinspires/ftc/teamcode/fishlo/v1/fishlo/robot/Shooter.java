@@ -137,13 +137,13 @@ public class Shooter extends SubSystem {
             shoot();
         }
 
-        robot.telemetry.addData("Mode: ", mode);
+        robot.telemetry.addData("Mode: ", mode); 
         robot.telemetry.addData("Goal: ", target.name());
         robot.telemetry.addData("Goal Distance: ", goalDistance);
         robot.telemetry.addData("Goal Angle: ", goalAngle);
         robot.telemetry.addData("Target Linear Shooting Speed in m/s (Max is " + MAX_SPEED + "): ", shooter_speed);
         robot.telemetry.addData("Target Angular Shooting Speed in rads/s (Max is " + MAX_SPEED/(WHEEL_DIAMETER/2) + "): ", shooter_speed/(WHEEL_DIAMETER/2));
-        robot.telemetry.addData("Current Shooting Speed (Max is " + MAX_SPEED + "): ", shooter.getVelocity(AngleUnit.RADIANS)*WHEEL_DIAMETER/2);
+        robot.telemetry.addData("Current Shooting Speed (Max is " + MAX_SPEED + "): ", shooter.getVelocity(AngleUnit.RADIANS));
     }
 
     @Override
@@ -165,6 +165,7 @@ public class Shooter extends SubSystem {
         }
         if (mode == Modes.OVERRIDE) {
             shooter.setVelocity((MAX_SPEED*0.7)/(WHEEL_DIAMETER/2), AngleUnit.RADIANS);
+            shooter.setVelocity(0);
         }
         shooter_started = true;
     }
