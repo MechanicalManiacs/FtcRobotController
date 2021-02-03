@@ -142,8 +142,9 @@ public class Shooter extends SubSystem {
         robot.telemetry.addData("Goal: ", target.name());
         robot.telemetry.addData("Goal Distance: ", goalDistance);
         robot.telemetry.addData("Goal Angle: ", goalAngle);
-        robot.telemetry.addData("Shooting Speed (Max is " + MAX_SPEED + "): ", shooter_speed);
-        robot.telemetry.addData("Shooting Power (Goal is " + shooter_power + "): ", shooter.getPower());
+        robot.telemetry.addData("Target Linear Shooting Speed in m/s (Max is " + MAX_SPEED + "): ", shooter_speed);
+        robot.telemetry.addData("Target Angular Shooting Speed in rads/s (Max is " + MAX_SPEED + "): ", shooter_speed/(WHEEL_DIAMETER/2));
+        robot.telemetry.addData("Current Shooting Speed (Max is " + MAX_SPEED + "): ", shooter.getVelocity(AngleUnit.RADIANS)*WHEEL_DIAMETER/2);
     }
 
     @Override
@@ -161,10 +162,10 @@ public class Shooter extends SubSystem {
 
     public void startShooter() {
         if (mode == Modes.AUTOMATIC) {
-            shooter.setVelocity(shooter_speed / (3.14 * WHEEL_DIAMETER), AngleUnit.RADIANS);
+            shooter.setVelocity(shooter_speed / (WHEEL_DIAMETER/2), AngleUnit.RADIANS);
         }
         if (mode == Modes.OVERRIDE) {
-            shooter.setVelocity(MAX_SPEED/(3.14 * WHEEL_DIAMETER), AngleUnit.RADIANS);
+            shooter.setVelocity(MAX_SPEED/(WHEEL_DIAMETER/2), AngleUnit.RADIANS);
         }
         shooter_started = true;
     }
