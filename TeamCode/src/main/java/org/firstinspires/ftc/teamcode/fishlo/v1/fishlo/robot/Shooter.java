@@ -116,7 +116,7 @@ public class Shooter extends SubSystem {
 
         shooter_speed = Math.sqrt(
                 (GRAVITY * Math.pow(goalDistance, 2)) /
-                        ( 2 * Math.pow(Math.cos(Math.toRadians(RAMP_ANGLE)), 2) * (Math.tan(Math.toRadians(RAMP_ANGLE)) * goalDistance - (height-8.5)))
+                        ( 2 * Math.pow(Math.cos(Math.toRadians(RAMP_ANGLE)), 2) * (Math.tan(Math.toRadians(RAMP_ANGLE)) * goalDistance - height))
                 );
 
 
