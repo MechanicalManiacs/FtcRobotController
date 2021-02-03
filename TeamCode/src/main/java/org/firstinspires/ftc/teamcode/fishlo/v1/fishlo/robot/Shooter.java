@@ -20,7 +20,6 @@ public class Shooter extends SubSystem {
     private DcMotorEx shooter;
 
     public static double RAMP_ANGLE = 35;
-    double shooter_power;
     public boolean shooter_started = false;
     private double RPM = 5700;
     private double WHEEL_DIAMETER = 0.072;
