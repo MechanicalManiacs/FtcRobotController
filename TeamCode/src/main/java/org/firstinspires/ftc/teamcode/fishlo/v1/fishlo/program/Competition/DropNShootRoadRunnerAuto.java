@@ -339,10 +339,16 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
             telemetry.update();
             mecanumDrive.followTrajectory(targetZoneCTraj2);
 
-            // Shoot the rings
-            telemetry.addLine("Shooting rings");
+            claw.armDown();
+            sleep(500);
+            mecanumDrive.turn(Math.toRadians(-15));
+            // Shoot rings
+            telemetry.addLine("Shooting");
             telemetry.update();
             shoot();
+            mecanumDrive.turn(Math.toRadians( 15));
+            claw.armUp();
+            sleep(500);
 
             // Move to second wobble goal
             telemetry.addLine("Moving to second wobble goal");
@@ -355,7 +361,7 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
             claw.armDown();
             mecanumDrive.followTrajectory(targetZoneCTraj4);
             claw.close();
-            sleep(500);
+            sleep(1000);
             claw.armUp();
 
             // Move back to target zone C
@@ -446,7 +452,7 @@ class TrajectoryBuilderA extends Thread {
 
             Trajectory targetZoneATraj5 = mecanumDrive.trajectoryBuilder(targetZoneATraj4.end(), true)
                     .splineToConstantHeading(new Vector2d(-24, -16), Math.toRadians(0))
-                    .splineToConstantHeading(new Vector2d(14, -45), Math.toRadians(0))
+                    .splineToConstantHeading(new Vector2d(16, -45), Math.toRadians(0))
                     .build();
             trajectoryList.add(targetZoneATraj5);
 
@@ -572,32 +578,35 @@ class TrajectoryBuilderC extends Thread {
             // Displaying the thread that is running
             Trajectory targetZoneCTraj1 = mecanumDrive.trajectoryBuilder(startPose, true)
                     .splineToConstantHeading(new Vector2d(-20, -49), Math.toRadians(0))
-                    .splineToConstantHeading(new Vector2d(56, -40), Math.toRadians(0))
+                    .splineToConstantHeading(new Vector2d(57, -40), Math.toRadians(0))
                     .build();
             trajectoryList.add(targetZoneCTraj1);
 
             Trajectory targetZoneCTraj2 = mecanumDrive.trajectoryBuilder(targetZoneCTraj1.end())
-                    .forward(57)
+                    .splineToConstantHeading(new Vector2d(17, -40), Math.toRadians(0))
+                    .splineToConstantHeading(new Vector2d(-2, -41), Math.toRadians(0))
                     .build();
             trajectoryList.add(targetZoneCTraj2);
 
             Trajectory targetZoneCTraj3 = mecanumDrive.trajectoryBuilder(targetZoneCTraj2.end())
-                    .splineToLinearHeading(new Pose2d(-50, -40, Math.toRadians(0)), Math.toRadians(180))
+                    .splineToConstantHeading(new Vector2d(5, -5), Math.toRadians(0))
+                    .splineToConstantHeading(new Vector2d(-31.75, -5), Math.toRadians(0))
                     .build();
             trajectoryList.add(targetZoneCTraj3);
 
             Trajectory targetZoneCTraj4 = mecanumDrive.trajectoryBuilder(targetZoneCTraj3.end(), true)
-                    .strafeLeft(9)
+                    .strafeLeft(4)
                     .build();
             trajectoryList.add(targetZoneCTraj4);
 
             Trajectory targetZoneCTraj5 = mecanumDrive.trajectoryBuilder(targetZoneCTraj4.end())
-                    .splineToLinearHeading(new Pose2d(53, -40, Math.toRadians(180)), Math.toRadians(0))
+                    .splineToConstantHeading(new Vector2d(0, -16), Math.toRadians(0))
+                    .splineToConstantHeading(new Vector2d(150, -47), Math.toRadians(0))
                     .build();
             trajectoryList.add(targetZoneCTraj5);
 
             Trajectory targetZoneCTraj6 = mecanumDrive.trajectoryBuilder(targetZoneCTraj5.end())
-                    .forward(38)
+                    .forward(25)
                     .build();
             trajectoryList.add(targetZoneCTraj6);
 
