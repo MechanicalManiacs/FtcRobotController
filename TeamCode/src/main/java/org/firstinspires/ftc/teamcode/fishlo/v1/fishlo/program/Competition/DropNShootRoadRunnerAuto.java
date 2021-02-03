@@ -229,7 +229,7 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
             claw.armDown();
             mecanumDrive.followTrajectory(targetZoneATraj4);
             claw.close();
-            sleep(1000);
+            sleep(1500);
             claw.armUp();
 
             // Move back to target zone A and drop wobble goal
@@ -441,7 +441,7 @@ class TrajectoryBuilderA extends Thread {
 
             Trajectory targetZoneATraj3 = mecanumDrive.trajectoryBuilder(targetZoneATraj2.end())
                     .splineToConstantHeading(new Vector2d(5, -5), Math.toRadians(0))
-                    .splineToConstantHeading(new Vector2d(-49, -5), Math.toRadians(0))
+                    .splineToConstantHeading(new Vector2d(-48.75, -5), Math.toRadians(0))
                     .build();
             trajectoryList.add(targetZoneATraj3);
 
@@ -452,7 +452,7 @@ class TrajectoryBuilderA extends Thread {
 
             Trajectory targetZoneATraj5 = mecanumDrive.trajectoryBuilder(targetZoneATraj4.end(), true)
                     .splineToConstantHeading(new Vector2d(-24, -16), Math.toRadians(0))
-                    .splineToConstantHeading(new Vector2d(16, -45), Math.toRadians(0))
+                    .splineToConstantHeading(new Vector2d(19, -47), Math.toRadians(0))
                     .build();
             trajectoryList.add(targetZoneATraj5);
 

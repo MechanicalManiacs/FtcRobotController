@@ -3,8 +3,10 @@ package org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.robot;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.program.Competition.DropNShootRoadRunnerAuto;
 import org.firstinspires.ftc.teamcode.robot.Robot;
@@ -15,7 +17,7 @@ import java.util.HashMap;
 public class Shooter extends SubSystem {
 
     private CRServo pusher;
-    private DcMotor shooter;
+    private DcMotorEx shooter;
 
     public static double RAMP_ANGLE = 35;
     double shooter_power;
@@ -24,6 +26,7 @@ public class Shooter extends SubSystem {
     private double WHEEL_DIAMETER = 0.072;
     private double MAX_SPEED = WHEEL_DIAMETER*RPM/60;
     private SampleMecanumDrive mecanumDrive;
+    private double shooter_speed;
 
     ElapsedTime timer = new ElapsedTime();
 
@@ -45,7 +48,7 @@ public class Shooter extends SubSystem {
 
     private Goals[] targets = {Goals.LOW, Goals.MIDDLE, Goals.HIGH, Goals.POWER_SHOT_1, Goals.POWER_SHOT_2, Goals.POWER_SHOT_3};
     private Goals target;
-    private Modes mode = Modes.AUTOMATIC;
+    private Modes mode = Modes.OVERRIDE;
     int targetIndex = 2;
     public Shooter(Robot robot) {
         super(robot);
@@ -53,7 +56,7 @@ public class Shooter extends SubSystem {
 
     @Override
     public void init() {
-        shooter = robot.hardwareMap.dcMotor.get("shooter");
+        shooter = robot.hardwareMap.get(DcMotorEx.class, "shooter");
         pusher = robot.hardwareMap.crservo.get("pusher");
         shooter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -107,11 +110,11 @@ public class Shooter extends SubSystem {
 
         double goalDistance = Math.sqrt(Math.pow(drivePose.getX() - goalPose.getX(), 2) +
                 Math.pow(drivePose.getY() - goalPose.getY(), 2)) * 0.0254;
-        double goalAngle = Math.toDegrees(Math.atan((drivePose.getX()-goalPose.getX())
-                /(drivePose.getY()-goalPose.getY()))) - mecanumDrive.getPoseEstimate().getHeading() + 15;
+        double goalAngle = mecanumDrive.getPoseEstimate().getHeading() - Math.toDegrees(Math.atan((drivePose.getX()-goalPose.getX())
+                /(drivePose.getY()-goalPose.getY()))) + 15;
         double GRAVITY = 9.8;
 
-        double shooter_speed = Math.sqrt(
+        shooter_speed = Math.sqrt(
                 (GRAVITY * Math.pow(goalDistance, 2)) /
                         ( 2 * Math.pow(Math.cos(Math.toRadians(RAMP_ANGLE)), 2) * (Math.tan(Math.toRadians(RAMP_ANGLE)) * goalDistance - (height-8.5)))
                 );
@@ -123,13 +126,6 @@ public class Shooter extends SubSystem {
         }
         if (robot.gamepad2.right_stick_button){
             mode = Modes.AUTOMATIC;
-        }
-        if (mode == Modes.AUTOMATIC) {
-            shooter_power = shooter_speed/MAX_SPEED;
-            shooter_power = Math.max(0, Math.min(1, shooter_power));
-        }
-        if (mode == Modes.OVERRIDE) {
-            shooter_power = 1;
         }
 
         if (robot.gamepad2.right_bumper){
@@ -164,13 +160,18 @@ public class Shooter extends SubSystem {
     }
 
     public void startShooter() {
-        shooter.setPower(shooter_power);
+        if (mode == Modes.AUTOMATIC) {
+            shooter.setVelocity(shooter_speed / (3.14 * WHEEL_DIAMETER), AngleUnit.RADIANS);
+        }
+        if (mode == Modes.OVERRIDE) {
+            shooter.setVelocity(MAX_SPEED/(3.14 * WHEEL_DIAMETER), AngleUnit.RADIANS);
+        }
         shooter_started = true;
     }
 
 
     public void stopShooter() {
-        shooter.setPower(0);
+        shooter.setVelocity(0, AngleUnit.RADIANS);
         shooter_started = false;
     }
 
