@@ -142,7 +142,7 @@ public class Shooter extends SubSystem {
         robot.telemetry.addData("Goal Distance: ", goalDistance);
         robot.telemetry.addData("Goal Angle: ", goalAngle);
         robot.telemetry.addData("Target Linear Shooting Speed in m/s (Max is " + MAX_SPEED + "): ", shooter_speed);
-        robot.telemetry.addData("Target Angular Shooting Speed in rads/s (Max is " + MAX_SPEED + "): ", shooter_speed/(WHEEL_DIAMETER/2));
+        robot.telemetry.addData("Target Angular Shooting Speed in rads/s (Max is " + MAX_SPEED/(WHEEL_DIAMETER/2) + "): ", shooter_speed/(WHEEL_DIAMETER/2));
         robot.telemetry.addData("Current Shooting Speed (Max is " + MAX_SPEED + "): ", shooter.getVelocity(AngleUnit.RADIANS)*WHEEL_DIAMETER/2);
     }
 
