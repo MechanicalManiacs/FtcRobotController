@@ -21,7 +21,7 @@ public class Shooter extends SubSystem {
 
     public static double RAMP_ANGLE = 35;
     public boolean shooter_started = false;
-    private double RPM = 5700;
+    private double RPM = 6000;
     private double WHEEL_DIAMETER = 0.072;
     private double MAX_SPEED = WHEEL_DIAMETER*3.14*RPM/60;
     private SampleMecanumDrive mecanumDrive;
