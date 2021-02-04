@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.opMode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.program.Competition.DropNShootRoadRunnerAuto;
 import org.firstinspires.ftc.teamcode.robot.Robot;
 
 /**
@@ -40,6 +41,7 @@ public abstract class AutonomousProgram extends LinearOpMode {
         telemetry.setAutoClear(false);
 
         try {
+            DropNShootRoadRunnerAuto.autoEnded = false;
             robot.init();
         } catch(Exception ex) {
             telemetry.addData("ERROR!!!", ex.getMessage());
