@@ -24,7 +24,7 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
 
     public static SampleMecanumDrive mecanumDrive;
     public static Pose2d startPose;
-    public static boolean autoEnded;
+    public static boolean autoEnded = false;
     public volatile static Pose2d endPose;
     protected OpenCV.targetZone targetZone;
 
@@ -176,6 +176,7 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
     @Override
     public void main() {
 
+        autoEnded = false;
         // Show the target zone
         telemetry.addData("TargetZone", targetZone);
 
@@ -441,7 +442,7 @@ class TrajectoryBuilderA extends Thread {
 
             Trajectory targetZoneATraj3 = mecanumDrive.trajectoryBuilder(targetZoneATraj2.end())
                     .splineToConstantHeading(new Vector2d(5, -5), Math.toRadians(0))
-                    .splineToConstantHeading(new Vector2d(-49, -5), Math.toRadians(0))
+                    .splineToConstantHeading(new Vector2d(-49.5, -5), Math.toRadians(0))
                     .build();
             trajectoryList.add(targetZoneATraj3);
 

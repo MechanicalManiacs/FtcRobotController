@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.program.Competition.DropNShootRoadRunnerAuto;
 import org.firstinspires.ftc.teamcode.robot.Robot;
 import org.firstinspires.ftc.teamcode.robot.SubSystem;
 
@@ -28,7 +29,9 @@ public class Claw extends SubSystem {
         arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         armTimer.reset();
-        close();
+        if (!DropNShootRoadRunnerAuto.autoEnded) {
+            close();
+        }
     }
 
     @Override

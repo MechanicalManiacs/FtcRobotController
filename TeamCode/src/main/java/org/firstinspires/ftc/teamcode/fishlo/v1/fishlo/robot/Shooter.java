@@ -58,6 +58,7 @@ public class Shooter extends SubSystem {
         shooter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+
         mecanumDrive = new SampleMecanumDrive(robot.hardwareMap);
 
         // Set target positions in hash map
@@ -103,7 +104,7 @@ public class Shooter extends SubSystem {
         mecanumDrive.update();
         Pose2d drivePose = mecanumDrive.getPoseEstimate();
         Pose2d goalPose = goalMap.get(target).getPosition();
-        double height = goalMap.get(target).getHeight() * 0.0254;
+        double height = (goalMap.get(target).getHeight()-8.5) * 0.0254;
 
         double goalDistance = Math.sqrt(Math.pow(drivePose.getX() - goalPose.getX(), 2) +
                 Math.pow(drivePose.getY() - goalPose.getY(), 2)) * 0.0254;
@@ -113,7 +114,7 @@ public class Shooter extends SubSystem {
 
         double shooter_speed = Math.sqrt(
                 (GRAVITY * Math.pow(goalDistance, 2)) /
-                        ( 2 * Math.pow(Math.cos(Math.toRadians(RAMP_ANGLE)), 2) * (Math.tan(Math.toRadians(RAMP_ANGLE)) * goalDistance - (height-8.5)))
+                        ( 2 * Math.pow(Math.cos(Math.toRadians(RAMP_ANGLE)), 2) * (Math.tan(Math.toRadians(RAMP_ANGLE)) * goalDistance - height))
                 );
 
 
