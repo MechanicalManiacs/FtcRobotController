@@ -24,7 +24,7 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
 
     public static SampleMecanumDrive mecanumDrive;
     public static Pose2d startPose;
-    public static boolean autoEnded;
+    public static boolean autoEnded = false;
     public volatile static Pose2d endPose;
     protected OpenCV.targetZone targetZone;
 
@@ -93,7 +93,7 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
         TrajectoryBuilderC trajectoryBuilderC = new TrajectoryBuilderC();
         trajectoryBuilderC.setRobot(getRobot());
 
-         //Start all of the threads
+        //Start all of the threads
 
         trajectoryBuilderA.start();
 
@@ -176,6 +176,7 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
     @Override
     public void main() {
 
+        autoEnded = false;
         // Show the target zone
         telemetry.addData("TargetZone", targetZone);
 
@@ -229,7 +230,7 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
             claw.armDown();
             mecanumDrive.followTrajectory(targetZoneATraj4);
             claw.close();
-            sleep(1500);
+            sleep(1000);
             claw.armUp();
 
             // Move back to target zone A and drop wobble goal
@@ -441,7 +442,7 @@ class TrajectoryBuilderA extends Thread {
 
             Trajectory targetZoneATraj3 = mecanumDrive.trajectoryBuilder(targetZoneATraj2.end())
                     .splineToConstantHeading(new Vector2d(5, -5), Math.toRadians(0))
-                    .splineToConstantHeading(new Vector2d(-48.75, -5), Math.toRadians(0))
+                    .splineToConstantHeading(new Vector2d(-49.5, -5), Math.toRadians(0))
                     .build();
             trajectoryList.add(targetZoneATraj3);
 
@@ -452,7 +453,7 @@ class TrajectoryBuilderA extends Thread {
 
             Trajectory targetZoneATraj5 = mecanumDrive.trajectoryBuilder(targetZoneATraj4.end(), true)
                     .splineToConstantHeading(new Vector2d(-24, -16), Math.toRadians(0))
-                    .splineToConstantHeading(new Vector2d(19, -47), Math.toRadians(0))
+                    .splineToConstantHeading(new Vector2d(16, -45), Math.toRadians(0))
                     .build();
             trajectoryList.add(targetZoneATraj5);
 
