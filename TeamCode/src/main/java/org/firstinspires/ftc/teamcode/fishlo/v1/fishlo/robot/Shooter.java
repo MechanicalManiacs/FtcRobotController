@@ -21,7 +21,8 @@ public class Shooter extends SubSystem {
 
     public static double RAMP_ANGLE = 35;
     public boolean shooter_started = false;
-    private double RPM = 6000;
+    private double TICKS_PER_REV = 28;
+    private double RPM = 5700;
     private double WHEEL_DIAMETER = 0.072;
     private double MAX_SPEED = WHEEL_DIAMETER*3.14*RPM/60;
     private SampleMecanumDrive mecanumDrive;
@@ -57,7 +58,6 @@ public class Shooter extends SubSystem {
     public void init() {
         shooter = robot.hardwareMap.get(DcMotorEx.class, "shooter");
         pusher = robot.hardwareMap.crservo.get("pusher");
-        shooter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         mecanumDrive = new SampleMecanumDrive(robot.hardwareMap);
@@ -142,8 +142,12 @@ public class Shooter extends SubSystem {
         robot.telemetry.addData("Goal Distance: ", goalDistance);
         robot.telemetry.addData("Goal Angle: ", goalAngle);
         robot.telemetry.addData("Target Linear Shooting Speed in m/s (Max is " + MAX_SPEED + "): ", shooter_speed);
-        robot.telemetry.addData("Target Angular Shooting Speed in rads/s (Max is " + MAX_SPEED/(WHEEL_DIAMETER/2) + "): ", shooter_speed/(WHEEL_DIAMETER/2));
-        robot.telemetry.addData("Current Shooting Speed (Max is " + MAX_SPEED + "): ", shooter.getVelocity(AngleUnit.RADIANS));
+        robot.telemetry.addData("Current Shooting Speed (Max is " + MAX_SPEED + "): ", shooter.getVelocity(AngleUnit.RADIANS)  * WHEEL_DIAMETER/2);
+        robot.telemetry.addData("Target Angular Shooting Speed in RPS (Max is " + MAX_SPEED/(WHEEL_DIAMETER*3.12) + "): ", shooter_speed/(WHEEL_DIAMETER*3.12));
+        robot.telemetry.addData("Current Angular Shooting Speed in RPS (Max is " + MAX_SPEED/(WHEEL_DIAMETER*3.12) + "): ", shooter.getVelocity(AngleUnit.RADIANS)*WHEEL_DIAMETER/2/(WHEEL_DIAMETER*3.12));
+        robot.telemetry.addData("Target Angular Shooting Speed in ticks/s: ", (shooter_speed/(3.14*WHEEL_DIAMETER))*TICKS_PER_REV);
+        robot.telemetry.addData("Current Angular Shooting Speed in ticks/s: ", (shooter.getVelocity(AngleUnit.RADIANS)*WHEEL_DIAMETER/2/(3.14*WHEEL_DIAMETER))*TICKS_PER_REV);
+
     }
 
     @Override
@@ -161,11 +165,10 @@ public class Shooter extends SubSystem {
 
     public void startShooter() {
         if (mode == Modes.AUTOMATIC) {
-            shooter.setVelocity(shooter_speed / (WHEEL_DIAMETER/2), AngleUnit.RADIANS);
+            shooter.setVelocity(shooter_speed/(WHEEL_DIAMETER/2), AngleUnit.RADIANS);
         }
         if (mode == Modes.OVERRIDE) {
-            shooter.setVelocity((MAX_SPEED*0.7)/(WHEEL_DIAMETER/2), AngleUnit.RADIANS);
-            shooter.setVelocity(0);
+            shooter.setVelocity((MAX_SPEED*0.1)/(WHEEL_DIAMETER/2), AngleUnit.RADIANS);
         }
         shooter_started = true;
     }
