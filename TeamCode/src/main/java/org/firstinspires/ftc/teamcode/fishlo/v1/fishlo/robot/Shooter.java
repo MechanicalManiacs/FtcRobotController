@@ -105,7 +105,7 @@ public class Shooter extends SubSystem {
         mecanumDrive.update();
         Pose2d drivePose = mecanumDrive.getPoseEstimate();
         Pose2d goalPose = goalMap.get(target).getPosition();
-        double height = (goalMap.get(target).getHeight() - 8.5) * 0.0254;
+        double height = (goalMap.get(target).getHeight() - 9.5) * 0.0254;
 
         double goalDistance = Math.sqrt(Math.pow(drivePose.getX() - goalPose.getX(), 2) +
                 Math.pow(drivePose.getY() - goalPose.getY(), 2)) * 0.0254;
@@ -165,7 +165,7 @@ public class Shooter extends SubSystem {
 
     public void startShooter() {
         if (mode == Modes.AUTOMATIC) {
-            shooter.setVelocity(shooter_speed/(WHEEL_DIAMETER/2), AngleUnit.RADIANS);
+            shooter.setVelocity(shooter_speed*0.03/(WHEEL_DIAMETER/2), AngleUnit.RADIANS);
         }
         if (mode == Modes.OVERRIDE) {
             shooter.setVelocity((MAX_SPEED*0.03)/(WHEEL_DIAMETER/2), AngleUnit.RADIANS);

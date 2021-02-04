@@ -40,7 +40,7 @@ public class Drive extends SubSystem {
     int driveIndex = 0;
 
     boolean exit = false;
-    
+
     public Drive(Robot robot) {
 
         super(robot);
@@ -80,26 +80,17 @@ public class Drive extends SubSystem {
         }
 
         if(robot.gamepad1.a) {
-            reverse = false;
+            driveIndex = 0;
         }
-        else if(robot.gamepad1.y) {
-            reverse = true;
+        if(robot.gamepad1.y) {
+            driveIndex = 2;
         }
+        if(robot.gamepad1.x) {
+            driveIndex = 1;
+        }
+
 
         driveType = driveControls[driveIndex];
-
-        if (robot.gamepad1.dpad_right) {
-            driveIndex++;
-            if (driveIndex > 2) {
-                driveIndex = 0;
-            }
-        }
-        if (robot.gamepad1.dpad_left) {
-            driveIndex--;
-            if (driveIndex < 0) {
-                driveIndex = 2;
-            }
-        }
 
         runDrive(driveType, driveSpeed, strafeSpeed, turnSpeed, rightY, -driveSpeed);
 
@@ -119,11 +110,11 @@ public class Drive extends SubSystem {
     public void runDrive(DriveControls driveType, double driveSpeed, double strafeSpeed, double turnSpeed, double rightY, double leftY) {
         if (driveType == DriveControls.ARCADE) {
             mecanumDrive.setWeightedDrivePower(
-                new Pose2d(
-                   driveSpeed,
-                   -strafeSpeed,
-                   -turnSpeed
-                )
+                    new Pose2d(
+                            driveSpeed,
+                            -strafeSpeed,
+                            -turnSpeed
+                    )
             );
         }
 
