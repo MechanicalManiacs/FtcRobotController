@@ -168,7 +168,7 @@ public class Shooter extends SubSystem {
             shooter.setVelocity(shooter_speed/(WHEEL_DIAMETER/2), AngleUnit.RADIANS);
         }
         if (mode == Modes.OVERRIDE) {
-            shooter.setVelocity((MAX_SPEED*0.1)/(WHEEL_DIAMETER/2), AngleUnit.RADIANS);
+            shooter.setVelocity((MAX_SPEED*0.03)/(WHEEL_DIAMETER/2), AngleUnit.RADIANS);
         }
         shooter_started = true;
     }
