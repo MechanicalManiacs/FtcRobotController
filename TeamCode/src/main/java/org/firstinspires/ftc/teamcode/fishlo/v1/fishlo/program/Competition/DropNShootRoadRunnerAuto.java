@@ -24,7 +24,7 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
 
     public static SampleMecanumDrive mecanumDrive;
     public static Pose2d startPose;
-    public static boolean autoEnded = false;
+    public static boolean autoEnded;
     public volatile static Pose2d endPose;
     protected OpenCV.targetZone targetZone;
 
@@ -66,6 +66,8 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
     @Override
     public void preMain() {
 
+
+        autoEnded = false;
         // Make the SampleMecanumDrive object for RoadRunner
         mecanumDrive = new SampleMecanumDrive(hardwareMap);
         startPose = new Pose2d(-63, -49, Math.toRadians(180));
@@ -91,7 +93,7 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
         TrajectoryBuilderC trajectoryBuilderC = new TrajectoryBuilderC();
         trajectoryBuilderC.setRobot(getRobot());
 
-         //Start all of the threads
+        //Start all of the threads
 
         trajectoryBuilderA.start();
 
@@ -122,7 +124,6 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
         // Get all of the target zone A trajectories
         ArrayList<Trajectory> targetZoneATrajList = trajectoryBuilderA.getTrajectoryList();
 
-
         targetZoneATraj1 = targetZoneATrajList.get(0);
         targetZoneATraj2 = targetZoneATrajList.get(1);
         targetZoneATraj3 = targetZoneATrajList.get(2);
@@ -130,13 +131,11 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
         targetZoneATraj5 = targetZoneATrajList.get(4);
         targetZoneATraj6 = targetZoneATrajList.get(5);
 
-
         telemetry.addLine("Target Zone A Trajectories Completed");
         telemetry.update();
 
         // Get all of the target zone B trajectories
         ArrayList<Trajectory> targetZoneBTrajList = trajectoryBuilderB.getTrajectoryList();
-
 
         targetZoneBTraj1 = targetZoneBTrajList.get(0);
         targetZoneBTraj2 = targetZoneBTrajList.get(1);
@@ -148,10 +147,8 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
         telemetry.addLine("Target Zone B Trajectories Completed");
         telemetry.update();
 
-
         // Get all of the target zone C trajectories
         ArrayList<Trajectory> targetZoneCTrajList = trajectoryBuilderC.getTrajectoryList();
-
 
         targetZoneCTraj1 = targetZoneCTrajList.get(0);
         targetZoneCTraj2 = targetZoneCTrajList.get(1);
@@ -164,7 +161,6 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
 
         telemetry.addLine("Ready for start");
         telemetry.update();
-
 
         // Get the target zone from the webcam
         while (!isStarted()) {
@@ -179,6 +175,7 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
 
     @Override
     public void main() {
+
         // Show the target zone
         telemetry.addData("TargetZone", targetZone);
 
@@ -194,7 +191,6 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
             telemetry.addLine("Moving to target zone A");
             telemetry.update();
             mecanumDrive.followTrajectory(targetZoneATraj1);
-
 
             // Drop wobble goal
             telemetry.addLine("Dropping wobble goal");
@@ -226,7 +222,6 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
             telemetry.update();
             mecanumDrive.followTrajectory(targetZoneATraj3);
 
-
             // Grab wobble goal
 
             telemetry.addLine("Grabbing wobble goal");
@@ -234,14 +229,12 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
             claw.armDown();
             mecanumDrive.followTrajectory(targetZoneATraj4);
             claw.close();
-            sleep(1000);
+            sleep(1500);
             claw.armUp();
-
 
             // Move back to target zone A and drop wobble goal
             telemetry.addLine("Moving back to target zone A");
             mecanumDrive.followTrajectory(targetZoneATraj5);
-
 
             // Drop wobble goal
             telemetry.addLine("Dropping wobble goal");
@@ -396,12 +389,10 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
         poseTracker.stopThread();
         try {
             poseTracker.join();
-            poseTracker = null;
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         autoEnded = true;
-        System.gc();
 
     }
 
@@ -409,7 +400,7 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
     public void shoot() {
         shooter.startShooterAuto(0.96);
         sleep(2500);
-        shooter.shootAuto(0.5);
+        shooter.shootAuto(0.4);
         sleep(3000);
         shooter.stopPusher();
         shooter.stop();
@@ -439,18 +430,18 @@ class TrajectoryBuilderA extends Thread {
             // Build trajectories
             Trajectory targetZoneATraj1 = mecanumDrive.trajectoryBuilder(startPose, true)
                     .splineToConstantHeading(new Vector2d(-20, -49), Math.toRadians(0))
-                    .splineToConstantHeading(new Vector2d(6, -39), Math.toRadians(0))
+                    .splineToConstantHeading(new Vector2d(8, -40), Math.toRadians(0))
                     .build();
             trajectoryList.add(targetZoneATraj1);
 
             Trajectory targetZoneATraj2 = mecanumDrive.trajectoryBuilder(targetZoneATraj1.end())
-                    .forward(28)
+                    .forward(20)
                     .build();
             trajectoryList.add(targetZoneATraj2);
 
             Trajectory targetZoneATraj3 = mecanumDrive.trajectoryBuilder(targetZoneATraj2.end())
                     .splineToConstantHeading(new Vector2d(5, -5), Math.toRadians(0))
-                    .splineToConstantHeading(new Vector2d(-50.5, -4), Math.toRadians(0))
+                    .splineToConstantHeading(new Vector2d(-49.75, -5), Math.toRadians(0))
                     .build();
             trajectoryList.add(targetZoneATraj3);
 
@@ -461,16 +452,15 @@ class TrajectoryBuilderA extends Thread {
 
             Trajectory targetZoneATraj5 = mecanumDrive.trajectoryBuilder(targetZoneATraj4.end(), true)
                     .splineToConstantHeading(new Vector2d(-24, -16), Math.toRadians(0))
-                    .splineToConstantHeading(new Vector2d(14, -48), Math.toRadians(0))
+                    .splineToConstantHeading(new Vector2d(19, -47), Math.toRadians(0))
                     .build();
             trajectoryList.add(targetZoneATraj5);
 
 
-            Trajectory targetZoneATraj6 = mecanumDrive.trajectoryBuilder(targetZoneATraj5.end(), true)
+            Trajectory targetZoneATraj7 = mecanumDrive.trajectoryBuilder(targetZoneATraj5.end(), true)
                     .back(3)
                     .build();
-            trajectoryList.add(targetZoneATraj6);
-
+            trajectoryList.add(targetZoneATraj7);
 
 
 
@@ -522,14 +512,14 @@ class TrajectoryBuilderB extends Thread {
 
             Trajectory targetZoneBTraj2 = mecanumDrive.trajectoryBuilder(targetZoneBTraj1.end())
                     .splineToConstantHeading(new Vector2d(17, -15), Math.toRadians(0))
-                    .splineToConstantHeading(new Vector2d(-12, -40), Math.toRadians(0))
+                    .splineToConstantHeading(new Vector2d(-12, -39), Math.toRadians(0))
                     .build();
             trajectoryList.add(targetZoneBTraj2);
 
 
             Trajectory targetZoneBTraj3 = mecanumDrive.trajectoryBuilder(targetZoneBTraj2.end())
                     .splineToConstantHeading(new Vector2d(-5, -5), Math.toRadians(0))
-                    .splineToConstantHeading(new Vector2d(-50.5, -4), Math.toRadians(0))
+                    .splineToConstantHeading(new Vector2d(-44.25, -8), Math.toRadians(0))
                     .build();
             trajectoryList.add(targetZoneBTraj3);
 
@@ -551,9 +541,6 @@ class TrajectoryBuilderB extends Thread {
                     .forward(8)
                     .build();
             trajectoryList.add(targetZoneBTraj6);
-
-
-
 
             robot.telemetry.addLine("Target Zone B Trajectories Built");
             robot.telemetry.update();
@@ -597,13 +584,13 @@ class TrajectoryBuilderC extends Thread {
 
             Trajectory targetZoneCTraj2 = mecanumDrive.trajectoryBuilder(targetZoneCTraj1.end())
                     .splineToConstantHeading(new Vector2d(17, -40), Math.toRadians(0))
-                    .splineToConstantHeading(new Vector2d(-2, -41), Math.toRadians(0))
+                    .splineToConstantHeading(new Vector2d(-2, -39), Math.toRadians(0))
                     .build();
             trajectoryList.add(targetZoneCTraj2);
 
             Trajectory targetZoneCTraj3 = mecanumDrive.trajectoryBuilder(targetZoneCTraj2.end())
                     .splineToConstantHeading(new Vector2d(5, -5), Math.toRadians(0))
-                    .splineToConstantHeading(new Vector2d(-31.75, -5), Math.toRadians(0))
+                    .splineToConstantHeading(new Vector2d(54, -25), Math.toRadians(0))
                     .build();
             trajectoryList.add(targetZoneCTraj3);
 
@@ -614,7 +601,7 @@ class TrajectoryBuilderC extends Thread {
 
             Trajectory targetZoneCTraj5 = mecanumDrive.trajectoryBuilder(targetZoneCTraj4.end())
                     .splineToConstantHeading(new Vector2d(0, -16), Math.toRadians(0))
-                    .splineToConstantHeading(new Vector2d(150, -47), Math.toRadians(0))
+                    .splineToConstantHeading(new Vector2d(72, -47), Math.toRadians(0))
                     .build();
             trajectoryList.add(targetZoneCTraj5);
 
@@ -622,9 +609,6 @@ class TrajectoryBuilderC extends Thread {
                     .forward(25)
                     .build();
             trajectoryList.add(targetZoneCTraj6);
-
-
-
 
             robot.telemetry.addLine("Target Zone C Trajectories Built");
             robot.telemetry.update();
