@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.program.FishloAutonomousProgram;
 import org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.robot.OpenCV;
 import org.firstinspires.ftc.teamcode.robot.Robot;
-import org.firstinspires.ftc.teamcode.util.PID;
 
 @Autonomous
 @Disabled
@@ -18,7 +17,6 @@ public class AutoWobbleRight extends FishloAutonomousProgram {
     protected final double Kp = 0.1;
     protected final double HEADING_THRESHOLD = 1;
     protected final double Kd = 0; //425;
-    PID pidController = new PID(Kp, Kd, 0);
 
 
 

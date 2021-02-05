@@ -3,8 +3,10 @@ package org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.program.Competition;
 import com.arcrobotics.ftclib.vision.UGContourRingDetector;
 import com.arcrobotics.ftclib.vision.UGContourRingPipeline;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+@Disabled
 @Autonomous
 public class OpenCVtest extends LinearOpMode {
 

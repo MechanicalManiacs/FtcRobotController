@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.program.Competition;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.program.FishloAutonomousProgram;
 import org.firstinspires.ftc.teamcode.robot.Robot;
 
+@Disabled
 @TeleOp
 public class WheelTests extends FishloAutonomousProgram {
 

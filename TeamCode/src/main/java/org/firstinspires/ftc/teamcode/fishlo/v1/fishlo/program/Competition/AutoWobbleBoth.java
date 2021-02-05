@@ -2,12 +2,14 @@ package org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.program.Competition;
 
 import com.arcrobotics.ftclib.vision.UGContourRingPipeline;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.program.FishloAutonomousProgram;
 import org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.robot.OpenCV;
 import org.firstinspires.ftc.teamcode.robot.Robot;
 
+@Disabled
 @Autonomous
 public class AutoWobbleBoth extends FishloAutonomousProgram {
     //Create the variable targetZone to store the targetZone value from vision

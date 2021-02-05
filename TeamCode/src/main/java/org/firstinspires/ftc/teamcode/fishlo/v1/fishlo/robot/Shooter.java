@@ -71,6 +71,7 @@ public class Shooter extends SubSystem {
 
         if (DropNShootRoadRunnerAuto.autoEnded) {
             mecanumDrive.setPoseEstimate(DropNShootRoadRunnerAuto.endPose);
+            DropNShootRoadRunnerAuto.endPose = null;
         }
         else {
             mecanumDrive.setPoseEstimate(new Pose2d(-63, -49, 180));
