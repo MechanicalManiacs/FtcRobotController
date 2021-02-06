@@ -109,7 +109,7 @@ public class Drive extends SubSystem {
 
     public void runDrive(DriveControls driveType, double driveSpeed, double strafeSpeed, double turnSpeed, double rightY, double leftY) {
         if (driveType == DriveControls.ARCADE) {
-            if (robot.gamepad1.right_trigger < 0.5) {
+            if (robot.gamepad1.right_trigger > 0.5) {
                 mecanumDrive.setWeightedDrivePower(
                         new Pose2d(
                                 driveSpeed * 0.5,
@@ -118,7 +118,7 @@ public class Drive extends SubSystem {
                         )
                 );
             }
-            else if (robot.gamepad1.left_trigger < 0.5) {
+            else if (robot.gamepad1.left_trigger > 0.5) {
                 mecanumDrive.setWeightedDrivePower(
                         new Pose2d(
                                 driveSpeed * 0.3,
@@ -162,10 +162,10 @@ public class Drive extends SubSystem {
         if (driveType == DriveControls.TANK) {
 
             if (robot.gamepad1.right_bumper) {
-                if (robot.gamepad1.right_trigger < 0.5) {
+                if (robot.gamepad1.right_trigger > 0.5) {
                     strafe(0.5);
                 }
-                else if (robot.gamepad1.left_trigger < 0.5) {
+                else if (robot.gamepad1.left_trigger > 0.5) {
                     strafe(0.3);
                 }
                 else {
