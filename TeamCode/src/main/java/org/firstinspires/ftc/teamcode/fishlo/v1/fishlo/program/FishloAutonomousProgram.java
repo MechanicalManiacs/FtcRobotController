@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.program;
 
+import org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.robot.Battery;
 import org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.robot.Claw;
 import org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.robot.Drive;
 import org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.robot.Fishlo;
@@ -17,6 +18,7 @@ public class FishloAutonomousProgram extends AutonomousProgram {
     protected Intake intake;
     protected Shooter shooter;
     protected OpenCV openCV;
+    protected Battery battery;
 
     @Override
     protected Robot buildRobot() {
@@ -28,6 +30,7 @@ public class FishloAutonomousProgram extends AutonomousProgram {
         intake = (Intake) fishlo.getSubSystem("Intake");
         shooter = (Shooter) fishlo.getSubSystem("Shooter");
         openCV = (OpenCV) fishlo.getSubSystem("OpenCV");
+        battery = (Battery) fishlo.getSubSystem("Battery");
 
         return fishlo;
     }
