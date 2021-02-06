@@ -442,7 +442,7 @@ class TrajectoryBuilderA extends Thread {
 
             Trajectory targetZoneATraj3 = mecanumDrive.trajectoryBuilder(targetZoneATraj2.end())
                     .splineToConstantHeading(new Vector2d(5, -5), Math.toRadians(0))
-                    .splineToConstantHeading(new Vector2d(-48.75, -5), Math.toRadians(0))
+                    .splineToConstantHeading(new Vector2d(-49, -5), Math.toRadians(0))
                     .build();
             trajectoryList.add(targetZoneATraj3);
 
