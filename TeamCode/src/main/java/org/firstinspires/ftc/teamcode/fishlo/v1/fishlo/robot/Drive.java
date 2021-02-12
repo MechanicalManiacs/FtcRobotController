@@ -2,19 +2,18 @@ package org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.robot;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.program.Competition.DropNShootRoadRunnerAuto;
 import org.firstinspires.ftc.teamcode.robot.Robot;
 import org.firstinspires.ftc.teamcode.robot.SubSystem;
 
 public class Drive extends SubSystem {
 
     SampleMecanumDrive mecanumDrive = new SampleMecanumDrive(robot.hardwareMap);
-
     Gyro gyro = new Gyro(robot);
-    ElapsedTime teleop_timer = new ElapsedTime();
 
     private DcMotor frontLeft, backLeft, frontRight, backRight;
 
@@ -25,21 +24,20 @@ public class Drive extends SubSystem {
     double bias = 0.955;
     double strafeBias = 0.9;
     double conversion = cpi * bias;
-    int START_X = -72;
-    int START_Y = -50;
+    Claw claw = new Claw(robot);
 
-    Pose2d startPose = new Pose2d(START_X, START_Y, 0);
 
     private enum DriveControls {
         TANK,
         FIELD,
         ARCADE
     }
-    DriveControls driveType = DriveControls.ARCADE;
-    String driveMode = "Arcade";
+    DriveControls[] driveControls = {DriveControls.ARCADE, DriveControls.FIELD, DriveControls.TANK};
+    DriveControls driveType;
+    int driveIndex = 2;
 
     boolean exit = false;
-    
+
     public Drive(Robot robot) {
 
         super(robot);
@@ -59,7 +57,12 @@ public class Drive extends SubSystem {
 
         drive(0, 0);
 
-        mecanumDrive.setPoseEstimate(startPose);
+        if (DropNShootRoadRunnerAuto.autoEnded) {
+            mecanumDrive.setPoseEstimate(DropNShootRoadRunnerAuto.endPose);
+        }
+        else {
+            mecanumDrive.setPoseEstimate(new Pose2d(-63, -49, 180));
+        }
 
         gyro.initGyro();
     }
@@ -78,30 +81,25 @@ public class Drive extends SubSystem {
             turnSpeed = robot.gamepad1.right_stick_x;
         }
 
-        if(robot.gamepad1.a) {
-            reverse = false;
+        if(robot.gamepad1.x) {
+            driveIndex = 0;
         }
-        else if(robot.gamepad1.y) {
-            reverse = true;
+        if(robot.gamepad1.b) {
+            driveIndex = 2;
         }
+//        if(robot.gamepad1.a) {
+//            moveToShootingPosition();
+//        }
+//        if(robot.gamepad1.y) {
+//            moveToDropZone();
+//        }
 
-        if (robot.gamepad1.dpad_up) {
-            driveType = DriveControls.ARCADE;
-            driveMode = "Arcade";
-        }
-        else if (robot.gamepad1.dpad_down) {
-            gyro.resetHeading();
-            driveType = DriveControls.FIELD;
-            driveMode = "Field";
-        }
-        else if (robot.gamepad1.dpad_right) {
-            driveType = DriveControls.TANK;
-            driveMode = "Tank";
-        }
+
+        driveType = driveControls[driveIndex];
 
         runDrive(driveType, driveSpeed, strafeSpeed, turnSpeed, rightY, -driveSpeed);
 
-        robot.telemetry.addData("Drive - Dat - Drive Controls", driveMode);
+        robot.telemetry.addData("Drive - Dat - Drive Controls", driveType.name());
         robot.telemetry.addData("Drive - Dat - Drive Speed", driveSpeed);
         robot.telemetry.addData("Drive - Dat - Turn Speed", turnSpeed);
         robot.telemetry.addData("Drive - Dat - GamepadX", robot.gamepad1.left_stick_x);
@@ -112,17 +110,16 @@ public class Drive extends SubSystem {
         robot.telemetry.addData("Drive - Set - backRight", backRight.getPower());
         robot.telemetry.addData("Drive - Enc - Left", frontLeft.getCurrentPosition());
         robot.telemetry.addData("Drive - Enc - Right", frontRight.getCurrentPosition());
-        robot.telemetry.update();
     }
 
     public void runDrive(DriveControls driveType, double driveSpeed, double strafeSpeed, double turnSpeed, double rightY, double leftY) {
         if (driveType == DriveControls.ARCADE) {
             mecanumDrive.setWeightedDrivePower(
-                new Pose2d(
-                   driveSpeed,
-                   -strafeSpeed,
-                   -turnSpeed
-                )
+                    new Pose2d(
+                            driveSpeed,
+                            -strafeSpeed,
+                            -turnSpeed
+                    )
             );
         }
 
@@ -148,8 +145,6 @@ public class Drive extends SubSystem {
             );
         }
         if (driveType == DriveControls.TANK) {
-            left(-leftY);
-            right(-rightY);
 
             if (robot.gamepad1.right_bumper) {
                 if (robot.gamepad1.right_trigger < 0.5) {
@@ -159,11 +154,10 @@ public class Drive extends SubSystem {
                     strafe(0.3);
                 }
                 else {
-                    strafe(0.75);
+                    strafe(1);
                 }
             }
-
-            if (robot.gamepad1.left_bumper) {
+            else if (robot.gamepad1.left_bumper) {
                 if (robot.gamepad1.right_trigger < 0.5) {
                     strafe(-0.5);
                 }
@@ -171,12 +165,33 @@ public class Drive extends SubSystem {
                     strafe(-0.3);
                 }
                 else {
-                    strafe(-0.75);
+                    strafe(-1);
                 }
+            }
+            else {
+                left(-leftY);
+                right(-rightY);
             }
 
 
         }
+    }
+
+    private void moveToShootingPosition() {
+        Trajectory trajectory = mecanumDrive.trajectoryBuilder(mecanumDrive.getPoseEstimate())
+                .splineTo(new Vector2d(0, -40), Math.toRadians(0))
+                .build();
+        mecanumDrive.followTrajectory(trajectory);
+    }
+
+    private void moveToDropZone() {
+//        claw.halfArmDown();
+        Trajectory trajectory = mecanumDrive.trajectoryBuilder(mecanumDrive.getPoseEstimate())
+                .splineToLinearHeading(new Pose2d(-63, 0, 90), Math.toRadians(90))
+                .build();
+        mecanumDrive.followTrajectory(trajectory);
+//        claw.open();
+//        claw.halfArmUp();
     }
 
     private void left(double power) {

@@ -1,8 +1,9 @@
 package org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.robot;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.program.Competition.DropNShootRoadRunnerAuto;
 import org.firstinspires.ftc.teamcode.robot.Robot;
 import org.firstinspires.ftc.teamcode.robot.SubSystem;
 
@@ -10,12 +11,9 @@ public class Intake extends SubSystem {
 
     private DcMotor intake;
     private DcMotor transfer;
-    boolean intake_on = false;
-    ElapsedTime intake_timer = new ElapsedTime();
-    public static double INTAKE_SPEED = 0.5;
-    public static double TRANSFER_SPEED = 0.25;
-
-    int sum = 2;
+    private Servo intakeLever;
+    private double INTAKE_HOME = 0.5;
+    private double INTAKE_MAX = 0;
 
     public Intake(Robot robot) {
         super(robot);
@@ -25,49 +23,31 @@ public class Intake extends SubSystem {
     public void init() {
         intake = robot.hardwareMap.dcMotor.get("intake");
         transfer = robot.hardwareMap.dcMotor.get("transfer");
+        intakeLever = robot.hardwareMap.servo.get("intakeLever");
+        intakeLever.setPosition(INTAKE_HOME);
     }
 
     @Override
     public void handle() {
-        if (robot.gamepad2.y) {
-            sum ++;
+        if (!DropNShootRoadRunnerAuto.autoEnded) {
+            intakeRelease();
         }
-
-        if (robot.gamepad2.right_trigger > 0.5) {
-            TRANSFER_SPEED = 0.75;
-        }
-        else {
-            TRANSFER_SPEED = 0.25;
-        }
-
-        if (robot.gamepad2.left_trigger > 0.5) {
-            INTAKE_SPEED = -1 * Math.abs(INTAKE_SPEED);
-            TRANSFER_SPEED = -1 * Math.abs(TRANSFER_SPEED);
-        }
-        else {
-            TRANSFER_SPEED = Math.abs(TRANSFER_SPEED);
-            INTAKE_SPEED = Math.abs(INTAKE_SPEED);
-        }
-
-        int remainder = sum % 2;
-
-        if (remainder == 1) {
-            startIntake();
-        }
-        else {
-            stopIntake();
-        }
+        intake.setPower(-robot.gamepad2.left_stick_y);
+        transfer.setPower(robot.gamepad2.left_stick_y);
     }
 
-    public void startIntake() {
-        intake.setPower(INTAKE_SPEED);
-        transfer.setPower(TRANSFER_SPEED);
+    public void intakeRelease() {
+        intakeLever.setPosition(INTAKE_MAX);
     }
 
     public void stopIntake() {
         intake.setPower(0);
         transfer.setPower(0);
+        intakeLever.setPosition(INTAKE_MAX);
     }
+
+
+
 
     @Override
     public void stop() {

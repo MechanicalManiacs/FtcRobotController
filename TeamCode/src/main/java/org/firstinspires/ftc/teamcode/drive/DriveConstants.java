@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.drive;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
+///Users/varad/.gradle/caches/modules-2/files-2.1/com.arcrobotics.ftclib/vision/1.1.0/9f09b45642216527f9eed78b860119aee71dde1c/vision-1.1.0-sources.jar!/com/arcrobotics/ftclib/vision/UGContourRingPipeline.kt
 /*
  * Constants shared between multiple drive types.
  *
@@ -22,8 +23,8 @@ public class DriveConstants {
     /*
      * These are motor constants that should be listed online for your motors.
      */
-    public static final double TICKS_PER_REV = 537.6;
-    public static final double MAX_RPM = 312;
+    public static final double TICKS_PER_REV = 383.6;
+    public static final double MAX_RPM = 435;
 
     /*
      * Set RUN_USING_ENCODER to true to enable built-in hub velocity control using drive encoders.
@@ -34,7 +35,7 @@ public class DriveConstants {
      * from DriveVelocityPIDTuner.
      */
     public static final boolean RUN_USING_ENCODER = true;
-    public static PIDFCoefficients MOTOR_VELO_PID = new PIDFCoefficients(28, 0, 6.84,
+    public static PIDFCoefficients MOTOR_VELO_PID = new PIDFCoefficients(16, 0, 9.11,
             getMotorVelocityF(MAX_RPM / 60 * TICKS_PER_REV));
 
     /*
@@ -87,10 +88,10 @@ public class DriveConstants {
      * You are free to raise this on your own if you would like. It is best determined through experimentation.
 
      */
-    public static double MAX_VEL = 52.48180821614297;
-    public static double MAX_ACCEL = 52.48180821614297;
-    public static double MAX_ANG_VEL = Math.toRadians(360);
-    public static double MAX_ANG_ACCEL = Math.toRadians(360);
+    public static double MAX_VEL = 77.78369651262416;
+    public static double MAX_ACCEL = 77.78369651262416;
+    public static double MAX_ANG_VEL = 4.790402312032749;
+    public static double MAX_ANG_ACCEL = 4.790402312032749;
 
 
     public static double encoderTicksToInches(double ticks) {

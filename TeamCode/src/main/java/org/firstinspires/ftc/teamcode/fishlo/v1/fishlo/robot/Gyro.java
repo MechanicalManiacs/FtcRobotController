@@ -2,9 +2,7 @@ package org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.robot;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
-import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
@@ -69,7 +67,6 @@ public class Gyro extends SubSystem {
         angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         heading = -angles.firstAngle;//make this negative
         robot.telemetry.addData("Yaw", heading);
-        robot.telemetry.update();
 
         return heading - prevHeading;
 
