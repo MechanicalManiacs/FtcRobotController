@@ -388,7 +388,6 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
 
         }
 
-        intake.intakeRelease();
 
         // Stop the pose tracker thread
         poseTracker.stopThread();
@@ -613,7 +612,7 @@ class TrajectoryBuilderC extends Thread {
             trajectoryList.add(targetZoneCTraj5);
 
             Trajectory targetZoneCTraj6 = mecanumDrive.trajectoryBuilder(targetZoneCTraj5.end())
-                    .forward(25)
+                    .forward(20)
                     .build();
             trajectoryList.add(targetZoneCTraj6);
 
