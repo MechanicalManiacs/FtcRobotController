@@ -11,8 +11,8 @@ public class Claw extends SubSystem {
     private Servo claw;
     private DcMotor arm;
 
-    public static final double CLAW_HOME = 0;
-    public static final double CLAW_MAX = 0.78;
+    public static final double CLAW_HOME = 0.39;
+    public static final double CLAW_MAX = 0.88;
     public static double arm_speed = 0.5;
     ElapsedTime armTimer = new ElapsedTime();
 
@@ -62,8 +62,25 @@ public class Claw extends SubSystem {
 
     public void armDown() {
         armTimer.reset();
-        while (armTimer.milliseconds() < 800) {
-            arm.setPower(-0.8);
+        while (armTimer.milliseconds() < 900) {
+            arm.setPower(-0.5);
+        }
+        arm.setPower(0);
+
+    }
+    public void halfArmDown() {
+        armTimer.reset();
+        while (armTimer.milliseconds() < 600) {
+            arm.setPower(-0.5);
+        }
+        arm.setPower(0);
+
+    }
+
+    public void halfArmUp() {
+        armTimer.reset();
+        while (armTimer.milliseconds() < 600) {
+            arm.setPower(0.5);
         }
         arm.setPower(0);
 
@@ -71,8 +88,8 @@ public class Claw extends SubSystem {
 
     public void armUp() {
         armTimer.reset();
-        while (armTimer.milliseconds() < 800) {
-            arm.setPower(0.8);
+        while (armTimer.milliseconds() < 900) {
+            arm.setPower(0.5);
         }
         arm.setPower(0);
 

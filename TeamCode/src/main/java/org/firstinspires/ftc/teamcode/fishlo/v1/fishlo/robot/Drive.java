@@ -2,19 +2,18 @@ package org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.robot;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.program.Competition.DropNShootRoadRunnerAuto;
 import org.firstinspires.ftc.teamcode.robot.Robot;
 import org.firstinspires.ftc.teamcode.robot.SubSystem;
 
 public class Drive extends SubSystem {
 
     SampleMecanumDrive mecanumDrive = new SampleMecanumDrive(robot.hardwareMap);
-
     Gyro gyro = new Gyro(robot);
-    ElapsedTime teleop_timer = new ElapsedTime();
 
     private DcMotor frontLeft, backLeft, frontRight, backRight;
 
@@ -25,10 +24,8 @@ public class Drive extends SubSystem {
     double bias = 0.955;
     double strafeBias = 0.9;
     double conversion = cpi * bias;
-    int START_X = -72;
-    int START_Y = -50;
+    Claw claw = new Claw(robot);
 
-    Pose2d startPose = new Pose2d(START_X, START_Y, 0);
 
     private enum DriveControls {
         TANK,
@@ -37,7 +34,7 @@ public class Drive extends SubSystem {
     }
     DriveControls[] driveControls = {DriveControls.ARCADE, DriveControls.FIELD, DriveControls.TANK};
     DriveControls driveType;
-    int driveIndex = 0;
+    int driveIndex = 2;
 
     boolean exit = false;
 
@@ -60,7 +57,12 @@ public class Drive extends SubSystem {
 
         drive(0, 0);
 
-        mecanumDrive.setPoseEstimate(startPose);
+        if (DropNShootRoadRunnerAuto.autoEnded) {
+            mecanumDrive.setPoseEstimate(DropNShootRoadRunnerAuto.endPose);
+        }
+        else {
+            mecanumDrive.setPoseEstimate(new Pose2d(-63, -49, 180));
+        }
 
         gyro.initGyro();
     }
@@ -79,15 +81,18 @@ public class Drive extends SubSystem {
             turnSpeed = robot.gamepad1.right_stick_x;
         }
 
-        if(robot.gamepad1.a) {
+        if(robot.gamepad1.x) {
             driveIndex = 0;
         }
-        if(robot.gamepad1.y) {
+        if(robot.gamepad1.b) {
             driveIndex = 2;
         }
-        if(robot.gamepad1.x) {
-            driveIndex = 1;
-        }
+//        if(robot.gamepad1.a) {
+//            moveToShootingPosition();
+//        }
+//        if(robot.gamepad1.y) {
+//            moveToDropZone();
+//        }
 
 
         driveType = driveControls[driveIndex];
@@ -170,6 +175,23 @@ public class Drive extends SubSystem {
 
 
         }
+    }
+
+    private void moveToShootingPosition() {
+        Trajectory trajectory = mecanumDrive.trajectoryBuilder(mecanumDrive.getPoseEstimate())
+                .splineTo(new Vector2d(0, -40), Math.toRadians(0))
+                .build();
+        mecanumDrive.followTrajectory(trajectory);
+    }
+
+    private void moveToDropZone() {
+//        claw.halfArmDown();
+        Trajectory trajectory = mecanumDrive.trajectoryBuilder(mecanumDrive.getPoseEstimate())
+                .splineToLinearHeading(new Pose2d(-63, 0, 90), Math.toRadians(90))
+                .build();
+        mecanumDrive.followTrajectory(trajectory);
+//        claw.open();
+//        claw.halfArmUp();
     }
 
     private void left(double power) {

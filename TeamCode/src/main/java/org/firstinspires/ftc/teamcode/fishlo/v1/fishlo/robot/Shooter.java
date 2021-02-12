@@ -19,14 +19,16 @@ public class Shooter extends SubSystem {
     private CRServo pusher;
     private DcMotorEx shooter;
 
-    public static double RAMP_ANGLE = 35;
     public boolean shooter_started = false;
     private double TICKS_PER_REV = 28;
     private double RPM = 5700;
+    private double SHOOT_TIME = 0.5; //secs
     private double WHEEL_DIAMETER = 0.072;
     private double MAX_SPEED = WHEEL_DIAMETER*3.14*RPM/60;
     private SampleMecanumDrive mecanumDrive;
     private double shooter_speed;
+    private double RING_MASS = 0.024;
+    private double WHEEL_MASS = 0.056;
 
     ElapsedTime timer = new ElapsedTime();
 
@@ -105,7 +107,7 @@ public class Shooter extends SubSystem {
         mecanumDrive.update();
         Pose2d drivePose = mecanumDrive.getPoseEstimate();
         Pose2d goalPose = goalMap.get(target).getPosition();
-        double height = (goalMap.get(target).getHeight() - 9.5) * 0.0254;
+        double height = (goalMap.get(target).getHeight() - 12.5) * 0.0254;
 
         double goalDistance = Math.sqrt(Math.pow(drivePose.getX() - goalPose.getX(), 2) +
                 Math.pow(drivePose.getY() - goalPose.getY(), 2)) * 0.0254;
@@ -113,10 +115,8 @@ public class Shooter extends SubSystem {
                 /(drivePose.getY()-goalPose.getY()))) + 15;
         double GRAVITY = 9.8;
 
-        shooter_speed = Math.sqrt(
-                (GRAVITY * Math.pow(goalDistance, 2)) /
-                        ( 2 * Math.pow(Math.cos(Math.toRadians(RAMP_ANGLE)), 2) * (Math.tan(Math.toRadians(RAMP_ANGLE)) * goalDistance - height))
-                );
+        double x_velo = goalDistance/SHOOT_TIME;
+        shooter_speed = Math.sqrt((RING_MASS*Math.pow(x_velo, 2) + 2*RING_MASS*GRAVITY*height)/WHEEL_MASS);
 
 
         //Driver can manually override the shooter power
@@ -165,10 +165,10 @@ public class Shooter extends SubSystem {
 
     public void startShooter() {
         if (mode == Modes.AUTOMATIC) {
-            shooter.setVelocity(shooter_speed*0.03/(WHEEL_DIAMETER/2), AngleUnit.RADIANS);
+            shooter.setVelocity(shooter_speed/(WHEEL_DIAMETER/2), AngleUnit.RADIANS);
         }
         if (mode == Modes.OVERRIDE) {
-            shooter.setVelocity((MAX_SPEED*0.03)/(WHEEL_DIAMETER/2), AngleUnit.RADIANS);
+            shooter.setVelocity((MAX_SPEED*0.01)/(WHEEL_DIAMETER/2), AngleUnit.RADIANS);
         }
         shooter_started = true;
     }
@@ -179,8 +179,9 @@ public class Shooter extends SubSystem {
         shooter_started = false;
     }
 
-    public void startShooterAuto(double power) {
-        shooter.setPower(power);
+    public void startShooterAuto() {
+        shooter.setVelocity((MAX_SPEED*0.01)/(WHEEL_DIAMETER/2), AngleUnit.RADIANS);
+        shooter_started = true;
     }
     public void shootAuto(double power) {
         pusher.setPower(power);
