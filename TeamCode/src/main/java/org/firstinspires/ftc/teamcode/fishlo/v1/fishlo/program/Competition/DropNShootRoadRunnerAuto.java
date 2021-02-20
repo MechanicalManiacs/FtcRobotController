@@ -388,6 +388,7 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
 
         }
 
+        intake.intakeRelease();
 
         // Stop the pose tracker thread
         poseTracker.stopThread();

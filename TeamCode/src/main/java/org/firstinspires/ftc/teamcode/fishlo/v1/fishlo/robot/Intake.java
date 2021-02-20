@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.robot;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.program.Competition.DropNShootRoadRunnerAuto;
 import org.firstinspires.ftc.teamcode.robot.Robot;
 import org.firstinspires.ftc.teamcode.robot.SubSystem;
 
@@ -29,9 +28,7 @@ public class Intake extends SubSystem {
 
     @Override
     public void handle() {
-        if (!DropNShootRoadRunnerAuto.autoEnded) {
-            intakeRelease();
-        }
+        intakeRelease();
         intake.setPower(-robot.gamepad2.left_stick_y);
         transfer.setPower(robot.gamepad2.left_stick_y);
     }
