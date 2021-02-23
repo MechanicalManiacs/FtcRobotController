@@ -160,7 +160,7 @@ public class Shooter extends SubSystem {
     public void shoot() {
         timer.reset();
         while (timer.milliseconds() < 500) {
-            pusher.setPower(0.2);
+            pusher.setPower(0.5);
         }
         pusher.setPower(0);
     }
