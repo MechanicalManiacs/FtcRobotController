@@ -62,7 +62,7 @@ public class Claw extends SubSystem {
 
     public void armDown() {
         armTimer.reset();
-        while (armTimer.milliseconds() < 900) {
+        while (armTimer.milliseconds() < 1300) {
             arm.setPower(-0.5);
         }
         arm.setPower(0);
@@ -88,7 +88,7 @@ public class Claw extends SubSystem {
 
     public void armUp() {
         armTimer.reset();
-        while (armTimer.milliseconds() < 900) {
+        while (armTimer.milliseconds() < 1300) {
             arm.setPower(0.5);
         }
         arm.setPower(0);
