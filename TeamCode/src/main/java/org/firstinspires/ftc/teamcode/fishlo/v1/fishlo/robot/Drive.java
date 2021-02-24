@@ -148,29 +148,65 @@ public class Drive extends SubSystem {
 
             if (robot.gamepad1.right_bumper) {
                 if (robot.gamepad1.right_trigger < 0.5) {
-                    strafe(0.5);
+                    mecanumDrive.setWeightedDrivePower(
+                            new Pose2d(
+                                    0,
+                                    -0.5,
+                                    0
+                            )
+                    );
                 }
                 else if (robot.gamepad1.left_trigger < 0.5) {
-                    strafe(0.3);
+                    mecanumDrive.setWeightedDrivePower(
+                            new Pose2d(
+                                    0,
+                                    -0.3,
+                                    0
+                            )
+                    );
                 }
                 else {
-                    strafe(1);
+                    mecanumDrive.setWeightedDrivePower(
+                             new Pose2d(
+                                     0,
+                                     -1,
+                                     0
+                             )
+                    );
                 }
             }
             else if (robot.gamepad1.left_bumper) {
                 if (robot.gamepad1.right_trigger < 0.5) {
-                    strafe(-0.5);
+                    mecanumDrive.setWeightedDrivePower(
+                            new Pose2d(
+                                    0,
+                                    0.5,
+                                    0
+                            )
+                    );
                 }
                 else if (robot.gamepad1.left_trigger < 0.5) {
-                    strafe(-0.3);
+                    mecanumDrive.setWeightedDrivePower(
+                            new Pose2d(
+                                    0,
+                                    0.3,
+                                    0
+                            )
+                    );
                 }
                 else {
-                    strafe(-1);
+                    mecanumDrive.setWeightedDrivePower(
+                            new Pose2d(
+                                    0,
+                                    1,
+                                    0
+                            )
+                    );
                 }
             }
             else {
-                left(-leftY);
-                right(-rightY);
+                left(-robot.gamepad1.left_stick_y);
+                right(-robot.gamepad1.right_stick_y);
             }
 
 
