@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.robot;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.arcrobotics.ftclib.drivebase.DifferentialDrive;
 import com.arcrobotics.ftclib.drivebase.MecanumDrive;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -52,7 +51,6 @@ public class Drive extends SubSystem {
 
     @Override
     public void init() {
-        mecDrive = new MecanumDrive(fL, fR, bL, bR);
         frontLeft = null;
         backLeft = null;
         frontLeft = robot.hardwareMap.dcMotor.get("frontLeft");
@@ -60,10 +58,12 @@ public class Drive extends SubSystem {
         backLeft = robot.hardwareMap.dcMotor.get("backLeft");
         backRight = robot.hardwareMap.dcMotor.get("backRight");
 
-        fL = robot.hardwareMap.get(Motor.class, "frontLeft");
-        fR = robot.hardwareMap.get(Motor.class, "frontRight");
-        bL = robot.hardwareMap.get(Motor.class, "backLeft");
-        bR = robot.hardwareMap.get(Motor.class, "backRight");
+//        fL = (Motor) frontLeft;
+//        fR = (Motor) frontRight;
+//        bL = (Motor) backLeft;
+//        bR = (Motor) backRight;
+
+        mecDrive = new MecanumDrive(fL, fR, bL, bR);
 
         frontLeft.setDirection(DcMotor.Direction.REVERSE);
         backLeft.setDirection(DcMotor.Direction.REVERSE);
@@ -119,34 +119,34 @@ public class Drive extends SubSystem {
 
     public void runDrive(DriveControls driveType, double driveSpeed, double strafeSpeed, double turnSpeed, double rightY, double leftY) {
         if (driveType == DriveControls.ARCADE) {
-            mecDrive.driveRobotCentric(strafeSpeed, driveSpeed, turnSpeed);
-//            if (robot.gamepad1.right_trigger > 0.5) {
-//                mecanumDrive.setWeightedDrivePower(
-//                        new Pose2d(
-//                                driveSpeed * 0.5,
-//                                -strafeSpeed * 0.5,
-//                                -turnSpeed * 0.5
-//                        )
-//                );
-//            }
-//            else if (robot.gamepad1.left_trigger > 0.5) {
-//                mecanumDrive.setWeightedDrivePower(
-//                        new Pose2d(
-//                                driveSpeed * 0.3,
-//                                -strafeSpeed * 0.3,
-//                                -turnSpeed * 0.3
-//                        )
-//                );
-//            }
-//            else {
-//                mecanumDrive.setWeightedDrivePower(
-//                        new Pose2d(
-//                                driveSpeed,
-//                                -strafeSpeed,
-//                                -turnSpeed
-//                        )
-//                );
-//            }
+//            mecDrive.driveRobotCentric(strafeSpeed, driveSpeed, turnSpeed);
+            if (robot.gamepad1.right_trigger > 0.5) {
+                mecanumDrive.setWeightedDrivePower(
+                        new Pose2d(
+                                driveSpeed * 0.5,
+                                -strafeSpeed * 0.5,
+                                -turnSpeed * 0.5
+                        )
+                );
+            }
+            else if (robot.gamepad1.left_trigger > 0.5) {
+                mecanumDrive.setWeightedDrivePower(
+                        new Pose2d(
+                                driveSpeed * 0.3,
+                                -strafeSpeed * 0.3,
+                                -turnSpeed * 0.3
+                        )
+                );
+            }
+            else {
+                mecanumDrive.setWeightedDrivePower(
+                        new Pose2d(
+                                driveSpeed,
+                                -strafeSpeed,
+                                -turnSpeed
+                        )
+                );
+            }
         }
 
         if (driveType == DriveControls.FIELD) {
@@ -157,42 +157,64 @@ public class Drive extends SubSystem {
 
             if (robot.gamepad1.right_bumper) {
                 if (robot.gamepad1.right_trigger > 0.5) {
-                    frontRight.setPower(0.5);
-                    frontLeft.setPower(-0.6);
-                    backRight.setPower(0.5);
-                    backLeft.setPower(-0.5);
+//                    frontRight.setPower(0.5);
+//                    frontLeft.setPower(-0.5);
+//                    backRight.setPower(0.5);
+//                    backLeft.setPower(-0.5);
+                    mecanumDrive.setWeightedDrivePower(
+                            new Pose2d(
+                                    0,
+                                    0.5,
+                                    0
+                            )
+                    );
                 }
                 else if (robot.gamepad1.left_trigger > 0.5) {
-                    frontRight.setPower(0.3);
-                    frontLeft.setPower(-0.4);
-                    backRight.setPower(0.3);
-                    backLeft.setPower(-0.3);
+                    mecanumDrive.setWeightedDrivePower(
+                            new Pose2d(
+                                    0,
+                                    0.3,
+                                    0
+                            )
+                    );
                 }
                 else {
-                    frontRight.setPower(0.9);
-                    frontLeft.setPower(-1);
-                    backRight.setPower(0.9);
-                    backLeft.setPower(-0.9);
+                    mecanumDrive.setWeightedDrivePower(
+                            new Pose2d(
+                                    0,
+                                    1,
+                                    0
+                            )
+                    );
                 }
             }
             else if (robot.gamepad1.left_bumper) {
                 if (robot.gamepad1.right_trigger < 0.5) {
-                    frontRight.setPower(-0.5);
-                    frontLeft.setPower(0.6);
-                    backRight.setPower(-0.5);
-                    backLeft.setPower(0.5);
+                    mecanumDrive.setWeightedDrivePower(
+                            new Pose2d(
+                                    0,
+                                    -0.5,
+                                    0
+                            )
+                    );
                 }
                 else if (robot.gamepad1.left_trigger < 0.5) {
-                    frontRight.setPower(-0.3);
-                    frontLeft.setPower(0.4);
-                    backRight.setPower(-0.3);
-                    backLeft.setPower(0.3);
+                    mecanumDrive.setWeightedDrivePower(
+                            new Pose2d(
+                                    0,
+                                    -0.3,
+                                    0
+                            )
+                    );
                 }
                 else {
-                    frontRight.setPower(0.9);
-                    frontLeft.setPower(-1);
-                    backRight.setPower(0.9);
-                    backLeft.setPower(-0.9);
+                    mecanumDrive.setWeightedDrivePower(
+                            new Pose2d(
+                                    0,
+                                    -1,
+                                    0
+                            )
+                    );
                 }
             }
             else {
