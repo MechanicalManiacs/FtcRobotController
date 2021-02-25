@@ -1,3 +1,4 @@
+
 package org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.robot;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
@@ -24,7 +25,7 @@ public class Shooter extends SubSystem {
     private double RPM = 5700;
     private double SHOOT_TIME = 0.5; //secs
     private double WHEEL_DIAMETER = 0.072;
-    private double MAX_SPEED = WHEEL_DIAMETER*3.14*RPM/60;
+    private double MAX_SPEED = WHEEL_DIAMETER*3.14*RPM*60;
     private SampleMecanumDrive mecanumDrive;
     private double shooter_speed;
     private double RING_MASS = 0.024;
@@ -168,7 +169,7 @@ public class Shooter extends SubSystem {
             shooter.setVelocity(shooter_speed/(WHEEL_DIAMETER/2), AngleUnit.RADIANS);
         }
         if (mode == Modes.OVERRIDE) {
-            shooter.setVelocity((MAX_SPEED*0.01)/(WHEEL_DIAMETER/2), AngleUnit.RADIANS);
+            shooter.setVelocity((MAX_SPEED)/(WHEEL_DIAMETER/2), AngleUnit.RADIANS);
         }
         shooter_started = true;
     }
@@ -179,8 +180,11 @@ public class Shooter extends SubSystem {
         shooter_started = false;
     }
 
-    public void startShooterAuto() {
-        shooter.setVelocity((MAX_SPEED*0.01)/(WHEEL_DIAMETER/2), AngleUnit.RADIANS);
+    public void startShooterAuto(int mode) {
+        if (mode == 2 && ) {
+            shooter.setVelocity((MAX_SPEED) / (WHEEL_DIAMETER / 2), AngleUnit.RADIANS);
+        }
+
         shooter_started = true;
     }
     public void shootAuto(double power) {

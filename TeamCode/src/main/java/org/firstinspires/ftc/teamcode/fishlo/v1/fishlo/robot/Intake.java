@@ -14,7 +14,7 @@ public class Intake extends SubSystem {
     private Servo intakeLever;
     private CRServo transferWheels;
     private double INTAKE_HOME = 0.03;
-    private double INTAKE_MAX = 0.055;
+    private double INTAKE_MAX = 0.065;
 
     public Intake(Robot robot) {
         super(robot);
