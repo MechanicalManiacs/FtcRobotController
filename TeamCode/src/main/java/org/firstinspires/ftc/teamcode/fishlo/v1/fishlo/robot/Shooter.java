@@ -46,14 +46,15 @@ public class Shooter extends SubSystem {
 
     private enum Modes {
         AUTOMATIC,
-        OVERRIDE
+        OVERRIDE_GOAL,
+        OVERRIDE_POWERSHOT
     }
 
     public HashMap<Goals, Pose3d> goalMap = new HashMap<Goals, Pose3d>();
 
     private Goals[] targets = {Goals.LOW, Goals.MIDDLE, Goals.HIGH, Goals.POWER_SHOT_1, Goals.POWER_SHOT_2, Goals.POWER_SHOT_3};
     private Goals target;
-    private Modes mode = Modes.OVERRIDE;
+    private Modes mode = Modes.OVERRIDE_GOAL;
     int targetIndex = 2;
     public Shooter(Robot robot) {
         super(robot);
@@ -126,7 +127,10 @@ public class Shooter extends SubSystem {
 
         //Driver can manually override the shooter power
         if (robot.gamepad2.left_stick_button) {
-            mode = Modes.OVERRIDE;
+            mode = Modes.OVERRIDE_GOAL;
+        }
+        if (robot.gamepad2.right_trigger > 0.5) {
+            mode = Modes.OVERRIDE_POWERSHOT;
         }
         if (robot.gamepad2.right_stick_button){
             mode = Modes.AUTOMATIC;
@@ -170,10 +174,13 @@ public class Shooter extends SubSystem {
 
     public void startShooter() {
         if (mode == Modes.AUTOMATIC) {
-            shooter.setVelocity((MAX_SPEED*0.05)/(WHEEL_DIAMETER/2), AngleUnit.RADIANS);
+            shooter.setVelocity((shooter_speed)/(WHEEL_DIAMETER/2), AngleUnit.RADIANS);
         }
-        if (mode == Modes.OVERRIDE) {
+        if (mode == Modes.OVERRIDE_GOAL) {
             shooter.setVelocity((MAX_SPEED)/(WHEEL_DIAMETER/2), AngleUnit.RADIANS);
+        }
+        if (mode == Modes.OVERRIDE_POWERSHOT) {
+            shooter.setVelocity((MAX_SPEED*0.02)/(WHEEL_DIAMETER/2), AngleUnit.RADIANS);
         }
         shooter_started = true;
     }
@@ -208,7 +215,7 @@ public class Shooter extends SubSystem {
         }
         else {
             if (voltage > 13.0) {
-                shooter.setVelocity((MAX_SPEED*0.05) / (WHEEL_DIAMETER / 2), AngleUnit.RADIANS);
+                shooter.setVelocity((MAX_SPEED*0.04) / (WHEEL_DIAMETER / 2), AngleUnit.RADIANS);
             }
             shooter.setVelocity((MAX_SPEED) / (WHEEL_DIAMETER / 2), AngleUnit.RADIANS);
         }

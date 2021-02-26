@@ -44,6 +44,8 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
     private Trajectory targetZoneBTraj7;
     private Trajectory targetZoneBTraj8;
     private Trajectory targetZoneBTraj9;
+    private Trajectory targetZoneBTraj10;
+    private Trajectory targetZoneBTraj11;
 
     // Target Zone C Trajectories
     private Trajectory targetZoneCTraj1;
@@ -52,6 +54,7 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
     private Trajectory targetZoneCTraj4;
     private Trajectory targetZoneCTraj5;
     private Trajectory targetZoneCTraj6;
+    private Trajectory targetZoneCTraj7;
 
     // Pose Tracker Thread
     PoseTracker poseTracker;
@@ -97,12 +100,17 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
         targetZoneBTraj7 = ThreadBuilder.targetZoneBTraj7;
         targetZoneBTraj8 = ThreadBuilder.targetZoneBTraj8;
         targetZoneBTraj9 = ThreadBuilder.targetZoneBTraj9;
+        targetZoneBTraj10 = ThreadBuilder.targetZoneBTraj10;
+        targetZoneBTraj11 = ThreadBuilder.targetZoneBTraj11;
+        
 
         targetZoneCTraj1 = ThreadBuilder.targetZoneCTraj1;
         targetZoneCTraj2 = ThreadBuilder.targetZoneCTraj2;
         targetZoneCTraj3 = ThreadBuilder.targetZoneCTraj3;
         targetZoneCTraj4 = ThreadBuilder.targetZoneCTraj4;
         targetZoneCTraj5 = ThreadBuilder.targetZoneCTraj5;
+        targetZoneCTraj6 = ThreadBuilder.targetZoneCTraj6;
+        targetZoneCTraj7 = ThreadBuilder.targetZoneCTraj7;
 
 
 
@@ -219,11 +227,12 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
 
             intake.intakeRelease();
             claw.close();
-            sleep(500);
             // Shoot rings
             telemetry.addLine("Shooting");
             telemetry.update();
             shoot();
+            shooter.stopShooter();
+
 
 
             // Move to shooting position
@@ -242,47 +251,22 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
             sleep(500);
             claw.armUp();
 
-            mecanumDrive.turn(Math.toRadians(180));
-
-            mecanumDrive.followTrajectory(targetZoneBTraj3);
-
-
-            mecanumDrive.followTrajectory(targetZoneBTraj4);
-            intake.startIntake();
-            // Move to second wobble goal
-            telemetry.addLine("Getting rings");
-            telemetry.update();
-            mecanumDrive.followTrajectory(targetZoneBTraj5);
-
-            shooter.startShooterAuto(2, 0.05);
-
-            sleep(500);
-
-            mecanumDrive.followTrajectory(targetZoneBTraj6);
-
-            claw.close();
-            // Shoot rings
-            telemetry.addLine("Shooting");
-            telemetry.update();
-            shoot2();
-            intake.stopIntake();
-            shooter.stopShooter();
 
             mecanumDrive.followTrajectory(targetZoneBTraj7);
 
-            mecanumDrive.turn(Math.toRadians(180));
 
             claw.open();
+            claw.armDown();
+            mecanumDrive.followTrajectory(targetZoneBTraj8);
             telemetry.addLine("Grabbing wobble goal");
             telemetry.update();
-            claw.armDown();;
             claw.close();
             sleep(500);
             claw.armUp();
 //
-            mecanumDrive.followTrajectory(targetZoneBTraj8);
+            mecanumDrive.followTrajectory(targetZoneBTraj9);
 
-            mecanumDrive.turn(Math.toRadians(90));
+            mecanumDrive.followTrajectory(targetZoneBTraj10);
 
             telemetry.addLine("Dropping wobble goal");
             telemetry.update();
@@ -292,14 +276,31 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
             sleep(500);
             claw.armUp();
 
+            mecanumDrive.followTrajectory(targetZoneBTraj11);
+
+
         }
         if (targetZone == OpenCV.targetZone.C) {
+
+            shooter.startShooterAuto(1);
+            // Move to shooting position
+            telemetry.addLine("Moving to shooting position");
+            telemetry.update();
+            mecanumDrive.followTrajectory(targetZoneCTraj1);
+
+            claw.close();
+            // Shoot rings
+            telemetry.addLine("Shooting");
+            telemetry.update();
+            shoot();
+            shooter.stopShooter();
 
             // Move to Target Zone C
             telemetry.addLine("Moving to target zone C");
             telemetry.update();
-            mecanumDrive.followTrajectory(targetZoneCTraj1);
+            mecanumDrive.followTrajectory(targetZoneCTraj2);
 
+            intake.intakeRelease();
             // Drop wobble goal
             telemetry.addLine("Dropping wobble goal");
             telemetry.update();
@@ -309,26 +310,29 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
             sleep(500);
             claw.armUp();
 
-            // Move to shooting position
-            telemetry.addLine("Moving to shooting position");
+            shooter.startShooterAuto(1);
+            // Move to second wobble goal
+            telemetry.addLine("Moving to wrings");
             telemetry.update();
-            mecanumDrive.followTrajectory(targetZoneCTraj2);
+            mecanumDrive.followTrajectory(targetZoneCTraj3);
+            mecanumDrive.followTrajectory(targetZoneCTraj4);
+            mecanumDrive.followTrajectory(targetZoneCTraj5);
+            intake.startIntake();
+            mecanumDrive.followTrajectory(targetZoneCTraj6);
 
+
+            sleep(3000);
+            intake.stopIntake();
+            mecanumDrive.followTrajectory(targetZoneCTraj7);
             claw.close();
-            claw.armDown();
-            sleep(500);
             // Shoot rings
             telemetry.addLine("Shooting");
             telemetry.update();
-            shoot();
-            claw.armUp();
+            shooter.shootAuto(1.5);
+            sleep(4500);
+            shooter.stopShooter();
             claw.open();
-            sleep(500);
 
-//            // Move to second wobble goal
-//            telemetry.addLine("Moving to second wobble goal");
-//            telemetry.update();
-//            mecanumDrive.followTrajectory(targetZoneCTraj3);
 //
 //            // Grab wobble goal
 //            telemetry.addLine("Grabbing wobble goal");
