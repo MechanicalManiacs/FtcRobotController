@@ -1,18 +1,24 @@
 package org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.robot;
 
+import com.acmerobotics.roadrunner.control.PIDFController;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDriveCancelable;
 import org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.program.Competition.DropNShootRoadRunnerAuto;
+import org.firstinspires.ftc.teamcode.fishlo.v1.fishlo.program.Competition.PoseStorage;
 import org.firstinspires.ftc.teamcode.robot.Robot;
 import org.firstinspires.ftc.teamcode.robot.SubSystem;
 
+import java.util.Vector;
+
 public class Drive extends SubSystem {
 
-    SampleMecanumDrive mecanumDrive = new SampleMecanumDrive(robot.hardwareMap);
+    SampleMecanumDriveCancelable mecanumDrive;
+
     Gyro gyro = new Gyro(robot);
 
     private DcMotor frontLeft, backLeft, frontRight, backRight;
@@ -32,6 +38,16 @@ public class Drive extends SubSystem {
         FIELD,
         ARCADE
     }
+    private enum mode {
+        NORMAL_CONTROL,
+        GO_TO_POINT
+    }
+
+    private mode currentMode = mode.NORMAL_CONTROL;
+
+    Vector2d shootingPose = new Vector2d(0, -40);
+    double shootingHeading = Math.toRadians(0);
+
     DriveControls[] driveControls = {DriveControls.ARCADE, DriveControls.FIELD, DriveControls.TANK};
     DriveControls driveType;
     int driveIndex = 2;
@@ -45,6 +61,8 @@ public class Drive extends SubSystem {
 
     @Override
     public void init() {
+        mecanumDrive = new SampleMecanumDriveCancelable(robot.hardwareMap);
+
         frontLeft = null;
         backLeft = null;
         frontLeft = robot.hardwareMap.dcMotor.get("frontLeft");
@@ -65,12 +83,17 @@ public class Drive extends SubSystem {
         }
 
         gyro.initGyro();
+
+        mecanumDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        mecanumDrive.setPoseEstimate(PoseStorage.currentPose);
     }
 
     boolean reverse = false;
 
     @Override
     public void handle() {
+
         double driveSpeed = -robot.gamepad1.left_stick_y;
         double rightY = robot.gamepad1.right_stick_y;
         double turnSpeed = 0;
@@ -87,29 +110,37 @@ public class Drive extends SubSystem {
         if(robot.gamepad1.b) {
             driveIndex = 2;
         }
-//        if(robot.gamepad1.a) {
-//            moveToShootingPosition();
-//        }
-//        if(robot.gamepad1.y) {
-//            moveToDropZone();
-//        }
 
+        mecanumDrive.update();
 
         driveType = driveControls[driveIndex];
 
-        runDrive(driveType, driveSpeed, strafeSpeed, turnSpeed, rightY, -driveSpeed);
+        switch (currentMode) {
+            case NORMAL_CONTROL:
+                runDrive(driveType, driveSpeed, strafeSpeed, turnSpeed, rightY, -driveSpeed);
+                if (robot.gamepad1.a) {
+                    moveToShootingPosition();
+                    currentMode = mode.GO_TO_POINT;
+                }
+                break;
+            case GO_TO_POINT:
+                if (robot.gamepad1.y) {
+                    mecanumDrive.cancelFollowing();
+                    currentMode = mode.NORMAL_CONTROL;
+                }
+                if (!mecanumDrive.isBusy()) {
+                    currentMode = mode.NORMAL_CONTROL;
+                }
+        }
+
 
         robot.telemetry.addData("Drive - Dat - Drive Controls", driveType.name());
         robot.telemetry.addData("Drive - Dat - Drive Speed", driveSpeed);
         robot.telemetry.addData("Drive - Dat - Turn Speed", turnSpeed);
-        robot.telemetry.addData("Drive - Dat - GamepadX", robot.gamepad1.left_stick_x);
         robot.telemetry.addData("Drive - Dat - Strafe Speed", strafeSpeed);
-        robot.telemetry.addData("Drive - Set - frontLeft", frontLeft.getPower());
-        robot.telemetry.addData("Drive - Set - backLeft", backLeft.getPower());
-        robot.telemetry.addData("Drive - Set - frontRight", frontRight.getPower());
-        robot.telemetry.addData("Drive - Set - backRight", backRight.getPower());
-        robot.telemetry.addData("Drive - Enc - Left", frontLeft.getCurrentPosition());
-        robot.telemetry.addData("Drive - Enc - Right", frontRight.getCurrentPosition());
+        robot.telemetry.addData("mode", currentMode);
+
+
     }
 
     public void runDrive(DriveControls driveType, double driveSpeed, double strafeSpeed, double turnSpeed, double rightY, double leftY) {
@@ -217,17 +248,14 @@ public class Drive extends SubSystem {
         Trajectory trajectory = mecanumDrive.trajectoryBuilder(mecanumDrive.getPoseEstimate())
                 .splineTo(new Vector2d(0, -40), Math.toRadians(0))
                 .build();
-        mecanumDrive.followTrajectory(trajectory);
+        mecanumDrive.followTrajectoryAsync(trajectory);
     }
 
-    private void moveToDropZone() {
-//        claw.halfArmDown();
+    private void moveToPowershot() {
         Trajectory trajectory = mecanumDrive.trajectoryBuilder(mecanumDrive.getPoseEstimate())
-                .splineToLinearHeading(new Pose2d(-63, 0, 90), Math.toRadians(90))
+                .splineTo(new Vector2d(-63, 0), Math.toRadians(90))
                 .build();
-        mecanumDrive.followTrajectory(trajectory);
-//        claw.open();
-//        claw.halfArmUp();
+        mecanumDrive.followTrajectoryAsync(trajectory);
     }
 
     private void left(double power) {
