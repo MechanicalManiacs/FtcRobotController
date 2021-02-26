@@ -43,6 +43,7 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
     private Trajectory targetZoneBTraj6;
     private Trajectory targetZoneBTraj7;
     private Trajectory targetZoneBTraj8;
+    private Trajectory targetZoneBTraj9;
 
     // Target Zone C Trajectories
     private Trajectory targetZoneCTraj1;
@@ -95,6 +96,7 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
         targetZoneBTraj6 = ThreadBuilder.targetZoneBTraj6;
         targetZoneBTraj7 = ThreadBuilder.targetZoneBTraj7;
         targetZoneBTraj8 = ThreadBuilder.targetZoneBTraj8;
+        targetZoneBTraj9 = ThreadBuilder.targetZoneBTraj9;
 
         targetZoneCTraj1 = ThreadBuilder.targetZoneCTraj1;
         targetZoneCTraj2 = ThreadBuilder.targetZoneCTraj2;
@@ -139,7 +141,7 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
             telemetry.update();
             mecanumDrive.followTrajectory(targetZoneATraj1);
 
-            shooter.startShooterAuto();
+            shooter.startShooterAuto(1);
             // Drop wobble goal
             telemetry.addLine("Dropping wobble goal");
             telemetry.update();
@@ -161,6 +163,7 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
             telemetry.addLine("Shooting");
             telemetry.update();
             shoot();
+            shooter.stopShooter();
             claw.armUp();
             sleep(500);
             claw.open();
@@ -209,11 +212,27 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
         if (targetZone == OpenCV.targetZone.B) {
 
             // Move to target zone B and drop wobble goal
-            telemetry.addLine("Moving to target zone B");
+            shooter.startShooterAuto(1);
+            telemetry.addLine("Moving to shooting position");
             telemetry.update();
             mecanumDrive.followTrajectory(targetZoneBTraj1);
 
-            shooter.startShooterAuto();
+            intake.intakeRelease();
+            claw.close();
+            sleep(500);
+            // Shoot rings
+            telemetry.addLine("Shooting");
+            telemetry.update();
+            shoot();
+
+
+            // Move to shooting position
+            telemetry.addLine("Moving to target zone b");
+            telemetry.update();
+            mecanumDrive.followTrajectory(targetZoneBTraj2);
+
+            mecanumDrive.turn(Math.toRadians(180));
+
             // Drop wobble goal
             telemetry.addLine("Dropping wobble goal");
             telemetry.update();
@@ -223,62 +242,48 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
             sleep(500);
             claw.armUp();
 
-            intake.intakeRelease();
-            // Move to shooting position
-            telemetry.addLine("Moving to shooting position");
-            telemetry.update();
-            mecanumDrive.followTrajectory(targetZoneBTraj2);
+            mecanumDrive.turn(Math.toRadians(180));
 
-            claw.close();
-            claw.armDown();
-            sleep(500);
-            // Shoot rings
-            telemetry.addLine("Shooting");
-            telemetry.update();
-            shoot();
-            claw.armUp();
-            claw.open();
-            sleep(500);
-//
             mecanumDrive.followTrajectory(targetZoneBTraj3);
+
+
+            mecanumDrive.followTrajectory(targetZoneBTraj4);
             intake.startIntake();
             // Move to second wobble goal
             telemetry.addLine("Getting rings");
             telemetry.update();
-            mecanumDrive.followTrajectory(targetZoneBTraj4);
-
-            shooter.startShooterAuto();
-            sleep(1500);
-
             mecanumDrive.followTrajectory(targetZoneBTraj5);
 
-            sleep(1000);
+            shooter.startShooterAuto(2, 0.05);
 
-            // Shoot rings
-            telemetry.addLine("Shooting");
-            telemetry.update();
-            shoot();
-            intake.stopIntake();
+            sleep(500);
 
             mecanumDrive.followTrajectory(targetZoneBTraj6);
 
-            mecanumDrive.turn(Math.toRadians(180));
-
-            telemetry.addLine("Grabbing wobble goal");
-            telemetry.update();
-            claw.armDown();;
-//            mecanumDrive.followTrajectory(targetZoneATraj4);
             claw.close();
-            sleep(1000);
-            claw.armUp();
-
-            mecanumDrive.turn(Math.toRadians(180));
+            // Shoot rings
+            telemetry.addLine("Shooting");
+            telemetry.update();
+            shoot2();
+            intake.stopIntake();
+            shooter.stopShooter();
 
             mecanumDrive.followTrajectory(targetZoneBTraj7);
 
-//            mecanumDrive.followTrajectory(targetZoneBTraj8);
+            mecanumDrive.turn(Math.toRadians(180));
 
-            // Drop wobble goal
+            claw.open();
+            telemetry.addLine("Grabbing wobble goal");
+            telemetry.update();
+            claw.armDown();;
+            claw.close();
+            sleep(500);
+            claw.armUp();
+//
+            mecanumDrive.followTrajectory(targetZoneBTraj8);
+
+            mecanumDrive.turn(Math.toRadians(90));
+
             telemetry.addLine("Dropping wobble goal");
             telemetry.update();
             claw.armDown();
@@ -371,10 +376,9 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
     // Shoot function
     public void shoot() {
 
-        shooter.shootAuto(0.2);
+        shooter.shootAuto(0.15);
         sleep(3000);
         shooter.stopPusher();
-        shooter.stop();
 
     }
 
@@ -383,7 +387,6 @@ public class DropNShootRoadRunnerAuto extends FishloAutonomousProgram {
         shooter.shootAuto(0.2);
         sleep(1000);
         shooter.stopPusher();
-        shooter.stop();
 
     }
 

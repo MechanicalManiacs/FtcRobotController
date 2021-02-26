@@ -30,6 +30,8 @@ public class Shooter extends SubSystem {
     private double shooter_speed;
     private double RING_MASS = 0.024;
     private double WHEEL_MASS = 0.056;
+    private Battery battery;
+    private double voltage;
 
     ElapsedTime timer = new ElapsedTime();
 
@@ -59,6 +61,8 @@ public class Shooter extends SubSystem {
 
     @Override
     public void init() {
+        battery = new Battery(robot);
+        voltage = battery.getVoltage();
         shooter = robot.hardwareMap.get(DcMotorEx.class, "shooter");
         pusher = robot.hardwareMap.crservo.get("pusher");
         shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -181,7 +185,31 @@ public class Shooter extends SubSystem {
     }
 
     public void startShooterAuto(int mode) {
-        if (mode == 2 && ) {
+        if (mode == 2) {
+            if (voltage > 13.0) {
+                shooter.setVelocity((MAX_SPEED*0.02) / (WHEEL_DIAMETER / 2), AngleUnit.RADIANS);
+            }
+            shooter.setVelocity((MAX_SPEED*0.05) / (WHEEL_DIAMETER / 2), AngleUnit.RADIANS);
+        }
+        else {
+            if (voltage > 13.0) {
+                shooter.setVelocity((MAX_SPEED*0.1) / (WHEEL_DIAMETER / 2), AngleUnit.RADIANS);
+            }
+            shooter.setVelocity((MAX_SPEED) / (WHEEL_DIAMETER / 2), AngleUnit.RADIANS);
+        }
+    }
+
+    public void startShooterAuto(int mode, double multiplier) {
+        if (mode == 2) {
+            if (voltage > 13.0) {
+                shooter.setVelocity((MAX_SPEED*0.01) / (WHEEL_DIAMETER / 2), AngleUnit.RADIANS);
+            }
+            shooter.setVelocity((MAX_SPEED*0.05) / (WHEEL_DIAMETER / 2), AngleUnit.RADIANS);
+        }
+        else {
+            if (voltage > 13.0) {
+                shooter.setVelocity((MAX_SPEED*0.05) / (WHEEL_DIAMETER / 2), AngleUnit.RADIANS);
+            }
             shooter.setVelocity((MAX_SPEED) / (WHEEL_DIAMETER / 2), AngleUnit.RADIANS);
         }
 

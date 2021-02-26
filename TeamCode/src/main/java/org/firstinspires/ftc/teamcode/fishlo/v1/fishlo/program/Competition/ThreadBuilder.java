@@ -56,6 +56,7 @@ public class ThreadBuilder extends FishloAutonomousProgram {
         mecanumDrive = new SampleMecanumDrive(hardwareMap);
         mecanumDrive.setPoseEstimate(startPose);
         telemetry.addLine("Ready to Start |>");
+        telemetry.update();
     }
 
     @Override
@@ -130,6 +131,7 @@ public class ThreadBuilder extends FishloAutonomousProgram {
         targetZoneBTraj6 = targetZoneBTrajList.get(5);
         targetZoneBTraj7 = targetZoneBTrajList.get(6);
         targetZoneBTraj8 = targetZoneBTrajList.get(7);
+        targetZoneBTraj9 = targetZoneBTrajList.get(8);
 
         telemetry.addLine("Target Zone B Trajectories Completed");
         telemetry.update();
@@ -238,52 +240,54 @@ class TrajectoryBuilderB extends Thread {
             // Displaying the thread that is running
             Trajectory targetZoneBTraj1 = mecanumDrive.trajectoryBuilder(startPose, true)
                     .splineToConstantHeading(new Vector2d(-20, -55), Math.toRadians(0))
-                    .splineToConstantHeading(new Vector2d(44, -27), Math.toRadians(0))
+                    .splineToConstantHeading(new Vector2d(8.5, -42.5), Math.toRadians(0))
                     .build();
             trajectoryList.add(targetZoneBTraj1);
 
 
             Trajectory targetZoneBTraj2 = mecanumDrive.trajectoryBuilder(targetZoneBTraj1.end())
-                    .splineToConstantHeading(new Vector2d(25, -27), Math.toRadians(0))
-                    .splineToConstantHeading(new Vector2d(9.5, -46), Math.toRadians(0))
+                    .back(41)
                     .build();
             trajectoryList.add(targetZoneBTraj2);
 
 
             Trajectory targetZoneBTraj3 = mecanumDrive.trajectoryBuilder(targetZoneBTraj2.end())
-                    .strafeRight(6)
+                    .forward(40)
                     .build();
             trajectoryList.add(targetZoneBTraj3);
 
 
-            Trajectory targetZoneBTraj4 = mecanumDrive.trajectoryBuilder(targetZoneBTraj3.end(), true)
-                    .forward(30)
+            Trajectory targetZoneBTraj4 = mecanumDrive.trajectoryBuilder(targetZoneBTraj3.end())
+                    .strafeRight(10.5)
                     .build();
             trajectoryList.add(targetZoneBTraj4);
 
 
             Trajectory targetZoneBTraj5 = mecanumDrive.trajectoryBuilder(targetZoneBTraj4.end(), true)
-                    .strafeLeft(6)
+                    .forward(29)
                     .build();
             trajectoryList.add(targetZoneBTraj5);
 
 
             Trajectory targetZoneBTraj6 = mecanumDrive.trajectoryBuilder(targetZoneBTraj5.end())
-                    .forward(20.5)
+                    .strafeLeft(5)
                     .build();
             trajectoryList.add(targetZoneBTraj6);
 
             Trajectory targetZoneBTraj7 = mecanumDrive.trajectoryBuilder(targetZoneBTraj6.end())
-                    .splineToConstantHeading(new Vector2d(25, -27), Math.toRadians(0))
-                    .splineToConstantHeading(new Vector2d(44, -27), Math.toRadians(0))
+                    .forward(22)
                     .build();
             trajectoryList.add(targetZoneBTraj7);
 
             Trajectory targetZoneBTraj8 = mecanumDrive.trajectoryBuilder(targetZoneBTraj7.end())
-                    .splineToConstantHeading(new Vector2d(25, -27), Math.toRadians(0))
-                    .splineToConstantHeading(new Vector2d(44, -27), Math.toRadians(0))
+                    .forward(47)
                     .build();
             trajectoryList.add(targetZoneBTraj8);
+
+            Trajectory targetZoneBTraj9 = mecanumDrive.trajectoryBuilder(targetZoneBTraj8.end())
+                    .forward(47)
+                    .build();
+            trajectoryList.add(targetZoneBTraj9);
 
             robot.telemetry.addLine("Target Zone B Trajectories Built");
             robot.telemetry.update();
