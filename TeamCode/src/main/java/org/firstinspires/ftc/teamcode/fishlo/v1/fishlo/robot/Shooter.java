@@ -170,7 +170,7 @@ public class Shooter extends SubSystem {
 
     public void startShooter() {
         if (mode == Modes.AUTOMATIC) {
-            shooter.setVelocity(shooter_speed/(WHEEL_DIAMETER/2), AngleUnit.RADIANS);
+            shooter.setVelocity((MAX_SPEED*0.05)/(WHEEL_DIAMETER/2), AngleUnit.RADIANS);
         }
         if (mode == Modes.OVERRIDE) {
             shooter.setVelocity((MAX_SPEED)/(WHEEL_DIAMETER/2), AngleUnit.RADIANS);
